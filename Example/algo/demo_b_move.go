@@ -3,9 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"gitlab.com/greg198584/gridclient/algo"
-	"gitlab.com/greg198584/gridclient/structure"
-	"gitlab.com/greg198584/gridclient/tools"
+	"github.com/greg198584/gridclient/algo"
+	"github.com/greg198584/gridclient/structure"
+	"github.com/greg198584/gridclient/tools"
 	"net/http"
 	"time"
 )

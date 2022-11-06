@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/greg198584/gridclient/programme"
 	mowcli "github.com/jawher/mow.cli"
-	"gitlab.com/greg198584/gridclient/programme"
 	"os"
 	"strconv"
 )

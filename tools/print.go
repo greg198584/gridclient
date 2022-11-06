@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/greg198584/gridclient/structure"
 	"github.com/logrusorgru/aurora"
-	"gitlab.com/greg198584/gridclient/structure"
 	"strconv"
 )
 

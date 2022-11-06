@@ -3,7 +3,7 @@ package api
 import (
 	"bytes"
 	"fmt"
-	"gitlab.com/greg198584/gridclient/tools"
+	"github.com/greg198584/gridclient/tools"
 	"io/ioutil"
 	"net/http"
 	"time"

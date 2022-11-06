@@ -1,8 +1,8 @@
 package main
 
 import (
-	"gitlab.com/greg198584/gridclient/algo"
-	"gitlab.com/greg198584/gridclient/tools"
+	"github.com/greg198584/gridclient/algo"
+	"github.com/greg198584/gridclient/tools"
 	"time"
 )
 

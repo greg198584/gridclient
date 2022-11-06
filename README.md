@@ -19,7 +19,7 @@ En cours de route, vous découvrirez des concepts de programmation tels que les 
 installer go https://go.dev/doc/install
 
 ```bash
-go get gitlab.com/greg198584/gridclient
+go get github.com/greg198584/gridclient
 ```
 
 ### route API
