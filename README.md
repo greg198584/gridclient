@@ -50,8 +50,7 @@ GET /v1/programme/push/flag/:id/:secretid
 ### Usage 
 
 ```bash
-> $ go run main.go                                                                                                                                               [±main ●●]
-
+> $ go run main.go                                                                                                                                         
 Usage: main [OPTIONS] COMMAND [arg...]
 
 Concepteur Console
@@ -62,16 +61,20 @@ Options:
 Commands:         
   create          creation programme et chargement sur la grille
   load            charger programme existant sur la grille
-  save            sauvegarder un programme
   delete          deconnecter un programme de la grille
   move            deplacer un programme sur la grille
   scan            scan la zone pour get informations (cellules infos / programmes present et infos)
   explore         exploration de cellule de zone
   destroy         destroy cellule programme
   rebuild         reconstruire cellule programme
+  capture         capture data-energy cellule programme et zone
+  equilibrium     repartir energie du programme uniformement
+  pushflag        push drapeau dans zone de transfert
   status          status grille
   infos           infos programme
-  algo            lancer un algo
+  attack          mode attaque - tous programme dans la zone
+  defense         mode defense + attaque simultanement programme hostile
+  quick_move      deplacement secteur + zone voulu
                   
 Run 'main COMMAND --help' for more information on a command.
 ```
