@@ -32,14 +32,19 @@ GET /v1/programme/infos/:id/:secretid
 GET /v1/programme/new/:name
 POST /v1/programme/load
 GET /v1/programme/unset/:id/:secretid
-GET /v1/programme/save/:id/:secretid
 GET /v1/programme/jump/up/:id/:secretid/:jumpnbr
 GET /v1/programme/jump/down/:id/:secretid/:jumpnbr
 GET /v1/programme/move/:id/:secretid/:zone_id
 GET /v1/programme/scan/:id/:secretid
-GET /v1/programme/explore/:id/:secretid/:celluleid/:startid/:endid
+GET /v1/programme/explore/:id/:secretid/:celluleid
 GET /v1/programme/destroy/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/rebuild/:id/:secretid/:celluleid/:targetid
+GET /v1/programme/capture/cellule/data/:id/:secretid/:celluleid/:index
+GET /v1/programme/capture/cellule/energy/:id/:secretid/:celluleid/:index
+GET /v1/programme/capture/target/data/:id/:secretid/:celluleid/:targetid
+GET /v1/programme/capture/target/energy/:id/:secretid/:celluleid/:targetid
+GET /v1/programme/equilibrium/:id/:secretid
+GET /v1/programme/push/flag/:id/:secretid
 ```
 
 ### Usage 
