@@ -25,9 +25,31 @@ go install github.com/greg198584/gridclient@latest
 
 - https://youtu.be/DlN74mHg0bw
 
-### route API
+### API
 
 - API BETA: http://195.154.84.18:20080/v1/grid
+
+- Aucune base de donnée est utiliser par l'API. Il suffit de garder le JSON représenter par la structure ProgrammeContainer
+
+- https://github.com/greg198584/gridclient/blob/main/structure/grid.go
+
+```go
+type ProgrammeContainer struct {
+	ID        string    `json:"id"`
+	SecretID  string    `json:"secret_id"`
+	Programme Programme `json:"programme"`
+	ValidKey  string    `json:"valid_key"`
+}
+```
+
+**JSON obtenu par deux routes**
+
+```bash
+GET /v1/programme/new/:name
+GET /v1/programme/push/flag/:id/:secretid
+```
+
+#### Routes API
 
 ```bash
 GET /v1/grid
