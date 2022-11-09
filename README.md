@@ -21,6 +21,9 @@ installer go https://go.dev/doc/install
 ```bash
 go install github.com/greg198584/gridclient@latest
 ```
+### Tuto complet en vidéo
+
+- https://youtu.be/DlN74mHg0bw
 
 ### route API
 
