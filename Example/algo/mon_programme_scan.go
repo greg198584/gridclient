@@ -7,7 +7,7 @@ import (
 	"github.com/greg198584/gridclient/structure"
 	"github.com/greg198584/gridclient/tools"
 	"net/http"
-	"time"
+	"os"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 		tools.PrintGridPosition(current.Psi.Programme, current.InfosGrid.Taille)
 		tools.PrintInfosGrille(current.InfosGrid)
 		for j := 0; j <= count; j++ {
-			time.Sleep(2 * time.Second)
+			//time.Sleep(2 * time.Second)
 			if ok, _ := current.Move(j); !ok {
 				if current.StatusCode == http.StatusUnauthorized {
 					status = false
@@ -50,7 +50,7 @@ func main() {
 				} else {
 					for _, cellule := range zoneInfos.Cellules {
 						if cellule.Status {
-							tools.Success(fmt.Sprintf("zone [%d] - cellule [%d] etat [%t] - data presente ou etat true", zoneInfos.ID, cellule.ID, cellule.Status))
+							//tools.Success(fmt.Sprintf("zone [%d] - cellule [%d] etat [%t] - data presente ou etat true", zoneInfos.ID, cellule.ID, cellule.Status))
 							if exploreOK, exploreRes, _ := current.Explore(cellule.ID); !exploreOK {
 								tools.Fail("erreur explore")
 							} else {
@@ -62,6 +62,8 @@ func main() {
 									for _, data := range datas {
 										if data.IsFlag {
 											tools.Success(fmt.Sprintf("FLAG TROUVER - Cellule [%d] - index [%d]", cellule.ID, data.ID))
+											current.Unset()
+											os.Exit(0)
 										}
 									}
 								}
