@@ -182,11 +182,11 @@ func (a *Algo) Scan() (ok bool, res []byte, err error) {
 	}
 	return true, res, err
 }
-func (a *Algo) Explore(celluleID string, startID string, endID string) (ok bool, res []byte, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] explore cellule [%s] [%s-%s]", a.Name, celluleID, startID, endID))
+func (a *Algo) Explore(celluleID int) (ok bool, res []byte, err error) {
+	tools.Title(fmt.Sprintf("Programme [%s] explore cellule [%s]", a.Name, celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_EXPLORE_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID, startID, endID),
+		fmt.Sprintf("%s/%s/%s/%s/%d", api.API_URL, api.ROUTE_EXPLORE_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID),
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
