@@ -21,10 +21,35 @@ installer go https://go.dev/doc/install
 ```bash
 go install github.com/greg198584/gridclient@latest
 ```
+### Tuto complet en vidéo
 
-### route API
+- https://youtu.be/DlN74mHg0bw
+
+### API
 
 - API BETA: http://195.154.84.18:20080/v1/grid
+
+- Aucune base de donnée est utiliser par l'API. Il suffit de garder le JSON représenter par la structure ProgrammeContainer
+
+- https://github.com/greg198584/gridclient/blob/main/structure/grid.go
+
+```go
+type ProgrammeContainer struct {
+	ID        string    `json:"id"`
+	SecretID  string    `json:"secret_id"`
+	Programme Programme `json:"programme"`
+	ValidKey  string    `json:"valid_key"`
+}
+```
+
+**JSON obtenu par deux routes**
+
+```bash
+GET /v1/programme/new/:name
+GET /v1/programme/push/flag/:id/:secretid
+```
+
+#### Routes API
 
 ```bash
 GET /v1/grid
@@ -32,21 +57,25 @@ GET /v1/programme/infos/:id/:secretid
 GET /v1/programme/new/:name
 POST /v1/programme/load
 GET /v1/programme/unset/:id/:secretid
-GET /v1/programme/save/:id/:secretid
 GET /v1/programme/jump/up/:id/:secretid/:jumpnbr
 GET /v1/programme/jump/down/:id/:secretid/:jumpnbr
 GET /v1/programme/move/:id/:secretid/:zone_id
 GET /v1/programme/scan/:id/:secretid
-GET /v1/programme/explore/:id/:secretid/:celluleid/:startid/:endid
+GET /v1/programme/explore/:id/:secretid/:celluleid
 GET /v1/programme/destroy/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/rebuild/:id/:secretid/:celluleid/:targetid
+GET /v1/programme/capture/cellule/data/:id/:secretid/:celluleid/:index
+GET /v1/programme/capture/cellule/energy/:id/:secretid/:celluleid/:index
+GET /v1/programme/capture/target/data/:id/:secretid/:celluleid/:targetid
+GET /v1/programme/capture/target/energy/:id/:secretid/:celluleid/:targetid
+GET /v1/programme/equilibrium/:id/:secretid
+GET /v1/programme/push/flag/:id/:secretid
 ```
 
 ### Usage 
 
 ```bash
-> $ go run main.go                                                                                                                                               [±main ●●]
-
+> $ go run main.go                                                                                                                                         
 Usage: main [OPTIONS] COMMAND [arg...]
 
 Concepteur Console
@@ -57,16 +86,20 @@ Options:
 Commands:         
   create          creation programme et chargement sur la grille
   load            charger programme existant sur la grille
-  save            sauvegarder un programme
   delete          deconnecter un programme de la grille
   move            deplacer un programme sur la grille
   scan            scan la zone pour get informations (cellules infos / programmes present et infos)
   explore         exploration de cellule de zone
   destroy         destroy cellule programme
   rebuild         reconstruire cellule programme
+  capture         capture data-energy cellule programme et zone
+  equilibrium     repartir energie du programme uniformement
+  pushflag        push drapeau dans zone de transfert
   status          status grille
   infos           infos programme
-  algo            lancer un algo
+  attack          mode attaque - tous programme dans la zone
+  defense         mode defense + attaque simultanement programme hostile
+  quick_move      deplacement secteur + zone voulu
                   
 Run 'main COMMAND --help' for more information on a command.
 ```
