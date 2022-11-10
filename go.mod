@@ -8,4 +8,8 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 )
 
-require github.com/mattn/go-runewidth v0.0.9 // indirect
+require (
+	github.com/buger/goterm v1.0.4 // indirect
+	github.com/mattn/go-runewidth v0.0.9 // indirect
+	golang.org/x/sys v0.0.0-20210331175145-43e1dd70ce54 // indirect
+)

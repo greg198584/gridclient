@@ -6,7 +6,6 @@ const (
 	ROUTE_NEW_PROGRAMME         = "v1/programme/new"
 	ROUTE_LOAD_PROGRAMME        = "v1/programme/load"
 	ROUTE_UNSET_PROGRAMME       = "v1/programme/unset"
-	ROUTE_SAVE_PROGRAMME        = "v1/programme/save"
 	ROUTE_JUMPUP_PROGRAMME      = "v1/programme/jump/up"
 	ROUTE_JUMPDOWN_PROGRAMME    = "v1/programme/jump/down"
 	ROUTE_MOVE_PROGRAMME        = "v1/programme/move"
