@@ -631,24 +631,10 @@ func MovePosition(name string, position string) {
 	if err != nil {
 		//panic(err)
 	}
-	err = current.GetStatusGrid()
-	if err != nil {
-		panic(err)
-	}
 	splitPosition := strings.Split(position, "-")
 	secteurID, _ := strconv.Atoi(splitPosition[0])
 	zoneID, _ := strconv.Atoi(splitPosition[1])
-	currentSecteurID := current.Psi.Programme.Position.SecteurID
-	nbrJump := 0
-	fmt.Printf("S-Z = [%d-%d] - current secteur ID [%d]\n", secteurID, zoneID, currentSecteurID)
-	if secteurID > currentSecteurID {
-		nbrJump = secteurID - currentSecteurID
-		current.JumpDown(nbrJump)
-	} else {
-		nbrJump = currentSecteurID - secteurID
-		current.JumpUp(nbrJump)
-	}
-	current.Move(zoneID)
+	current.QuickMove(secteurID, zoneID)
 	current.PrintInfo(true)
 }
 
@@ -660,7 +646,7 @@ func SearchFlag(name string) {
 	err = current.GetStatusGrid()
 	current.Move(0)
 	for i := 0; i <= current.InfosGrid.Taille; i++ {
-		//time.Sleep(2 * time.Second)
+		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		if ok, _ := current.Move(i); !ok {
 			if current.StatusCode == http.StatusUnauthorized {
 				return
@@ -676,9 +662,8 @@ func SearchFlag(name string) {
 				tools.Fail(err.Error())
 				return
 			} else {
-				id := current.SearchFlag(zoneInfos.Cellules)
-				if id != 0 {
-					tools.Success(fmt.Sprintf("ID Flag trouver [%d]", id))
+				if ok := current.SearchFlag(zoneInfos.Cellules); ok {
+					return
 				}
 			}
 		}
@@ -693,7 +678,7 @@ func SearchEnergy(name string) {
 	err = current.GetStatusGrid()
 	current.Move(0)
 	for i := 0; i <= current.InfosGrid.Taille; i++ {
-		//time.Sleep(2 * time.Second)
+		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		if ok, _ := current.Move(i); !ok {
 			if current.StatusCode == http.StatusUnauthorized {
 				break
@@ -712,6 +697,50 @@ func SearchEnergy(name string) {
 				current.SearchEnergy(zoneInfos.Cellules)
 			}
 			current.PrintInfo(false)
+		}
+	}
+}
+func SearchProgramme(name string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	current.QuickMove(0, 0)
+	status := true
+	for status {
+		current.PrintInfo(true)
+		for i := 0; i <= current.InfosGrid.Taille; i++ {
+			time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
+			if ok, _ := current.Move(i); !ok {
+				if current.StatusCode == http.StatusUnauthorized {
+					break
+				}
+			}
+			if scanOK, scanRes, _ := current.Scan(); !scanOK {
+				tools.Fail("erreur scan")
+			} else {
+				var zoneInfos structure.ZoneInfos
+				json.Unmarshal(scanRes, &zoneInfos)
+				programmeFound := false
+				for _, programme := range zoneInfos.Programmes {
+					programmeFound = true
+					tools.Success(fmt.Sprintf("programme trouver [%s] [%d] [%t]", programme.Name, programme.ID, programme.Status))
+				}
+				if programmeFound {
+					return
+				}
+				current.PrintInfo(true)
+			}
+		}
+		if ok, _ := current.Move(0); !ok {
+			continue
+		}
+		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
+		if ok, _ := current.JumpDown(1); !ok {
+			if current.StatusCode == http.StatusUnauthorized {
+				status = false
+				break
+			}
 		}
 	}
 }

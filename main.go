@@ -201,6 +201,14 @@ func main() {
 			programme.SearchEnergy(*pname)
 		}
 	})
+	app.Command("search_programme", "recherche programme", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.SearchProgramme(*pname)
+		}
+	})
 	app.Action = func() {
 		app.PrintHelp()
 	}

@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	TIME_MILLISECONDE = 250
+	TIME_MILLISECONDE = 500
 )
 
 type Algo struct {
@@ -363,7 +363,6 @@ func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (flagFound bool) {
 func (a *Algo) SearchEnergy(cellules []structure.CelluleInfos) (index int) {
 	for _, cellule := range cellules {
 		if cellule.Status {
-			//tools.Success(fmt.Sprintf("zone [%d] - cellule [%d] etat [%t] - data presente ou etat true", zoneInfos.ID, cellule.ID, cellule.Status))
 			if exploreOK, exploreRes, _ := a.Explore(cellule.ID); !exploreOK {
 				tools.Fail("erreur explore")
 			} else {
@@ -486,4 +485,16 @@ func (a *Algo) PushFlag() (ok bool, err error) {
 		err = json.Unmarshal(res, &a.Psi)
 	}
 	return
+}
+func (a *Algo) QuickMove(secteurID int, zoneID int) {
+	currentSecteurID := a.Psi.Programme.Position.SecteurID
+	nbrJump := 0
+	if secteurID > currentSecteurID {
+		nbrJump = secteurID - currentSecteurID
+		a.JumpDown(nbrJump)
+	} else {
+		nbrJump = currentSecteurID - secteurID
+		a.JumpUp(nbrJump)
+	}
+	a.Move(zoneID)
 }
