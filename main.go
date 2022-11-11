@@ -57,7 +57,7 @@ func main() {
 			}
 		}
 	})
-	app.Command("scan", "scan la zone pour get informations (cellules infos / programmes present et infos)", func(cmd *mowcli.Cmd) {
+	app.Command("scan", "scan infos de la zone pour", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
 		)
@@ -183,6 +183,22 @@ func main() {
 		)
 		cmd.Action = func() {
 			programme.MovePosition(*pname, *position)
+		}
+	})
+	app.Command("search_flag", "current + scan + explore (all zone secteur current) + capture >>> FLAG", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.SearchFlag(*pname)
+		}
+	})
+	app.Command("search_energy", "scan + explore + capture >>> ENERGY", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.SearchEnergy(*pname)
 		}
 	})
 	app.Action = func() {

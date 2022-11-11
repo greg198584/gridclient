@@ -636,7 +636,7 @@ func CheckAttack(name string) {
 func MovePosition(name string, position string) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
-		//panic(err)
+		panic(err)
 	}
 	err = current.GetStatusGrid()
 	if err != nil {
@@ -656,6 +656,69 @@ func MovePosition(name string, position string) {
 		current.JumpUp(nbrJump)
 	}
 	current.Move(zoneID)
-	tools.PrintGridPosition(current.Psi.Programme, current.InfosGrid.Taille)
-	tools.PrintInfosGrille(current.InfosGrid)
+	current.PrintInfo(true)
+}
+
+func SearchFlag(name string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		panic(err)
+	}
+	err = current.GetStatusGrid()
+	current.Move(0)
+	for i := 0; i <= current.InfosGrid.Taille; i++ {
+		//time.Sleep(2 * time.Second)
+		if ok, _ := current.Move(i); !ok {
+			if current.StatusCode == http.StatusUnauthorized {
+				return
+			}
+		}
+		if scanOK, scanRes, _ := current.Scan(); !scanOK {
+			tools.Fail("erreur scan")
+			return
+		} else {
+			var zoneInfos structure.ZoneInfos
+			err := json.Unmarshal(scanRes, &zoneInfos)
+			if err != nil {
+				tools.Fail(err.Error())
+				return
+			} else {
+				id := current.SearchFlag(zoneInfos.Cellules)
+				if id != 0 {
+					tools.Success(fmt.Sprintf("ID Flag trouver [%d]", id))
+				}
+			}
+		}
+		current.PrintInfo(false)
+	}
+}
+func SearchEnergy(name string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		panic(err)
+	}
+	err = current.GetStatusGrid()
+	current.Move(0)
+	for i := 0; i <= current.InfosGrid.Taille; i++ {
+		//time.Sleep(2 * time.Second)
+		if ok, _ := current.Move(i); !ok {
+			if current.StatusCode == http.StatusUnauthorized {
+				break
+			}
+		}
+		if scanOK, scanRes, _ := current.Scan(); !scanOK {
+			tools.Fail("erreur scan")
+			return
+		} else {
+			var zoneInfos structure.ZoneInfos
+			err := json.Unmarshal(scanRes, &zoneInfos)
+			if err != nil {
+				tools.Fail(err.Error())
+				return
+			} else {
+				current.SearchEnergy(zoneInfos.Cellules)
+			}
+			current.PrintInfo(false)
+		}
+	}
 }

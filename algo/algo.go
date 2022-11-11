@@ -263,11 +263,11 @@ func (a *Algo) Unset() {
 }
 func (a *Algo) PrintInfo(printGrid bool) {
 	a.GetStatusGrid()
+	tools.PrintProgramme(a.Psi)
+	tools.PrintInfosGrille(a.InfosGrid)
 	if printGrid {
 		tools.PrintGridPosition(a.Psi.Programme, a.InfosGrid.Taille)
 	}
-	tools.PrintProgramme(a.Psi)
-	tools.PrintInfosGrille(a.InfosGrid)
 }
 func (a *Algo) GetProgramme() (ok bool, programmes []string) {
 	if scanOK, res, _ := a.Scan(); !scanOK {
@@ -348,8 +348,34 @@ func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (index int) {
 					for _, data := range datas {
 						if data.IsFlag {
 							tools.Success(fmt.Sprintf("FLAG TROUVER - Cellule [%d] - index [%d]", cellule.ID, data.ID))
+							a.CaptureCellData(cellule.ID, data.ID)
 							index = data.ID
 							return
+						}
+					}
+				}
+			}
+		} else {
+			//tools.Warning(fmt.Sprintf("cellule [%d] etat [%t] - aucune data ou etat false", cellule.ID, cellule.Status))
+		}
+	}
+	return
+}
+func (a *Algo) SearchEnergy(cellules []structure.CelluleInfos) (index int) {
+	for _, cellule := range cellules {
+		if cellule.Status {
+			//tools.Success(fmt.Sprintf("zone [%d] - cellule [%d] etat [%t] - data presente ou etat true", zoneInfos.ID, cellule.ID, cellule.Status))
+			if exploreOK, exploreRes, _ := a.Explore(cellule.ID); !exploreOK {
+				tools.Fail("erreur explore")
+			} else {
+				var datas map[int]structure.CelluleData
+				err := json.Unmarshal(exploreRes, &datas)
+				if err != nil {
+					tools.Fail(err.Error())
+				} else {
+					for _, data := range datas {
+						if data.Energy > 0 {
+							a.CaptureCellEnergy(cellule.ID, data.ID)
 						}
 					}
 				}
