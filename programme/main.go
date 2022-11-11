@@ -589,15 +589,12 @@ func Attack(name string) {
 	if err != nil {
 		//panic(err)
 	}
-	err = current.GetStatusGrid()
-	if err != nil {
-		panic(err)
-	}
 	status := true
 	for status {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		status, _ = current.GetInfosProgramme()
 		current.CheckAttack()
+		current.GetStatusGrid()
 		tools.PrintInfosGrille(current.InfosGrid)
 		ok, programmes := current.GetProgramme()
 		if !ok {
@@ -620,16 +617,12 @@ func CheckAttack(name string) {
 	if err != nil {
 		//panic(err)
 	}
-	err = current.GetStatusGrid()
-	if err != nil {
-		panic(err)
-	}
 	status := true
 	for status {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		status, _ = current.GetInfosProgramme()
 		current.CheckAttack()
-		status = current.Psi.Programme.Status
+		current.GetStatusGrid()
 		tools.PrintInfosGrille(current.InfosGrid)
 	}
 }
