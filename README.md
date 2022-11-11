@@ -88,7 +88,7 @@ Commands:
   load            charger programme existant sur la grille
   delete          deconnecter un programme de la grille
   move            deplacer un programme sur la grille
-  scan            scan la zone pour get informations (cellules infos / programmes present et infos)
+  scan            scan infos de la zone pour
   explore         exploration de cellule de zone
   destroy         destroy cellule programme
   rebuild         reconstruire cellule programme
@@ -100,6 +100,8 @@ Commands:
   attack          mode attaque - tous programme dans la zone
   defense         mode defense + attaque simultanement programme hostile
   quick_move      deplacement secteur + zone voulu
+  search_flag     current + scan + explore (all zone secteur current) + capture >>> FLAG
+  search_energy   scan + explore + capture >>> ENERGY
                   
 Run 'main COMMAND --help' for more information on a command.
 ```
