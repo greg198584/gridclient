@@ -333,7 +333,7 @@ func (a *Algo) CheckAttack() {
 	}
 	return
 }
-func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (index int) {
+func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (flagFound bool) {
 	for _, cellule := range cellules {
 		if cellule.Status {
 			//tools.Success(fmt.Sprintf("zone [%d] - cellule [%d] etat [%t] - data presente ou etat true", zoneInfos.ID, cellule.ID, cellule.Status))
@@ -349,8 +349,7 @@ func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (index int) {
 						if data.IsFlag {
 							tools.Success(fmt.Sprintf("FLAG TROUVER - Cellule [%d] - index [%d]", cellule.ID, data.ID))
 							a.CaptureCellData(cellule.ID, data.ID)
-							index = data.ID
-							return
+							return true
 						}
 					}
 				}
