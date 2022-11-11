@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	TIME_MILLISECONDE = 125
+	TIME_MILLISECONDE = 0
 )
 
 type Algo struct {
@@ -289,10 +289,12 @@ func (a *Algo) GetProgramme() (ok bool, programmes []string) {
 func (a *Algo) Attack(targetID string) {
 	for i := 0; i < 10; i++ {
 		time.Sleep(TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := a.Destroy(i, targetID); !ok {
-			return
+		for j := 0; j < 10; j++ {
+			if ok, _ := a.Destroy(i, targetID); !ok {
+				return
+			}
+			a.PrintInfo(false)
 		}
-		a.PrintInfo(false)
 	}
 }
 func (a *Algo) CheckAttack() {
@@ -309,16 +311,7 @@ func (a *Algo) CheckAttack() {
 						break
 					}
 					a.PrintInfo(false)
-					if cellule.CurrentAccesLog.ReceiveDestroy {
-						receive_destroy = true
-						time.Sleep(TIME_MILLISECONDE * time.Millisecond)
-						if ok, _ := a.Destroy(cellule.ID, cellule.CurrentAccesLog.PID); !ok {
-							return
-						}
-						a.PrintInfo(false)
-					} else {
-						receive_destroy = false
-					}
+					receive_destroy = cellule.CurrentAccesLog.ReceiveDestroy
 				}
 			}
 		}

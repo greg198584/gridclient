@@ -603,12 +603,10 @@ func Attack(name string) {
 			break
 		}
 		for _, pid := range programmes {
-			for i := 0; i < 11; i++ {
-				current.Attack(pid)
-				current.CheckAttack()
-				if current.Psi.LockProgramme[pid].Status == false {
-					break
-				}
+			current.Attack(pid)
+			current.CheckAttack()
+			if current.Psi.LockProgramme[pid].Status == false {
+				break
 			}
 		}
 	}
@@ -715,7 +713,7 @@ func SearchProgramme(name string, all bool) {
 		for i := 0; i <= current.InfosGrid.Taille; i++ {
 			time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 			if ok, _ := current.Move(i); !ok {
-				if current.StatusCode == http.StatusUnauthorized {
+				if current.StatusCode == http.StatusBadRequest {
 					break
 				}
 			}
@@ -742,10 +740,17 @@ func SearchProgramme(name string, all bool) {
 		}
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		if ok, _ := current.JumpDown(1); !ok {
-			if current.StatusCode == http.StatusUnauthorized {
+			if current.StatusCode == http.StatusBadRequest {
 				status = false
 				break
 			}
 		}
 	}
+}
+func Monitoring(name string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	current.GetStatusGrid()
 }
