@@ -10,11 +10,11 @@ import (
 	"github.com/greg198584/gridclient/tools"
 	"net/http"
 	"os"
-	"time"
 )
 
 const (
 	TIME_MILLISECONDE = 0
+	ENERGY_MAX_ATTACK = 10
 )
 
 type Algo struct {
@@ -286,14 +286,10 @@ func (a *Algo) GetProgramme() (ok bool, programmes []string) {
 	}
 	return true, programmes
 }
-func (a *Algo) Attack(targetID string) {
-	for i := 0; i < 10; i++ {
-		time.Sleep(TIME_MILLISECONDE * time.Millisecond)
-		for j := 0; j < 10; j++ {
-			if ok, _ := a.Destroy(i, targetID); !ok {
-				return
-			}
-			a.PrintInfo(false)
+func (a *Algo) Attack(celluleID int, targetID string, energy int) {
+	for j := 0; j < energy; j++ {
+		if ok, _ := a.Destroy(celluleID, targetID); !ok {
+			return
 		}
 	}
 }
@@ -301,17 +297,17 @@ func (a *Algo) CheckAttack() {
 	maxValeur := a.Psi.Programme.Level * 10
 	for len(a.Psi.LockProgramme) > 0 {
 		receive_destroy := false
-		_ = a.GetStatusGrid()
 		for _, cellule := range a.Psi.Programme.Cellules {
 			if cellule.Valeur < maxValeur {
 				nbrRebuild := maxValeur - cellule.Valeur
 				for i := 0; i < nbrRebuild; i++ {
-					time.Sleep(TIME_MILLISECONDE * time.Millisecond)
 					if ok, _ := a.Rebuild(cellule.ID, a.ID); !ok {
 						break
 					}
-					a.PrintInfo(false)
 					receive_destroy = cellule.CurrentAccesLog.ReceiveDestroy
+					if receive_destroy {
+						a.Attack(cellule.ID, cellule.CurrentAccesLog.PID, ENERGY_MAX_ATTACK)
+					}
 				}
 			}
 		}

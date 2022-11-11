@@ -129,7 +129,8 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 	}
 	return
 }
-func PrintGridPosition(programme structure.Programme, size int) {
+
+/*func PrintGridPosition(programme structure.Programme, size int) {
 	var header []string
 	var data [][]string
 	header = append(header, "secteur")
@@ -149,6 +150,30 @@ func PrintGridPosition(programme structure.Programme, size int) {
 		data = append(data, tmpData)
 	}
 	PrintColorTable(header, data)
+}*/
+func PrintGridPosition(programme structure.Programme, sizeTotal int) {
+	var header []string
+	var data [][]string
+	size := sizeTotal / 10
+	for i := 0; i < size; i++ {
+		header = append(header, "- ZONE - ")
+	}
+	for i := 0; i < size; i++ {
+		var tmpData []string
+		for j := 0; j < size; j++ {
+			value := aurora.Red("0").String()
+			if programme.Position.ZoneID == j+(i*size) {
+				value = aurora.Green("1").String()
+			}
+			tmpData = append(tmpData, value)
+		}
+		data = append(data, tmpData)
+	}
+	PrintColorTable(header, data, fmt.Sprintf(
+		"SECTEUR [%d] ZONE [%d]\n",
+		programme.Position.SecteurID,
+		programme.Position.ZoneID,
+	))
 }
 func PrintInfosGrille(infos structure.GridInfos) {
 	var header = []string{"ID", "Taille", "ZoneTransfert", "Iteration", "Cycle", "NbrProgramme", "status", "Version"}

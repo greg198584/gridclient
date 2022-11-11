@@ -592,18 +592,16 @@ func Attack(name string) {
 	}
 	status := true
 	for status {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		status, _ = current.GetInfosProgramme()
-		current.CheckAttack()
-		current.GetStatusGrid()
-		tools.PrintInfosGrille(current.InfosGrid)
+		status = current.Psi.Programme.Status
 		ok, programmes := current.GetProgramme()
 		if !ok {
 			status = false
 			break
 		}
 		for _, pid := range programmes {
-			current.Attack(pid)
+			for i := 0; i < 10; i++ {
+				current.Attack(i, pid, algo.ENERGY_MAX_ATTACK)
+			}
 			current.CheckAttack()
 			if current.Psi.LockProgramme[pid].Status == false {
 				break
@@ -618,11 +616,8 @@ func CheckAttack(name string) {
 	}
 	status := true
 	for status {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		status, _ = current.GetInfosProgramme()
+		status = current.Psi.Programme.Status
 		current.CheckAttack()
-		current.GetStatusGrid()
-		tools.PrintInfosGrille(current.InfosGrid)
 	}
 }
 func MovePosition(name string, position string) {
@@ -732,7 +727,7 @@ func SearchProgramme(name string, all bool) {
 				if programmeFound {
 					return
 				}
-				current.PrintInfo(true)
+				current.PrintInfo(false)
 			}
 		}
 		if ok, _ := current.Move(0); !ok {
@@ -747,10 +742,14 @@ func SearchProgramme(name string, all bool) {
 		}
 	}
 }
-func Monitoring(name string) {
+func Monitoring(name string, printGrid bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	current.GetStatusGrid()
+	for {
+		time.Sleep(250 * time.Millisecond)
+		current.GetInfosProgramme()
+		current.PrintInfo(printGrid)
+	}
 }

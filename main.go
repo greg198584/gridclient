@@ -210,6 +210,15 @@ func main() {
 			programme.SearchProgramme(*pname, *all)
 		}
 	})
+	app.Command("monitoring", "position + status programme monitoring", func(cmd *mowcli.Cmd) {
+		var (
+			pname         = cmd.StringOpt("n name", "", "nom du programme")
+			printPosition = cmd.BoolOpt("p position", false, "afficher position")
+		)
+		cmd.Action = func() {
+			programme.Monitoring(*pname, *printPosition)
+		}
+	})
 	app.Action = func() {
 		app.PrintHelp()
 	}
