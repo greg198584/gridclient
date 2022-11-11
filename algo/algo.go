@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	TIME_MILLISECONDE = 500
+	TIME_MILLISECONDE = 250
 )
 
 type Algo struct {
@@ -28,17 +28,22 @@ type Algo struct {
 
 func _LoadProgramme(name string) (psi structure.ProgrammeStatusInfos, pc structure.ProgrammeContainer, err error) {
 	pc, err = _GetProgrammeFile(name)
-	reqBodyBytes := new(bytes.Buffer)
-	json.NewEncoder(reqBodyBytes).Encode(pc)
-	res, statusCode, err := api.RequestApi(
-		"POST",
-		fmt.Sprintf("%s/%s", api.API_URL, api.ROUTE_LOAD_PROGRAMME),
-		reqBodyBytes.Bytes(),
-	)
-	if statusCode == http.StatusCreated || statusCode == http.StatusOK {
-		err = json.Unmarshal(res, &psi)
+	if pc.ID == "" || err != nil {
+		pc, _ = _CreateProgramme(name)
+		return
 	} else {
-		pc, err = _CreateProgramme(name)
+		reqBodyBytes := new(bytes.Buffer)
+		json.NewEncoder(reqBodyBytes).Encode(pc)
+		res, statusCode, _ := api.RequestApi(
+			"POST",
+			fmt.Sprintf("%s/%s", api.API_URL, api.ROUTE_LOAD_PROGRAMME),
+			reqBodyBytes.Bytes(),
+		)
+		if statusCode == http.StatusCreated || statusCode == http.StatusOK {
+			_ = json.Unmarshal(res, &psi)
+		} else {
+			pc, _ = _CreateProgramme(name)
+		}
 	}
 	return
 }
@@ -93,7 +98,10 @@ func NewAlgo(name string) (algo *Algo, err error) {
 		Pc:   pc,
 	}
 	if algo.Psi.Programme.ID == "" {
-		algo.GetInfosProgramme()
+		if ok, _ := algo.GetInfosProgramme(); !ok {
+			err = errors.New("erreur get infos programme")
+			return
+		}
 	}
 	algo.ID = algo.Psi.Programme.ID
 	return algo, err
@@ -246,10 +254,15 @@ func (a *Algo) Unset() {
 	if err != nil {
 		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
 	} else {
-
+		if statusCode != http.StatusOK {
+			tools.Fail("deconnexion de la grille NOK")
+		} else {
+			tools.Success("deconnexion de la grille OK")
+		}
 	}
 }
 func (a *Algo) PrintInfo(printGrid bool) {
+	a.GetStatusGrid()
 	if printGrid {
 		tools.PrintGridPosition(a.Psi.Programme, a.InfosGrid.Taille)
 	}
@@ -279,8 +292,7 @@ func (a *Algo) Attack(targetID string) {
 		if ok, _ := a.Destroy(i, targetID); !ok {
 			return
 		}
-		tools.PrintProgramme(a.Psi)
-		tools.PrintInfosGrille(a.InfosGrid)
+		a.PrintInfo(false)
 	}
 }
 func (a *Algo) CheckAttack() {
@@ -296,16 +308,14 @@ func (a *Algo) CheckAttack() {
 					if ok, _ := a.Rebuild(cellule.ID, a.ID); !ok {
 						return
 					}
-					tools.PrintProgramme(a.Psi)
-					tools.PrintInfosGrille(a.InfosGrid)
+					a.PrintInfo(false)
 					if cellule.CurrentAccesLog.ReceiveDestroy {
 						receive_destroy = true
 						time.Sleep(TIME_MILLISECONDE * time.Millisecond)
 						if ok, _ := a.Destroy(cellule.ID, cellule.CurrentAccesLog.PID); !ok {
 							return
 						}
-						tools.PrintProgramme(a.Psi)
-						tools.PrintInfosGrille(a.InfosGrid)
+						a.PrintInfo(false)
 					} else {
 						receive_destroy = false
 					}
@@ -320,6 +330,135 @@ func (a *Algo) CheckAttack() {
 				break
 			}
 		}
+	}
+	return
+}
+func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (index int) {
+	for _, cellule := range cellules {
+		if cellule.Status {
+			//tools.Success(fmt.Sprintf("zone [%d] - cellule [%d] etat [%t] - data presente ou etat true", zoneInfos.ID, cellule.ID, cellule.Status))
+			if exploreOK, exploreRes, _ := a.Explore(cellule.ID); !exploreOK {
+				tools.Fail("erreur explore")
+			} else {
+				var datas map[int]structure.CelluleData
+				err := json.Unmarshal(exploreRes, &datas)
+				if err != nil {
+					tools.Fail(err.Error())
+				} else {
+					for _, data := range datas {
+						if data.IsFlag {
+							tools.Success(fmt.Sprintf("FLAG TROUVER - Cellule [%d] - index [%d]", cellule.ID, data.ID))
+							index = data.ID
+							return
+						}
+					}
+				}
+			}
+		} else {
+			//tools.Warning(fmt.Sprintf("cellule [%d] etat [%t] - aucune data ou etat false", cellule.ID, cellule.Status))
+		}
+	}
+	return
+}
+func (a *Algo) CaptureCellData(celluleID int, index int) (ok bool, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_CAPTURE_CELL_DATA, a.Pc.ID, a.Pc.SecretID, celluleID, index),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		if err != nil || statusCode != http.StatusOK {
+			return false, err
+		}
+		a.Psi = structure.ProgrammeStatusInfos{}
+		err = json.Unmarshal(res, &a.Psi)
+	}
+	return
+}
+func (a *Algo) CaptureTargetData(celluleID int, id int) (ok bool, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_CAPTURE_TARGET_DATA, a.Pc.ID, a.Pc.SecretID, celluleID, id),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		if err != nil || statusCode != http.StatusOK {
+			return false, err
+		}
+		a.Psi = structure.ProgrammeStatusInfos{}
+		err = json.Unmarshal(res, &a.Psi)
+	}
+	return
+}
+func (a *Algo) CaptureTargetEnergy(celluleID int, id int) (ok bool, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_CAPTURE_TARGET_ENERGY, a.Pc.ID, a.Pc.SecretID, celluleID, id),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		if err != nil || statusCode != http.StatusOK {
+			return false, err
+		}
+		a.Psi = structure.ProgrammeStatusInfos{}
+		err = json.Unmarshal(res, &a.Psi)
+	}
+	return
+}
+func (a *Algo) CaptureCellEnergy(celluleID int, index int) (ok bool, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_CAPTURE_CELL_ENERGY, a.Pc.ID, a.Pc.SecretID, celluleID, index),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		if err != nil || statusCode != http.StatusOK {
+			return false, err
+		}
+		a.Psi = structure.ProgrammeStatusInfos{}
+		err = json.Unmarshal(res, &a.Psi)
+	}
+	return
+}
+func (a *Algo) Equilibrium() (ok bool, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_EQUILIBRiUM, a.Pc.ID, a.Pc.SecretID),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		if err != nil || statusCode != http.StatusOK {
+			return false, err
+		}
+		a.Psi = structure.ProgrammeStatusInfos{}
+		err = json.Unmarshal(res, &a.Psi)
+	}
+	return
+}
+func (a *Algo) PushFlag() (ok bool, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_PUSH_FLAG, a.Pc.ID, a.Pc.SecretID),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		if err != nil || statusCode != http.StatusOK {
+			return false, err
+		}
+		a.Psi = structure.ProgrammeStatusInfos{}
+		err = json.Unmarshal(res, &a.Psi)
 	}
 	return
 }
