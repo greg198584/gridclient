@@ -358,28 +358,12 @@ func GetStatusGrid() {
 }
 func GetInfoProgramme(name string) {
 	tools.Title(fmt.Sprintf("infos programme"))
-
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-	} else {
-		res, _, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_STATUS_PROGRAMME, pc.ID, pc.SecretID),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(err.Error())
-		}
-		var psi structure.ProgrammeStatusInfos
-		err = json.Unmarshal(res, &psi)
-		if err != nil {
-			tools.Fail(err.Error())
-		}
-		tools.PrintGridPosition(psi.Programme, 10)
-		tools.PrintProgramme(psi)
-		GetStatusGrid()
+		//panic(err)
 	}
+	current.GetInfosProgramme()
+	current.PrintInfo(true)
 }
 
 func CaptureTargetData(name string, celluleID int, targetID string) {
@@ -661,7 +645,7 @@ func SearchFlag(name string) {
 				}
 			}
 		}
-		current.PrintInfo(false)
+		//current.PrintInfo(false)
 	}
 }
 func SearchEnergy(name string) {
@@ -690,7 +674,7 @@ func SearchEnergy(name string) {
 			} else {
 				current.SearchEnergy(zoneInfos.Cellules)
 			}
-			current.PrintInfo(false)
+			//current.PrintInfo(false)
 		}
 	}
 }
@@ -704,7 +688,7 @@ func SearchProgramme(name string, all bool) {
 	}
 	status := true
 	for status {
-		current.PrintInfo(true)
+		//current.PrintInfo(true)
 		for i := 0; i <= current.InfosGrid.Taille; i++ {
 			time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 			if ok, _ := current.Move(i); !ok {
@@ -727,7 +711,7 @@ func SearchProgramme(name string, all bool) {
 				if programmeFound {
 					return
 				}
-				current.PrintInfo(false)
+				//current.PrintInfo(false)
 			}
 		}
 		if ok, _ := current.Move(0); !ok {
@@ -748,7 +732,7 @@ func Monitoring(name string, printGrid bool) {
 		//panic(err)
 	}
 	for {
-		time.Sleep(250 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
 		current.GetInfosProgramme()
 		current.PrintInfo(printGrid)
 	}
