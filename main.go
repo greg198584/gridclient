@@ -204,9 +204,10 @@ func main() {
 	app.Command("search_programme", "recherche programme", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
+			all   = cmd.BoolOpt("a all", false, "toutes la grille")
 		)
 		cmd.Action = func() {
-			programme.SearchProgramme(*pname)
+			programme.SearchProgramme(*pname, *all)
 		}
 	})
 	app.Action = func() {

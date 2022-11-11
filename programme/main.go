@@ -9,6 +9,7 @@ import (
 	"github.com/greg198584/gridclient/api"
 	"github.com/greg198584/gridclient/structure"
 	"github.com/greg198584/gridclient/tools"
+	"github.com/logrusorgru/aurora"
 	"net/http"
 	"os"
 	"strconv"
@@ -375,9 +376,9 @@ func GetInfoProgramme(name string) {
 		if err != nil {
 			tools.Fail(err.Error())
 		}
-
 		tools.PrintGridPosition(psi.Programme, 10)
 		tools.PrintProgramme(psi)
+		GetStatusGrid()
 	}
 }
 
@@ -700,12 +701,14 @@ func SearchEnergy(name string) {
 		}
 	}
 }
-func SearchProgramme(name string) {
+func SearchProgramme(name string, all bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	current.QuickMove(0, 0)
+	if all {
+		current.QuickMove(0, 0)
+	}
 	status := true
 	for status {
 		current.PrintInfo(true)
@@ -724,7 +727,9 @@ func SearchProgramme(name string) {
 				programmeFound := false
 				for _, programme := range zoneInfos.Programmes {
 					programmeFound = true
-					tools.Success(fmt.Sprintf("programme trouver [%s] [%d] [%t]", programme.Name, programme.ID, programme.Status))
+					tools.Success("PROGRAMME FOUND")
+					fmt.Printf("\n\t>>> pprogramme trouver [%s] [%d] [%t]\n", aurora.Green(programme.Name), aurora.Cyan(programme.ID), programme.Status)
+					break
 				}
 				if programmeFound {
 					return

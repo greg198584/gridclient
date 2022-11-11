@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	TIME_MILLISECONDE = 500
+	TIME_MILLISECONDE = 125
 )
 
 type Algo struct {
@@ -306,7 +306,7 @@ func (a *Algo) CheckAttack() {
 				for i := 0; i < nbrRebuild; i++ {
 					time.Sleep(TIME_MILLISECONDE * time.Millisecond)
 					if ok, _ := a.Rebuild(cellule.ID, a.ID); !ok {
-						return
+						break
 					}
 					a.PrintInfo(false)
 					if cellule.CurrentAccesLog.ReceiveDestroy {
