@@ -636,7 +636,7 @@ func CheckAttack(name string) {
 func MovePosition(name string, position string) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
-		panic(err)
+		//panic(err)
 	}
 	err = current.GetStatusGrid()
 	if err != nil {
@@ -662,7 +662,7 @@ func MovePosition(name string, position string) {
 func SearchFlag(name string) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
-		panic(err)
+		//panic(err)
 	}
 	err = current.GetStatusGrid()
 	current.Move(0)
@@ -695,7 +695,7 @@ func SearchFlag(name string) {
 func SearchEnergy(name string) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
-		panic(err)
+		//panic(err)
 	}
 	err = current.GetStatusGrid()
 	current.Move(0)
