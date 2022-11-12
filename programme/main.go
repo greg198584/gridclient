@@ -348,7 +348,7 @@ func Attack(name string) {
 						statusTarget = current.Psi.LockProgramme[pid].Cellules[i].Status
 					}
 					if statusTarget {
-						current.Attack(i, pid, algo.ENERGY_MAX_ATTACK)
+						current.Attack(i, pid, algo.ENERGY_MAX_ATTACK/5)
 					}
 				}
 				current.PrintInfo(false)

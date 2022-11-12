@@ -307,9 +307,9 @@ func (a *Algo) CheckAttack() {
 						break
 					}
 					receive_destroy = cellule.CurrentAccesLog.ReceiveDestroy
-					//if receive_destroy && cellule.Status {
-					//	//a.Attack(cellule.ID, cellule.CurrentAccesLog.PID, ENERGY_MAX_ATTACK)
-					//}
+					if receive_destroy && cellule.Status {
+						a.Attack(cellule.ID, cellule.CurrentAccesLog.PID, 1)
+					}
 					a.PrintInfo(false)
 				}
 			}
