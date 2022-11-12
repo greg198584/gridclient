@@ -5,6 +5,7 @@ const (
 	API_URL                     = "http://195.154.84.18:20080"
 	ROUTE_NEW_PROGRAMME         = "v1/programme/new"
 	ROUTE_LOAD_PROGRAMME        = "v1/programme/load"
+	ROUTE_UPGRADE_PROGRAMME     = "v1/programme/upgrade"
 	ROUTE_UNSET_PROGRAMME       = "v1/programme/unset"
 	ROUTE_JUMPUP_PROGRAMME      = "v1/programme/jump/up"
 	ROUTE_JUMPDOWN_PROGRAMME    = "v1/programme/jump/down"

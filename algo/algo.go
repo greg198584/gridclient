@@ -15,6 +15,7 @@ import (
 const (
 	TIME_MILLISECONDE = 0
 	ENERGY_MAX_ATTACK = 10
+	MAX_CELLULES      = 4
 )
 
 type Algo struct {
@@ -29,6 +30,7 @@ type Algo struct {
 func _LoadProgramme(name string) (psi structure.ProgrammeStatusInfos, pc structure.ProgrammeContainer, err error) {
 	pc, err = _GetProgrammeFile(name)
 	if pc.ID == "" || err != nil {
+		//tools.Fail(fmt.Sprintf("no content [%s][%v]", name, pc))
 		pc, _ = _CreateProgramme(name)
 		return
 	} else {

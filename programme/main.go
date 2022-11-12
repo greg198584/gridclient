@@ -61,6 +61,26 @@ func _LoadProgramme(name string) (psi structure.ProgrammeStatusInfos, err error)
 	}
 	return
 }
+func _UpgradeProgramme(name string) (pc structure.ProgrammeContainer, err error) {
+	currentPC, err := _GetProgrammeFile(name)
+	reqBodyBytes := new(bytes.Buffer)
+	json.NewEncoder(reqBodyBytes).Encode(currentPC)
+	res, statusCode, err := api.RequestApi(
+		"POST",
+		fmt.Sprintf("%s/%s", api.API_URL, api.ROUTE_UPGRADE_PROGRAMME),
+		reqBodyBytes.Bytes(),
+	)
+	if statusCode == http.StatusCreated {
+		err = json.Unmarshal(res, &pc)
+		tools.CreateJsonFile(fmt.Sprintf("%s.json", name), pc)
+	} else {
+		err = errors.New("erreur chargement programme")
+		jsonPretty, _ := tools.PrettyString(res)
+		tools.Info(fmt.Sprintf("status = [%d]", statusCode))
+		fmt.Println(jsonPretty)
+	}
+	return
+}
 func _GetProgrammeFile(name string) (pc *structure.ProgrammeContainer, err error) {
 	file, err := tools.GetJsonFile(fmt.Sprintf("%s.json", name))
 	if err != nil {
@@ -102,6 +122,16 @@ func Load(name string) {
 	} else {
 		tools.Success(fmt.Sprintf("programme ajouter [%s]", name))
 		tools.PrintProgramme(psi)
+	}
+}
+func Upgrade(name string) {
+	tools.Title(fmt.Sprintf("chargement programme [%s]", name))
+	_, err := _UpgradeProgramme(name)
+	if err != nil {
+		tools.Fail(err.Error())
+	} else {
+		tools.Success(fmt.Sprintf("programme ajouter [%s]", name))
+		GetInfoProgramme(name)
 	}
 }
 func Delete(name string) {
@@ -583,7 +613,7 @@ func Attack(name string) {
 			break
 		}
 		for _, pid := range programmes {
-			for i := 0; i < 10; i++ {
+			for i := 0; i < algo.MAX_CELLULES; i++ {
 				current.Attack(i, pid, algo.ENERGY_MAX_ATTACK)
 			}
 			current.CheckAttack()
