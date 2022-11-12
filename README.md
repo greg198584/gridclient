@@ -61,6 +61,7 @@ GET /v1/programme/jump/up/:id/:secretid/:jumpnbr
 GET /v1/programme/jump/down/:id/:secretid/:jumpnbr
 GET /v1/programme/move/:id/:secretid/:zone_id
 GET /v1/programme/scan/:id/:secretid
+GET /v1/programme/cellule/log/:id/:secretid/:celluleid
 GET /v1/programme/explore/:id/:secretid/:celluleid
 GET /v1/programme/destroy/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/rebuild/:id/:secretid/:celluleid/:targetid
@@ -83,26 +84,29 @@ Concepteur Console
 Options:          
   -v, --version   Show the version and exit
                   
-Commands:         
-  create          creation programme et chargement sur la grille
-  load            charger programme existant sur la grille
-  delete          deconnecter un programme de la grille
-  move            deplacer un programme sur la grille
-  scan            scan infos de la zone pour
-  explore         exploration de cellule de zone
-  destroy         destroy cellule programme
-  rebuild         reconstruire cellule programme
-  capture         capture data-energy cellule programme et zone
-  equilibrium     repartir energie du programme uniformement
-  pushflag        push drapeau dans zone de transfert
-  status          status grille
-  infos           infos programme
-  attack          mode attaque - tous programme dans la zone
-  defense         mode defense + attaque simultanement programme hostile
-  quick_move      deplacement secteur + zone voulu
-  search_flag     current + scan + explore (all zone secteur current) + capture >>> FLAG
-  search_energy   scan + explore + capture >>> ENERGY
-                  
+Commands:            
+  create             creation programme et chargement sur la grille
+  load               charger programme existant sur la grille
+  delete             deconnecter un programme de la grille
+  move               deplacer un programme sur la grille
+  scan               scan infos de la zone pour
+  explore            exploration de cellule de zone
+  destroy            destroy cellule programme
+  rebuild            reconstruire cellule programme
+  capture            capture data-energy cellule programme et zone
+  equilibrium        repartir energie du programme uniformement
+  pushflag           push drapeau dans zone de transfert
+  status             status grille
+  infos              infos programme
+  attack             mode attaque - tous programme dans la zone
+  defense            mode defense + attaque simultanement programme hostile
+  quick_move         deplacement secteur + zone voulu
+  search_flag        current + scan + explore (all zone secteur current) + capture >>> FLAG
+  search_energy      scan + explore + capture >>> ENERGY
+  search_programme   recherche programme
+  monitoring         position + status programme monitoring
+  log                info log cellule
+                     
 Run 'main COMMAND --help' for more information on a command.
 ```
 

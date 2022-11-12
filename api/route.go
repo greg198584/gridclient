@@ -10,6 +10,7 @@ const (
 	ROUTE_JUMPDOWN_PROGRAMME    = "v1/programme/jump/down"
 	ROUTE_MOVE_PROGRAMME        = "v1/programme/move"
 	ROUTE_SCAN_PROGRAMME        = "v1/programme/scan"
+	ROUTE_GET_CELLULE_LOG       = "v1/programme/cellule/log"
 	ROUTE_EXPLORE_PROGRAMME     = "v1/programme/explore"
 	ROUTE_DESTROY_PROGRAMME     = "v1/programme/destroy"
 	ROUTE_REBUILD_PROGRAMME     = "v1/programme/rebuild"
