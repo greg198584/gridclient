@@ -334,21 +334,17 @@ func Attack(name string) {
 	status := true
 	for status {
 		status = current.Psi.Programme.Status
-		ok, programmes := current.GetProgramme()
-		if !ok {
-			status = false
-			break
-		}
+		_, programmes := current.GetProgramme()
 		current.CheckAttack()
 		for _, pid := range programmes {
-			for i := 0; i < algo.MAX_CELLULES; i++ {
-				if current.Psi.Programme.Cellules[i].Status {
+			for _, cellule := range current.Psi.Programme.Cellules {
+				if cellule.Status {
 					statusTarget := true
 					if _, okLP := current.Psi.LockProgramme[pid]; okLP {
-						statusTarget = current.Psi.LockProgramme[pid].Cellules[i].Status
+						statusTarget = current.Psi.LockProgramme[pid].Cellules[cellule.ID].Status
 					}
 					if statusTarget {
-						current.Attack(i, pid, algo.ENERGY_MAX_ATTACK/5)
+						current.Attack(cellule.ID, pid, algo.ENERGY_MAX_ATTACK/5)
 					}
 				}
 				current.PrintInfo(false)
