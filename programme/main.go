@@ -407,7 +407,7 @@ func SearchFlag(name string) {
 				}
 			}
 		}
-		//current.PrintInfo(false)
+		current.PrintInfo(true)
 	}
 }
 func SearchEnergy(name string) {
@@ -473,7 +473,7 @@ func SearchProgramme(name string, all bool) {
 				if programmeFound {
 					return
 				}
-				//current.PrintInfo(false)
+				current.PrintInfo(true)
 			}
 		}
 		if ok, _ := current.Move(0); !ok {
