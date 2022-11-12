@@ -343,10 +343,16 @@ func Attack(name string) {
 		for _, pid := range programmes {
 			for i := 0; i < algo.MAX_CELLULES; i++ {
 				if current.Psi.Programme.Cellules[i].Status {
-					current.Attack(i, pid, algo.ENERGY_MAX_ATTACK)
+					statusTarget := true
+					if _, okLP := current.Psi.LockProgramme[pid]; okLP {
+						statusTarget = current.Psi.LockProgramme[pid].Cellules[i].Status
+					}
+					if statusTarget {
+						current.Attack(i, pid, algo.ENERGY_MAX_ATTACK)
+					}
 				}
+				current.PrintInfo(false)
 			}
-			current.PrintInfo(false)
 			if current.Psi.LockProgramme[pid].Status == false {
 				break
 			}
