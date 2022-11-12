@@ -219,6 +219,15 @@ func main() {
 			programme.Monitoring(*pname, *printPosition)
 		}
 	})
+	app.Command("log", "info log cellule", func(cmd *mowcli.Cmd) {
+		var (
+			pname     = cmd.StringOpt("n name", "", "nom du programme")
+			celluleID = cmd.StringOpt("c cellule", "", "ID cellule")
+		)
+		cmd.Action = func() {
+			programme.GetCelluleLog(*pname, *celluleID)
+		}
+	})
 	app.Action = func() {
 		app.PrintHelp()
 	}

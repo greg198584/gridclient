@@ -737,3 +737,27 @@ func Monitoring(name string, printGrid bool) {
 		current.PrintInfo(printGrid)
 	}
 }
+func GetCelluleLog(name string, celluleID string) {
+	tools.Title(fmt.Sprintf("GET LOG cellule [%s] - programme [%s]", celluleID, name))
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_GET_CELLULE_LOG, current.Pc.ID, current.Pc.SecretID, celluleID),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		var celluleLogs []structure.CelluleLog
+		err = json.Unmarshal(res, &celluleLogs)
+		if err != nil {
+			tools.Fail(err.Error())
+		} else {
+			tools.PrintCelluleLogs(celluleLogs)
+		}
+	}
+	return
+}

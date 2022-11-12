@@ -170,7 +170,7 @@ func PrintGridPosition(programme structure.Programme, sizeTotal int) {
 		data = append(data, tmpData)
 	}
 	PrintColorTable(header, data, fmt.Sprintf(
-		"SECTEUR [%d] ZONE [%d]\n",
+		"SECTEUR [%d] ZONE [%d]",
 		programme.Position.SecteurID,
 		programme.Position.ZoneID,
 	))
@@ -236,5 +236,22 @@ func PrintExplore(celluleID string, data map[int]structure.CelluleData) {
 		})
 	}
 	PrintColorTable(header, cellData, fmt.Sprintf("<---[ data cellule [%s] ]--->", celluleID))
+	return
+}
+func PrintCelluleLogs(celluleLogs []structure.CelluleLog) {
+	var header = []string{"PID", "ACTIVE_CAPTURE", "C_TIME"}
+	var cellData [][]string
+	for _, log := range celluleLogs {
+		activeCapture := aurora.Red("false")
+		if log.ActiveCapture {
+			activeCapture = aurora.Green("true")
+		}
+		cellData = append(cellData, []string{
+			log.PID,
+			activeCapture.String(),
+			fmt.Sprintf("%s", log.CTime),
+		})
+	}
+	PrintColorTable(header, cellData, fmt.Sprintf("<---[ Log cellule ]--->"))
 	return
 }
