@@ -116,13 +116,11 @@ func Info(pc *structure.ProgrammeContainer) {
 }
 func Load(name string) {
 	tools.Title(fmt.Sprintf("chargement programme [%s]", name))
-	psi, err := _LoadProgramme(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-	} else {
-		tools.Success(fmt.Sprintf("programme ajouter [%s]", name))
-		tools.PrintProgramme(psi)
+		//panic(err)
 	}
+	current.PrintInfo(true)
 }
 func Upgrade(name string) {
 	tools.Title(fmt.Sprintf("chargement programme [%s]", name))
@@ -136,231 +134,108 @@ func Upgrade(name string) {
 }
 func Delete(name string) {
 	tools.Title(fmt.Sprintf("suppression programme [%s]", name))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_UNSET_PROGRAMME, pc.ID, pc.SecretID),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			jsonPretty, _ := tools.PrettyString(res)
-			tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-			fmt.Println(jsonPretty)
-		}
+		//panic(err)
 	}
+	current.Unset()
 }
 func JumpUp(name string, valeur string) {
 	tools.Title(fmt.Sprintf("Programme [%s] JumpUP [%s]", name, valeur))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_JUMPUP_PROGRAMME, pc.ID, pc.SecretID, valeur),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			var psi structure.ProgrammeStatusInfos
-			err = json.Unmarshal(res, &psi)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintGridPosition(psi.Programme, 10)
-				tools.PrintProgramme(psi)
-			}
-		}
+		//panic(err)
 	}
+	valeurInt, err := strconv.Atoi(valeur)
+	if err != nil {
+		return
+	}
+	current.JumpUp(valeurInt)
+	current.PrintInfo(true)
 }
 func JumpDown(name string, valeur string) {
 	tools.Title(fmt.Sprintf("Programme [%s] JumpDown [%s]", name, valeur))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_JUMPDOWN_PROGRAMME, pc.ID, pc.SecretID, valeur),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			var psi structure.ProgrammeStatusInfos
-			err = json.Unmarshal(res, &psi)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintGridPosition(psi.Programme, 10)
-				tools.PrintProgramme(psi)
-			}
-		}
+		//panic(err)
 	}
+	valeurInt, err := strconv.Atoi(valeur)
+	if err != nil {
+		return
+	}
+	current.JumpDown(valeurInt)
+	current.PrintInfo(true)
 }
 func Move(name string, valeur string) {
 	tools.Title(fmt.Sprintf("Programme [%s] Move to Zone [%s]", name, valeur))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_MOVE_PROGRAMME, pc.ID, pc.SecretID, valeur),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			var psi structure.ProgrammeStatusInfos
-			err = json.Unmarshal(res, &psi)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintGridPosition(psi.Programme, 10)
-				GetStatusGrid()
-			}
-		}
+		//panic(err)
 	}
+	valeurInt, err := strconv.Atoi(valeur)
+	if err != nil {
+		return
+	}
+	current.Move(valeurInt)
+	current.PrintInfo(true)
 }
 func Scan(name string) {
 	tools.Title(fmt.Sprintf("Programme [%s] scan", name))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	_, res, err := current.Scan()
 	if err != nil {
 		tools.Fail(err.Error())
-		return
 	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_SCAN_PROGRAMME, pc.ID, pc.SecretID),
-			nil,
-		)
+		var zoneInfos structure.ZoneInfos
+		err = json.Unmarshal(res, &zoneInfos)
 		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+			tools.Fail(err.Error())
 		} else {
-			var zoneInfos structure.ZoneInfos
-			err = json.Unmarshal(res, &zoneInfos)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintZoneInfos(zoneInfos)
-			}
+			tools.PrintZoneInfos(zoneInfos)
 		}
 	}
 }
 func Explore(name string, celluleID string) {
 	tools.Title(fmt.Sprintf("Programme [%s] explore cellule [%s]", name, celluleID))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	celluleIdInt, err := strconv.Atoi(celluleID)
+	_, res, err := current.Explore(celluleIdInt)
 	if err != nil {
 		tools.Fail(err.Error())
-		return
 	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_EXPLORE_PROGRAMME, pc.ID, pc.SecretID, celluleID),
-			nil,
-		)
+		var celluleData map[int]structure.CelluleData
+		err = json.Unmarshal(res, &celluleData)
 		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+			tools.Fail(err.Error())
 		} else {
-			var celluleData map[int]structure.CelluleData
-			err = json.Unmarshal(res, &celluleData)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintExplore(celluleID, celluleData)
-			}
+			tools.PrintExplore(celluleID, celluleData)
 		}
 	}
 }
 func Destroy(name string, celluleID int, targetID string, energy int) {
 	tools.Title(fmt.Sprintf("Programme [%s] destroy -> [%s] cellule [%s] energy [%s]", name, celluleID, targetID, energy))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-		for i := 0; i < energy; i++ {
-			res, statusCode, err := api.RequestApi(
-				"GET",
-				fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_DESTROY_PROGRAMME, pc.ID, pc.SecretID, celluleID, targetID),
-				nil,
-			)
-			if err != nil {
-				tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-			} else {
-				//jsonPretty, _ := tools.PrettyString(res)
-				//tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-				//fmt.Println(jsonPretty)
-				var psi structure.ProgrammeStatusInfos
-				err = json.Unmarshal(res, &psi)
-				if err != nil {
-					tools.Fail(err.Error())
-				} else {
-					tools.PrintGridPosition(psi.Programme, 10)
-					tools.PrintProgramme(psi)
-				}
-			}
-		}
+		//panic(err)
 	}
+	current.Attack(celluleID, targetID, energy)
+	current.PrintInfo(false)
 	return
 }
 func Rebuild(name string, celluleID int, targetID string, energy int) {
 	tools.Title(fmt.Sprintf("Programme [%s] rebuild -> [%s] cellule [%s] energy [%s]", name, celluleID, targetID, energy))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-		for i := 0; i < energy; i++ {
-			res, statusCode, err := api.RequestApi(
-				"GET",
-				fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_REBUILD_PROGRAMME, pc.ID, pc.SecretID, celluleID, targetID),
-				nil,
-			)
-			if err != nil {
-				tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-			} else {
-				//jsonPretty, _ := tools.PrettyString(res)
-				//tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-				//fmt.Println(jsonPretty)
-				var psi structure.ProgrammeStatusInfos
-				err = json.Unmarshal(res, &psi)
-				if err != nil {
-					tools.Fail(err.Error())
-				} else {
-					tools.PrintGridPosition(psi.Programme, 10)
-					tools.PrintProgramme(psi)
-				}
-			}
-		}
+		//panic(err)
 	}
+	current.Rebuild(celluleID, targetID)
+	current.PrintInfo(false)
 	return
 }
 func GetStatusGrid() {
@@ -373,9 +248,6 @@ func GetStatusGrid() {
 	if err != nil {
 		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
 	} else {
-		//jsonPretty, _ := tools.PrettyString(res)
-		//tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-		//fmt.Println(jsonPretty)
 		var infos structure.GridInfos
 		err = json.Unmarshal(res, &infos)
 		if err != nil {
@@ -398,206 +270,61 @@ func GetInfoProgramme(name string) {
 
 func CaptureTargetData(name string, celluleID int, targetID string) {
 	tools.Title(fmt.Sprintf("[%s] Capture data target [%s] - cellule [%s]", name, targetID, celluleID))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_CAPTURE_TARGET_DATA, pc.ID, pc.SecretID, celluleID, targetID),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			//jsonPretty, _ := tools.PrettyString(res)
-			//tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-			//fmt.Println(jsonPretty)
-			var psi structure.ProgrammeStatusInfos
-			err = json.Unmarshal(res, &psi)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintGridPosition(psi.Programme, 10)
-				tools.PrintProgramme(psi)
-			}
-		}
+		//panic(err)
 	}
+	current.CaptureTargetData(celluleID, targetID)
+	current.PrintInfo(false)
 	return
 }
 func CaptureCellData(name string, celluleID int, index int) {
 	tools.Title(fmt.Sprintf("[%s] Capture data cellule [%d] - index [%d]", name, celluleID, index))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_CAPTURE_CELL_DATA, pc.ID, pc.SecretID, celluleID, index),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			//jsonPretty, _ := tools.PrettyString(res)
-			//tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-			//fmt.Println(jsonPretty)
-			var psi structure.ProgrammeStatusInfos
-			err = json.Unmarshal(res, &psi)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintGridPosition(psi.Programme, 10)
-				tools.PrintProgramme(psi)
-			}
-		}
+		//panic(err)
 	}
+	current.CaptureCellData(celluleID, index)
+	current.PrintInfo(false)
 	return
 }
 func CaptureTargetEnergy(name string, celluleID int, targetID string) {
 	tools.Title(fmt.Sprintf("[%s] Capture energy target [%s] - cellule [%s]", name, targetID, celluleID))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_CAPTURE_TARGET_ENERGY, pc.ID, pc.SecretID, celluleID, targetID),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			//jsonPretty, _ := tools.PrettyString(res)
-			//tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-			//fmt.Println(jsonPretty)
-			var psi structure.ProgrammeStatusInfos
-			err = json.Unmarshal(res, &psi)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintGridPosition(psi.Programme, 10)
-				tools.PrintProgramme(psi)
-			}
-		}
+		//panic(err)
 	}
+	current.CaptureTargetEnergy(celluleID, targetID)
+	current.PrintInfo(false)
 	return
 }
 func CaptureCellEnergy(name string, celluleID int, index int) {
 	tools.Title(fmt.Sprintf("[%s] Capture energy cellule [%s] - index [%d]", name, celluleID, index))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_CAPTURE_CELL_ENERGY, pc.ID, pc.SecretID, celluleID, index),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			//jsonPretty, _ := tools.PrettyString(res)
-			//tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-			//fmt.Println(jsonPretty)
-			var psi structure.ProgrammeStatusInfos
-			err = json.Unmarshal(res, &psi)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintGridPosition(psi.Programme, 10)
-				tools.PrintProgramme(psi)
-			}
-		}
+		//panic(err)
 	}
+	current.CaptureCellEnergy(celluleID, index)
+	current.PrintInfo(false)
 	return
 }
 func Equilibrium(name string) {
 	tools.Title(fmt.Sprintf("Equilibrium energy programme [%s]", name))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_EQUILIBRiUM, pc.ID, pc.SecretID),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			//jsonPretty, _ := tools.PrettyString(res)
-			//tools.Info(fmt.Sprintf("status = [%d]", statusCode))
-			//fmt.Println(jsonPretty)
-			var psi structure.ProgrammeStatusInfos
-			err = json.Unmarshal(res, &psi)
-			if err != nil {
-				tools.Fail(err.Error())
-			} else {
-				tools.PrintGridPosition(psi.Programme, 10)
-				tools.PrintProgramme(psi)
-			}
-		}
+		//panic(err)
 	}
-	return
+	current.Equilibrium()
+	current.PrintInfo(false)
 }
 func PushFlag(name string) {
 	tools.Title(fmt.Sprintf("Push flag - programme [%s]", name))
-	pc, err := _GetProgrammeFile(name)
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(err.Error())
-		return
-	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(pc)
-
-		res, statusCode, err := api.RequestApi(
-			"GET",
-			fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_PUSH_FLAG, pc.ID, pc.SecretID),
-			nil,
-		)
-		if err != nil {
-			tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-		} else {
-			if statusCode != http.StatusOK {
-				tools.Fail(fmt.Sprintf("erreur status code [%d]"))
-			} else {
-				var newPC structure.ProgrammeContainer
-				err = json.Unmarshal(res, &newPC)
-				if err != nil {
-					tools.Fail(err.Error())
-				} else {
-					err = tools.CreateJsonFile(fmt.Sprintf("%s.json", name), newPC)
-					if err != nil {
-						tools.Fail("erreur sauvegarde programme")
-					} else {
-						tools.Success("sauvegarde effectuer")
-					}
-				}
-			}
-		}
+		//panic(err)
 	}
-	return
+	current.PushFlag()
+	current.PrintInfo(false)
 }
 func Attack(name string) {
 	current, err := algo.NewAlgo(name)
@@ -612,11 +339,14 @@ func Attack(name string) {
 			status = false
 			break
 		}
+		current.CheckAttack()
 		for _, pid := range programmes {
 			for i := 0; i < algo.MAX_CELLULES; i++ {
-				current.Attack(i, pid, algo.ENERGY_MAX_ATTACK)
+				if current.Psi.Programme.Cellules[i].Status {
+					current.Attack(i, pid, algo.ENERGY_MAX_ATTACK)
+				}
 			}
-			current.CheckAttack()
+			current.PrintInfo(false)
 			if current.Psi.LockProgramme[pid].Status == false {
 				break
 			}

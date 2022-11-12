@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	TIME_MILLISECONDE = 0
+	TIME_MILLISECONDE = 250
 	ENERGY_MAX_ATTACK = 10
 	MAX_CELLULES      = 4
 )
@@ -307,12 +307,13 @@ func (a *Algo) CheckAttack() {
 						break
 					}
 					receive_destroy = cellule.CurrentAccesLog.ReceiveDestroy
-					if receive_destroy {
+					if receive_destroy && cellule.Status {
 						a.Attack(cellule.ID, cellule.CurrentAccesLog.PID, ENERGY_MAX_ATTACK)
 					}
 				}
 			}
 		}
+		a.PrintInfo(false)
 		if receive_destroy == false {
 			break
 		}
@@ -392,10 +393,10 @@ func (a *Algo) CaptureCellData(celluleID int, index int) (ok bool, err error) {
 	}
 	return
 }
-func (a *Algo) CaptureTargetData(celluleID int, id int) (ok bool, err error) {
+func (a *Algo) CaptureTargetData(celluleID int, targetID string) (ok bool, err error) {
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_CAPTURE_TARGET_DATA, a.Pc.ID, a.Pc.SecretID, celluleID, id),
+		fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_CAPTURE_TARGET_DATA, a.Pc.ID, a.Pc.SecretID, celluleID, targetID),
 		nil,
 	)
 	if err != nil {
@@ -409,10 +410,10 @@ func (a *Algo) CaptureTargetData(celluleID int, id int) (ok bool, err error) {
 	}
 	return
 }
-func (a *Algo) CaptureTargetEnergy(celluleID int, id int) (ok bool, err error) {
+func (a *Algo) CaptureTargetEnergy(celluleID int, targetID string) (ok bool, err error) {
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_CAPTURE_TARGET_ENERGY, a.Pc.ID, a.Pc.SecretID, celluleID, id),
+		fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_CAPTURE_TARGET_ENERGY, a.Pc.ID, a.Pc.SecretID, celluleID, targetID),
 		nil,
 	)
 	if err != nil {
