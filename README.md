@@ -14,6 +14,23 @@ Le jeu est gagné par le premier joueur qui atteint l'objectif final avec son pr
 
 En cours de route, vous découvrirez des concepts de programmation tels que les variables, les boucles, les conditionnels et les fonctions.
 
+### Règles
+
+Le but du jeu est de trouver le drapeau caché et de détruire la zone de transfert, qui déconnectera tous les programmes du réseau et les empêchera d'économiser de l'énergie.
+
+Les joueurs peuvent s'attaquer mutuellement.
+
+La quantité de dégâts qui peut être infligée est déterminée par le level multiplié par 100.
+
+De plus, les joueurs disposent d'une force de défense qui les protège des dégâts.
+La force de défense est également déterminée par le level du joueur multiplié par 100.
+
+- force attaque = degat level * 100
+- force defense = degat level * 100
+- Zone transfert = Zone de depose de drapeau + zone de sauvegarde.
+- Trouver le drapeau cacher.
+- Le drapeau augmente le level + permet destruction zone de transfert du cycle
+
 ### Installation
 
 installer go https://go.dev/doc/install
@@ -54,8 +71,10 @@ GET /v1/programme/push/flag/:id/:secretid
 ```bash
 GET /v1/grid
 GET /v1/programme/infos/:id/:secretid
+GET /v1/programme/save/:id/:secretid
 GET /v1/programme/new/:name
 POST /v1/programme/load
+POST /v1/programme/upgrade
 GET /v1/programme/unset/:id/:secretid
 GET /v1/programme/jump/up/:id/:secretid/:jumpnbr
 GET /v1/programme/jump/down/:id/:secretid/:jumpnbr
@@ -71,6 +90,8 @@ GET /v1/programme/capture/target/data/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/capture/target/energy/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/equilibrium/:id/:secretid
 GET /v1/programme/push/flag/:id/:secretid
+GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
+GET /v1/grid/zone/actif/:id/:secretid
 ```
 
 ### Usage 
@@ -80,13 +101,15 @@ GET /v1/programme/push/flag/:id/:secretid
 Usage: main [OPTIONS] COMMAND [arg...]
 
 Concepteur Console
-                  
-Options:          
-  -v, --version   Show the version and exit
-                  
-Commands:            
+
+Options:
+  -v, --version      Show the version and exit
+
+Commands:
   create             creation programme et chargement sur la grille
+  save               sauvegarde programme
   load               charger programme existant sur la grille
+  upgrade            mis a jour programme
   delete             deconnecter un programme de la grille
   move               deplacer un programme sur la grille
   scan               scan infos de la zone pour
@@ -106,7 +129,8 @@ Commands:
   search_programme   recherche programme
   monitoring         position + status programme monitoring
   log                info log cellule
-                     
+  destroy_zone       destroy cellule zone current
+
 Run 'main COMMAND --help' for more information on a command.
 ```
 
