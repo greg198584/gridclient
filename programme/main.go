@@ -383,7 +383,7 @@ func MovePosition(name string, position string) {
 	secteurID, _ := strconv.Atoi(splitPosition[0])
 	zoneID, _ := strconv.Atoi(splitPosition[1])
 	current.QuickMove(secteurID, zoneID)
-	current.PrintInfo(true)
+	//current.PrintInfo(true)
 }
 
 func SearchFlag(name string) {
@@ -417,7 +417,7 @@ func SearchFlag(name string) {
 				}
 			}
 		}
-		current.PrintInfo(true)
+		//current.PrintInfo(true)
 	}
 }
 func SearchEnergy(name string) {
@@ -487,7 +487,7 @@ func SearchProgramme(name string, all bool) {
 				if programmeFound {
 					return
 				}
-				current.PrintInfo(true)
+				//current.PrintInfo(true)
 			}
 		}
 		if ok, _ := current.Move(0); !ok {
@@ -508,7 +508,7 @@ func Monitoring(name string, printGrid bool) {
 		//panic(err)
 	}
 	for {
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		current.GetInfosProgramme()
 		current.PrintInfo(printGrid)
 	}
