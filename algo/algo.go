@@ -8,6 +8,7 @@ import (
 	"github.com/greg198584/gridclient/api"
 	"github.com/greg198584/gridclient/structure"
 	"github.com/greg198584/gridclient/tools"
+	"github.com/logrusorgru/aurora"
 	"net/http"
 	"os"
 )
@@ -181,7 +182,6 @@ func (a *Algo) Move(valeur int) (ok bool, err error) {
 	return true, err
 }
 func (a *Algo) Scan() (ok bool, res []byte, err error) {
-	//tools.Title(fmt.Sprintf("Programme [%s] scan", a.Name))
 	res, statusCode, err := api.RequestApi(
 		"GET",
 		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_SCAN_PROGRAMME, a.Pc.ID, a.Pc.SecretID),
@@ -193,7 +193,7 @@ func (a *Algo) Scan() (ok bool, res []byte, err error) {
 	return true, res, err
 }
 func (a *Algo) Explore(celluleID int) (ok bool, res []byte, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] explore cellule [%s]", a.Name, celluleID))
+	tools.Title(fmt.Sprintf("Programme [%s] explore cellule [%d]", a.Name, celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
 		fmt.Sprintf("%s/%s/%s/%s/%d", api.API_URL, api.ROUTE_EXPLORE_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID),
@@ -205,7 +205,8 @@ func (a *Algo) Explore(celluleID int) (ok bool, res []byte, err error) {
 	return true, res, err
 }
 func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, res []byte, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] destroy -> [%s] cellule [%d]", a.Name, targetID, celluleID))
+	title := aurora.Red("--- Destroy programme")
+	tools.Title(fmt.Sprintf("\t%s >>> [%s] cellule [%d]", title, aurora.Cyan(targetID), celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
 		fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_DESTROY_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID, targetID),
@@ -219,7 +220,8 @@ func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, res []byte, err
 	return
 }
 func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, res []byte, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] rebuild -> [%s] cellule [%d]", a.Name, targetID, celluleID))
+	title := aurora.Blue("+++ Rebuild programme")
+	tools.Title(fmt.Sprintf("\t%s >>> [%s] cellule [%d]", title, aurora.Cyan(targetID), celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
 		fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_REBUILD_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID, targetID),
@@ -233,7 +235,7 @@ func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, res []byte, err
 	return
 }
 func (a *Algo) GetStatusGrid() (err error) {
-	tools.Title(fmt.Sprintf("Status grid"))
+	//tools.Title(fmt.Sprintf("Status grid"))
 	res, statusCode, err := api.RequestApi(
 		"GET",
 		fmt.Sprintf("%s/%s", api.API_URL, api.ROUTE_STATUS_GRID),
