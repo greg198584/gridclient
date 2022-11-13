@@ -214,11 +214,11 @@ func (a *Algo) DestroyZone(celluleID int) (ok bool, res []byte, err error) {
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
-		return
+		return false, res, err
 	}
 	a.Psi = structure.ProgrammeStatusInfos{}
 	err = json.Unmarshal(res, &a.Psi)
-	return
+	return true, res, err
 }
 func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, res []byte, err error) {
 	title := aurora.Red("--- Destroy programme")
@@ -229,11 +229,11 @@ func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, res []byte, err
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
-		return
+		return false, res, err
 	}
 	a.Psi = structure.ProgrammeStatusInfos{}
 	err = json.Unmarshal(res, &a.Psi)
-	return
+	return true, res, err
 }
 func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, res []byte, err error) {
 	title := aurora.Blue("+++ Rebuild programme")
@@ -244,11 +244,11 @@ func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, res []byte, err
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
-		return
+		return false, res, err
 	}
 	a.Psi = structure.ProgrammeStatusInfos{}
 	err = json.Unmarshal(res, &a.Psi)
-	return
+	return true, res, err
 }
 func (a *Algo) GetStatusGrid() (err error) {
 	//tools.Title(fmt.Sprintf("Status grid"))
