@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	TIME_MILLISECONDE = 250
+	TIME_MILLISECONDE = 500
 	ENERGY_MAX_ATTACK = 10
-	MAX_CELLULES      = 4
+	MAX_CELLULES      = 9
 )
 
 type Algo struct {
@@ -109,7 +109,7 @@ func NewAlgo(name string) (algo *Algo, err error) {
 	return algo, err
 }
 func (a *Algo) GetInfosProgramme() (ok bool, err error) {
-	tools.Title(fmt.Sprintf("infos programme [%s]", a.Name))
+	//tools.Title(fmt.Sprintf("infos programme [%s]", a.Name))
 	res, statusCode, err := api.RequestApi(
 		"GET",
 		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_STATUS_PROGRAMME, a.Pc.ID, a.Pc.SecretID),
@@ -181,7 +181,7 @@ func (a *Algo) Move(valeur int) (ok bool, err error) {
 	return true, err
 }
 func (a *Algo) Scan() (ok bool, res []byte, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] scan", a.Name))
+	//tools.Title(fmt.Sprintf("Programme [%s] scan", a.Name))
 	res, statusCode, err := api.RequestApi(
 		"GET",
 		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_SCAN_PROGRAMME, a.Pc.ID, a.Pc.SecretID),
@@ -219,7 +219,7 @@ func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, err error) {
 	return true, err
 }
 func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] rebuild -> [%s] cellule [%s]", a.Name, celluleID, targetID))
+	tools.Title(fmt.Sprintf("Programme [%s] rebuild -> [%s] cellule [%d]", a.Name, targetID, celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
 		fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_REBUILD_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID, targetID),
@@ -304,6 +304,7 @@ func (a *Algo) CheckAttack() {
 				nbrRebuild := maxValeur - cellule.Valeur
 				for i := 0; i < nbrRebuild; i++ {
 					if ok, _ := a.Rebuild(cellule.ID, a.ID); !ok {
+						tools.Fail("cellule rebuild impossible")
 						break
 					}
 					receive_destroy = cellule.CurrentAccesLog.ReceiveDestroy

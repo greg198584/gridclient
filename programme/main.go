@@ -333,7 +333,11 @@ func Attack(name string) {
 	}
 	status := true
 	for status {
-		status = current.Psi.Programme.Status
+		current.GetInfosProgramme()
+		current.PrintInfo(false)
+		if current.Psi.Programme.ID != "" {
+			status = current.Psi.Programme.Status
+		}
 		_, programmes := current.GetProgramme()
 		current.CheckAttack()
 		for _, pid := range programmes {
@@ -344,7 +348,7 @@ func Attack(name string) {
 						statusTarget = current.Psi.LockProgramme[pid].Cellules[cellule.ID].Status
 					}
 					if statusTarget {
-						current.Attack(cellule.ID, pid, algo.ENERGY_MAX_ATTACK/5)
+						current.Attack(cellule.ID, pid, 1)
 					}
 				}
 				current.PrintInfo(false)
@@ -362,7 +366,11 @@ func CheckAttack(name string) {
 	}
 	status := true
 	for status {
-		status = current.Psi.Programme.Status
+		current.GetInfosProgramme()
+		current.PrintInfo(false)
+		if current.Psi.Programme.ID != "" {
+			status = current.Psi.Programme.Status
+		}
 		current.CheckAttack()
 	}
 }

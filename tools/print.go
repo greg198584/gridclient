@@ -20,7 +20,8 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				valeur := psi.Programme.Cellules[i].Valeur
 				prefixValeur := psi.Programme.Level
 				valeurString := ""
-				for j := 0; j < (valeur / prefixValeur); j++ {
+				count := valeur / (prefixValeur * 10)
+				for j := 0; j < count; j++ {
 					if valeur > 5 {
 						valeurString += aurora.Green(fmt.Sprintf("-%d-", prefixValeur)).String()
 					} else if valeur > 3 && valeur < 7 {
@@ -39,7 +40,8 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				lpValeur := lockProgramme.Cellules[i].Valeur
 				lpPrefixValeur := lockProgramme.Level
 				lpValeurString := ""
-				for j := 0; j < (lpValeur / lpPrefixValeur); j++ {
+				lpCount := lpValeur / (lpPrefixValeur * 10)
+				for j := 0; j < lpCount; j++ {
 					if lpValeur > 5 {
 						lpValeurString += aurora.Green(fmt.Sprintf("-%d-", lpPrefixValeur)).String()
 					} else if lpValeur > 3 && lpValeur < 7 {
@@ -87,7 +89,8 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 			valeur := psi.Programme.Cellules[i].Valeur
 			prefixValeur := psi.Programme.Level
 			valeurString := ""
-			for j := 0; j < (valeur / prefixValeur); j++ {
+			count := valeur / (prefixValeur * 10)
+			for j := 0; j < count; j++ {
 				if valeur > 5 {
 					valeurString += aurora.Green(fmt.Sprintf("-%d-", prefixValeur)).String()
 				} else if valeur > 3 && valeur < 7 {
