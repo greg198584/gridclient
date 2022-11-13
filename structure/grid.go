@@ -9,14 +9,16 @@ type ProgrammeContainer struct {
 	ValidKey  string    `json:"valid_key"`
 }
 type GridInfos struct {
-	Id            string   `json:"id"`
-	Taille        int      `json:"taille"`
-	ZoneTransfert Position `json:"zone_transfert"`
-	Iteration     int      `json:"iteration"`
-	Cycle         int      `json:"cycle"`
-	NbrProgrammes int      `json:"programme"`
-	Status        bool     `json:"status"`
-	Version       string   `json:"version"`
+	Id            string           `json:"id"`
+	Taille        int              `json:"taille"`
+	ZoneTransfert Position         `json:"zone_transfert"`
+	Iteration     int              `json:"iteration"`
+	Cycle         int              `json:"cycle"`
+	NbrProgrammes int              `json:"nbr_programmes"`
+	Programmes    []ProgrammeInfos `json:"programmes"`
+	Status        bool             `json:"status"`
+	Version       string           `json:"version"`
+	FlagCapture   bool             `json:"flag_capture"`
 }
 type ProgrammeStatusInfos struct {
 	Programme     Programme            `json:"programme"`
