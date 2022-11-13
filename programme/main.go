@@ -392,8 +392,8 @@ func SearchFlag(name string) {
 		//panic(err)
 	}
 	err = current.GetStatusGrid()
-	current.Move(0)
-	for i := 0; i <= current.InfosGrid.Taille; i++ {
+	currentZoneID := current.Psi.Programme.Position.ZoneID
+	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		if ok, _ := current.Move(i); !ok {
 			if current.StatusCode == http.StatusUnauthorized {
@@ -401,6 +401,8 @@ func SearchFlag(name string) {
 			}
 		}
 		if scanOK, scanRes, _ := current.Scan(); !scanOK {
+			jsonPretty, _ := tools.PrettyString(scanRes)
+			fmt.Println(jsonPretty)
 			tools.Fail("erreur scan")
 			return
 		} else {
@@ -424,8 +426,8 @@ func SearchEnergy(name string) {
 		//panic(err)
 	}
 	err = current.GetStatusGrid()
-	current.Move(0)
-	for i := 0; i <= current.InfosGrid.Taille; i++ {
+	currentZoneID := current.Psi.Programme.Position.ZoneID
+	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		if ok, _ := current.Move(i); !ok {
 			if current.StatusCode == http.StatusUnauthorized {
@@ -433,6 +435,8 @@ func SearchEnergy(name string) {
 			}
 		}
 		if scanOK, scanRes, _ := current.Scan(); !scanOK {
+			jsonPretty, _ := tools.PrettyString(scanRes)
+			fmt.Println(jsonPretty)
 			tools.Fail("erreur scan")
 			return
 		} else {
@@ -467,6 +471,8 @@ func SearchProgramme(name string, all bool) {
 				}
 			}
 			if scanOK, scanRes, _ := current.Scan(); !scanOK {
+				jsonPretty, _ := tools.PrettyString(scanRes)
+				fmt.Println(jsonPretty)
 				tools.Fail("erreur scan")
 			} else {
 				var zoneInfos structure.ZoneInfos

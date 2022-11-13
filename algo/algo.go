@@ -204,7 +204,7 @@ func (a *Algo) Explore(celluleID int) (ok bool, res []byte, err error) {
 	}
 	return true, res, err
 }
-func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, err error) {
+func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, res []byte, err error) {
 	tools.Title(fmt.Sprintf("Programme [%s] destroy -> [%s] cellule [%d]", a.Name, targetID, celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
@@ -212,13 +212,13 @@ func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, err error) {
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
-		return false, err
+		return
 	}
 	a.Psi = structure.ProgrammeStatusInfos{}
 	err = json.Unmarshal(res, &a.Psi)
-	return true, err
+	return
 }
-func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, err error) {
+func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, res []byte, err error) {
 	tools.Title(fmt.Sprintf("Programme [%s] rebuild -> [%s] cellule [%d]", a.Name, targetID, celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
@@ -226,11 +226,11 @@ func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, err error) {
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
-		return false, err
+		return
 	}
 	a.Psi = structure.ProgrammeStatusInfos{}
 	err = json.Unmarshal(res, &a.Psi)
-	return true, err
+	return
 }
 func (a *Algo) GetStatusGrid() (err error) {
 	tools.Title(fmt.Sprintf("Status grid"))
@@ -290,7 +290,10 @@ func (a *Algo) GetProgramme() (ok bool, programmes []string) {
 }
 func (a *Algo) Attack(celluleID int, targetID string, energy int) {
 	for j := 0; j < energy; j++ {
-		if ok, _ := a.Destroy(celluleID, targetID); !ok {
+		if ok, res, _ := a.Destroy(celluleID, targetID); !ok {
+			jsonPretty, _ := tools.PrettyString(res)
+			fmt.Println(jsonPretty)
+			tools.Fail("erreur attack")
 			return
 		}
 	}
@@ -303,8 +306,10 @@ func (a *Algo) CheckAttack() {
 			if cellule.Valeur < maxValeur {
 				nbrRebuild := maxValeur - cellule.Valeur
 				for i := 0; i < nbrRebuild; i++ {
-					if ok, _ := a.Rebuild(cellule.ID, a.ID); !ok {
-						tools.Fail("cellule rebuild impossible")
+					if ok, resBuild, _ := a.Rebuild(cellule.ID, a.ID); !ok {
+						jsonPretty, _ := tools.PrettyString(resBuild)
+						fmt.Println(jsonPretty)
+						tools.Fail("erreur rebuild")
 						break
 					}
 					receive_destroy = cellule.CurrentAccesLog.ReceiveDestroy
@@ -331,6 +336,8 @@ func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (flagFound bool) {
 		if cellule.Status {
 			//tools.Success(fmt.Sprintf("zone [%d] - cellule [%d] etat [%t] - data presente ou etat true", zoneInfos.ID, cellule.ID, cellule.Status))
 			if exploreOK, exploreRes, _ := a.Explore(cellule.ID); !exploreOK {
+				jsonPretty, _ := tools.PrettyString(exploreRes)
+				fmt.Println(jsonPretty)
 				tools.Fail("erreur explore")
 			} else {
 				var datas map[int]structure.CelluleData
@@ -357,6 +364,8 @@ func (a *Algo) SearchEnergy(cellules []structure.CelluleInfos) (index int) {
 	for _, cellule := range cellules {
 		if cellule.Status {
 			if exploreOK, exploreRes, _ := a.Explore(cellule.ID); !exploreOK {
+				jsonPretty, _ := tools.PrettyString(exploreRes)
+				fmt.Println(jsonPretty)
 				tools.Fail("erreur explore")
 			} else {
 				var datas map[int]structure.CelluleData
