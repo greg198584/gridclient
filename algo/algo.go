@@ -15,7 +15,7 @@ import (
 
 const (
 	TIME_MILLISECONDE = 500
-	ENERGY_MAX_ATTACK = 1
+	ENERGY_MAX_ATTACK = 10
 	MAX_CELLULES      = 9
 )
 
