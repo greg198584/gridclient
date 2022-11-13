@@ -179,9 +179,13 @@ func PrintGridPosition(programme structure.Programme, sizeTotal int) {
 	))
 }
 func PrintInfosGrille(infos structure.GridInfos) {
-	var header = []string{"ID", "Taille", "ZoneTransfert", "Iteration", "Cycle", "NbrProgramme", "status", "Version"}
+	var header = []string{"ID", "Taille", "ZoneTransfert", "Iteration", "Cycle", "NbrProgramme", "status", "Version", "FlagCapture"}
 	var InfosTab [][]string
 
+	flagCapture := aurora.Red("FALSE")
+	if infos.FlagCapture {
+		flagCapture = aurora.Green("TRUE")
+	}
 	InfosTab = append(InfosTab, []string{
 		infos.Id,
 		strconv.FormatInt(int64(infos.Taille), 10),
@@ -191,25 +195,42 @@ func PrintInfosGrille(infos structure.GridInfos) {
 		strconv.FormatInt(int64(infos.NbrProgrammes), 10),
 		fmt.Sprintf("%t", infos.Status),
 		infos.Version,
+		flagCapture.String(),
 	})
 	PrintColorTable(header, InfosTab, "<---[ Infos grille ]--->")
 	return
 }
 func PrintZoneInfos(infos structure.ZoneInfos) {
-	var header = []string{"CELL ID", "STATUS", "DATA", "DATA_TYPE"}
+	var header = []string{"CELL ID", "VALEUR", "STATUS", "DATA", "DATA_TYPE"}
 	var cellData [][]string
 	for i := 0; i < len(infos.Cellules); i++ {
 		dataTypeBytes := new(bytes.Buffer)
 		json.NewEncoder(dataTypeBytes).Encode(infos.Cellules[i].DataType)
-		//dataType, _ := PrettyString(dataTypeBytes.Bytes())
+		statusCell := aurora.Red("FALSE")
+		if infos.Cellules[i].Status {
+			statusCell = aurora.Green("TRUE")
+		}
+		valeurCell := aurora.Red("0")
+		if infos.Cellules[i].Valeur > 0 {
+			valeurCell = aurora.Green(strconv.Itoa(infos.Cellules[i].Valeur))
+		}
 		cellData = append(cellData, []string{
 			fmt.Sprintf("%d", infos.Cellules[i].ID),
-			fmt.Sprintf("%t", infos.Cellules[i].Status),
+			valeurCell.String(),
+			statusCell.String(),
 			fmt.Sprintf("%d", infos.Cellules[i].DataCount),
 			fmt.Sprintf("%s", dataTypeBytes.String()),
 		})
 	}
-	PrintColorTable(header, cellData, fmt.Sprintf("<---[ Infos programme sur Zone [%d] ]--->", infos.ID))
+	statusZone := aurora.Red("FALSE")
+	if infos.Actif {
+		statusZone = aurora.Green("TRUE")
+	}
+	PrintColorTable(header, cellData, fmt.Sprintf(
+		"<---[ Infos programme sur Zone [%d] - status [%s] ]--->",
+		infos.ID,
+		statusZone,
+	))
 	header = []string{"PID", "NAME", "VALEUR TOTAL", "ENERGY TOTAL"}
 	var progrData [][]string
 	for i := 0; i < len(infos.Programmes); i++ {

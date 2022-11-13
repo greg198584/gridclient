@@ -23,4 +23,8 @@ const (
 	ROUTE_CAPTURE_TARGET_ENERGY = "v1/programme/capture/target/energy"
 	ROUTE_EQUILIBRiUM           = "v1/programme/equilibrium"
 	ROUTE_PUSH_FLAG             = "v1/programme/push/flag"
+	ROUTE_SAVE_PROGRAMME        = "v1/programme/save"
+	ROUTE_DESTROY_ZONE          = "v1/programme/destroy/zone"
+	// USAGE AVEC FLAG CURRENT OU ARTEFACT
+	ROUTE_ZONE_ACTIF = "v1/grid/zone/actif"
 )

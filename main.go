@@ -19,6 +19,14 @@ func main() {
 			programme.New(*pname)
 		}
 	})
+	app.Command("save", "sauvegarde programme", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.Save(*pname)
+		}
+	})
 	app.Command("load", "charger programme existant sur la grille", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
@@ -87,12 +95,10 @@ func main() {
 			pname     = cmd.StringOpt("n name", "", "nom du programme")
 			celluleID = cmd.StringOpt("c cellule", "", "ID cellule")
 			targetID  = cmd.StringOpt("t target", "", "ID programme cible")
-			energy    = cmd.StringOpt("e energy", "", "nombre energy a utiliser")
 		)
 		cmd.Action = func() {
 			CelluleID, _ := strconv.Atoi(*celluleID)
-			Energy, _ := strconv.Atoi(*energy)
-			programme.Destroy(*pname, CelluleID, *targetID, Energy)
+			programme.Destroy(*pname, CelluleID, *targetID)
 		}
 	})
 	app.Command("rebuild", "reconstruire cellule programme", func(cmd *mowcli.Cmd) {
@@ -100,12 +106,10 @@ func main() {
 			pname     = cmd.StringOpt("n name", "", "nom du programme")
 			celluleID = cmd.StringOpt("c cellule", "", "ID cellule")
 			targetID  = cmd.StringOpt("t target", "", "ID programme cible")
-			energy    = cmd.StringOpt("e energy", "", "nombre energy a utiliser")
 		)
 		cmd.Action = func() {
 			CelluleID, _ := strconv.Atoi(*celluleID)
-			Energy, _ := strconv.Atoi(*energy)
-			programme.Rebuild(*pname, CelluleID, *targetID, Energy)
+			programme.Rebuild(*pname, CelluleID, *targetID)
 		}
 	})
 	app.Command("capture", "capture data-energy cellule programme et zone", func(cmd *mowcli.Cmd) {
@@ -234,6 +238,14 @@ func main() {
 		)
 		cmd.Action = func() {
 			programme.GetCelluleLog(*pname, *celluleID)
+		}
+	})
+	app.Command("destroy_zone", "destroy cellule zone current", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.DestroyZone(*pname)
 		}
 	})
 	app.Action = func() {

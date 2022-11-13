@@ -61,6 +61,27 @@ func _LoadProgramme(name string) (psi structure.ProgrammeStatusInfos, err error)
 	}
 	return
 }
+func _Save(name string) (pc structure.ProgrammeContainer, err error) {
+	currentPC, err := _GetProgrammeFile(name)
+	reqBodyBytes := new(bytes.Buffer)
+	json.NewEncoder(reqBodyBytes).Encode(currentPC)
+	res, statusCode, err := api.RequestApi(
+		"POST",
+		fmt.Sprintf("%s/%s", api.API_URL, api.ROUTE_SAVE_PROGRAMME),
+		reqBodyBytes.Bytes(),
+	)
+	if statusCode == http.StatusOK {
+		err = json.Unmarshal(res, &pc)
+		tools.CreateJsonFile(fmt.Sprintf("%s.json", name), pc)
+		tools.Success("backup OK")
+	} else {
+		err = errors.New("erreur chargement programme")
+		jsonPretty, _ := tools.PrettyString(res)
+		tools.Fail(fmt.Sprintf("status = [%d]", statusCode))
+		fmt.Println(jsonPretty)
+	}
+	return
+}
 func _UpgradeProgramme(name string) (pc structure.ProgrammeContainer, err error) {
 	currentPC, err := _GetProgrammeFile(name)
 	reqBodyBytes := new(bytes.Buffer)
@@ -70,7 +91,7 @@ func _UpgradeProgramme(name string) (pc structure.ProgrammeContainer, err error)
 		fmt.Sprintf("%s/%s", api.API_URL, api.ROUTE_UPGRADE_PROGRAMME),
 		reqBodyBytes.Bytes(),
 	)
-	if statusCode == http.StatusCreated {
+	if statusCode == http.StatusOK {
 		err = json.Unmarshal(res, &pc)
 		tools.CreateJsonFile(fmt.Sprintf("%s.json", name), pc)
 	} else {
@@ -108,6 +129,16 @@ func New(name string) {
 		tools.Warning(fmt.Sprintf("programme file exist"))
 	}
 }
+func Save(name string) {
+	tools.Title(fmt.Sprintf("save programme [%s]", name))
+	_, err := _Save(name)
+	if err != nil {
+		tools.Fail(fmt.Sprintf(" backup [%s] FAIL [%s]", name, err.Error()))
+	} else {
+		tools.Success(fmt.Sprintf(" backup [%s] OK", name))
+		GetInfoProgramme(name)
+	}
+}
 func Info(pc *structure.ProgrammeContainer) {
 	reqBodyBytes := new(bytes.Buffer)
 	json.NewEncoder(reqBodyBytes).Encode(pc.Programme)
@@ -126,9 +157,9 @@ func Upgrade(name string) {
 	tools.Title(fmt.Sprintf("chargement programme [%s]", name))
 	_, err := _UpgradeProgramme(name)
 	if err != nil {
-		tools.Fail(err.Error())
+		tools.Fail(fmt.Sprintf(" upgrade [%s] FAIL [%s]", name, err.Error()))
 	} else {
-		tools.Success(fmt.Sprintf("programme ajouter [%s]", name))
+		tools.Success(fmt.Sprintf("upgrade [%s] OK", name))
 		GetInfoProgramme(name)
 	}
 }
@@ -218,23 +249,35 @@ func Explore(name string, celluleID string) {
 		}
 	}
 }
-func Destroy(name string, celluleID int, targetID string, energy int) {
-	tools.Title(fmt.Sprintf("Programme [%s] destroy -> [%s] cellule [%s] energy [%s]", name, celluleID, targetID, energy))
+func Destroy(name string, celluleID int, targetID string) {
+	tools.Title(fmt.Sprintf(
+		"Programme [%s] destroy -> [%s] cellule [%s] energy [%s]",
+		name,
+		celluleID,
+		targetID,
+		algo.ENERGY_MAX_ATTACK,
+	))
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	current.Attack(celluleID, targetID, energy)
+	current.Attack(celluleID, targetID)
 	current.PrintInfo(false)
 	return
 }
-func Rebuild(name string, celluleID int, targetID string, energy int) {
-	tools.Title(fmt.Sprintf("Programme [%s] rebuild -> [%s] cellule [%s] energy [%s]", name, celluleID, targetID, energy))
+func Rebuild(name string, celluleID int, targetID string) {
+	tools.Title(fmt.Sprintf(
+		"Programme [%s] rebuild -> [%s] cellule [%s] energy [%s]",
+		name,
+		celluleID,
+		targetID,
+		algo.ENERGY_MAX_ATTACK,
+	))
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	current.Rebuild(celluleID, targetID)
+	current.Defense(celluleID, targetID)
 	current.PrintInfo(false)
 	return
 }
@@ -324,7 +367,33 @@ func PushFlag(name string) {
 		//panic(err)
 	}
 	current.PushFlag()
+	current.GetInfosProgramme()
 	current.PrintInfo(false)
+}
+func DestroyZone(name string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	status := true
+	for status {
+		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
+		current.GetInfosProgramme()
+		current.PrintInfo(false)
+		if current.Psi.Programme.ID != "" {
+			status = current.Psi.Programme.Status
+		}
+		ok, zoneInfos := current.GetZoneinfos()
+		tools.PrintZoneInfos(zoneInfos)
+		if ok && zoneInfos.Actif {
+			for _, cellule := range zoneInfos.Cellules {
+				if cellule.Status {
+					current.AttackZone(cellule.ID)
+				}
+			}
+		}
+	}
+
 }
 func Attack(name string) {
 	current, err := algo.NewAlgo(name)
@@ -348,7 +417,7 @@ func Attack(name string) {
 						statusTarget = current.Psi.LockProgramme[pid].Cellules[cellule.ID].Status
 					}
 					if statusTarget {
-						current.Attack(cellule.ID, pid, 1)
+						current.Attack(cellule.ID, pid)
 					}
 				}
 				current.PrintInfo(false)

@@ -15,7 +15,7 @@ import (
 
 const (
 	TIME_MILLISECONDE = 500
-	ENERGY_MAX_ATTACK = 10
+	ENERGY_MAX_ATTACK = 1
 	MAX_CELLULES      = 9
 )
 
@@ -64,6 +64,7 @@ func _CreateProgramme(name string) (programme structure.ProgrammeContainer, err 
 		if statusCode == http.StatusCreated {
 			err = json.Unmarshal(res, &programme)
 			tools.CreateJsonFile(fmt.Sprintf("%s.json", name), programme)
+			tools.Success("backup OK")
 		} else {
 			err = errors.New("erreur creation programme")
 			return programme, err
@@ -204,6 +205,21 @@ func (a *Algo) Explore(celluleID int) (ok bool, res []byte, err error) {
 	}
 	return true, res, err
 }
+func (a *Algo) DestroyZone(celluleID int) (ok bool, res []byte, err error) {
+	title := aurora.Red("--- Destroy zone")
+	tools.Title(fmt.Sprintf("\t%s >>> cellule [%d]", title, celluleID))
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%d", api.API_URL, api.ROUTE_DESTROY_ZONE, a.Pc.ID, a.Pc.SecretID, celluleID),
+		nil,
+	)
+	if err != nil || statusCode != http.StatusOK {
+		return
+	}
+	a.Psi = structure.ProgrammeStatusInfos{}
+	err = json.Unmarshal(res, &a.Psi)
+	return
+}
 func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, res []byte, err error) {
 	title := aurora.Red("--- Destroy programme")
 	tools.Title(fmt.Sprintf("\t%s >>> [%s] cellule [%d]", title, aurora.Cyan(targetID), celluleID))
@@ -274,29 +290,55 @@ func (a *Algo) PrintInfo(printGrid bool) {
 	}
 }
 func (a *Algo) GetProgramme() (ok bool, programmes []string) {
-	if scanOK, res, _ := a.Scan(); !scanOK {
-		return scanOK, programmes
-	} else {
-		var zoneInfos structure.ZoneInfos
-		err := json.Unmarshal(res, &zoneInfos)
-		if err != nil {
-			return false, programmes
-		}
+	if okZI, zoneInfos := a.GetZoneinfos(); okZI {
 		for _, programme := range zoneInfos.Programmes {
 			if programme.Status {
 				programmes = append(programmes, programme.ID)
 			}
 		}
+		return true, programmes
 	}
-	return true, programmes
+	return false, programmes
 }
-func (a *Algo) Attack(celluleID int, targetID string, energy int) {
-	for j := 0; j < energy; j++ {
+func (a *Algo) GetZoneinfos() (ok bool, zoneInfos structure.ZoneInfos) {
+	if scanOK, res, _ := a.Scan(); !scanOK {
+		return scanOK, zoneInfos
+	} else {
+		err := json.Unmarshal(res, &zoneInfos)
+		if err != nil {
+			return false, zoneInfos
+		}
+	}
+	return true, zoneInfos
+}
+func (a *Algo) AttackZone(celluleID int) bool {
+	for j := 0; j < ENERGY_MAX_ATTACK; j++ {
+		if ok, res, _ := a.DestroyZone(celluleID); !ok {
+			jsonPretty, _ := tools.PrettyString(res)
+			fmt.Println(jsonPretty)
+			tools.Fail("erreur attack")
+			return false
+		}
+	}
+	return true
+}
+func (a *Algo) Attack(celluleID int, targetID string) {
+	for j := 0; j < ENERGY_MAX_ATTACK; j++ {
 		if ok, res, _ := a.Destroy(celluleID, targetID); !ok {
 			jsonPretty, _ := tools.PrettyString(res)
 			fmt.Println(jsonPretty)
 			tools.Fail("erreur attack")
 			return
+		}
+	}
+}
+func (a *Algo) Defense(celluleID int, targetID string) {
+	for j := 0; j < ENERGY_MAX_ATTACK; j++ {
+		if ok, resBuild, _ := a.Rebuild(celluleID, targetID); !ok {
+			jsonPretty, _ := tools.PrettyString(resBuild)
+			fmt.Println(jsonPretty)
+			tools.Fail("erreur rebuild")
+			break
 		}
 	}
 }
@@ -316,7 +358,7 @@ func (a *Algo) CheckAttack() {
 					}
 					receive_destroy = cellule.CurrentAccesLog.ReceiveDestroy
 					if receive_destroy && cellule.Status {
-						a.Attack(cellule.ID, cellule.CurrentAccesLog.PID, 1)
+						a.Attack(cellule.ID, cellule.CurrentAccesLog.PID)
 					}
 					a.PrintInfo(false)
 				}
@@ -483,10 +525,12 @@ func (a *Algo) PushFlag() (ok bool, err error) {
 		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
 	} else {
 		if err != nil || statusCode != http.StatusOK {
+			tools.Fail("backup FAIL")
 			return false, err
 		}
 		err = json.Unmarshal(res, &a.Pc)
 		tools.CreateJsonFile(fmt.Sprintf("%s.json", a.Name), a.Pc)
+		tools.Success("backup OK")
 		ok = true
 	}
 	return
