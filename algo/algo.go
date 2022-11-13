@@ -483,8 +483,9 @@ func (a *Algo) PushFlag() (ok bool, err error) {
 		if err != nil || statusCode != http.StatusOK {
 			return false, err
 		}
-		a.Psi = structure.ProgrammeStatusInfos{}
-		err = json.Unmarshal(res, &a.Psi)
+		err = json.Unmarshal(res, &a.Pc)
+		tools.CreateJsonFile(fmt.Sprintf("%s.json", a.Name), a.Pc)
+		ok = true
 	}
 	return
 }
