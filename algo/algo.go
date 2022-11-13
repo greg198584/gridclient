@@ -17,6 +17,7 @@ const (
 	TIME_MILLISECONDE = 500
 	ENERGY_MAX_ATTACK = 10
 	MAX_CELLULES      = 9
+	MAX_VALEUR        = 100
 )
 
 type Algo struct {
@@ -343,34 +344,22 @@ func (a *Algo) Defense(celluleID int, targetID string) {
 	}
 }
 func (a *Algo) CheckAttack() {
-	maxValeur := a.Psi.Programme.Level * 10
-	for len(a.Psi.LockProgramme) > 0 {
-		receive_destroy := false
-		for _, cellule := range a.Psi.Programme.Cellules {
-			if cellule.Valeur < maxValeur {
-				nbrRebuild := maxValeur - cellule.Valeur
-				for i := 0; i < nbrRebuild; i++ {
-					if ok, resBuild, _ := a.Rebuild(cellule.ID, a.ID); !ok {
-						jsonPretty, _ := tools.PrettyString(resBuild)
-						fmt.Println(jsonPretty)
-						tools.Fail("erreur rebuild")
-						break
-					}
-					receive_destroy = cellule.CurrentAccesLog.ReceiveDestroy
-					if receive_destroy && cellule.Status {
-						a.Attack(cellule.ID, cellule.CurrentAccesLog.PID)
-					}
-					a.PrintInfo(false)
+	maxValeur := a.Psi.Programme.Level * MAX_VALEUR
+	for _, cellule := range a.Psi.Programme.Cellules {
+		if cellule.Valeur < maxValeur && cellule.Energy > 0 {
+			if ok, resBuild, _ := a.Rebuild(cellule.ID, a.ID); !ok {
+				jsonPretty, _ := tools.PrettyString(resBuild)
+				fmt.Println(jsonPretty)
+				tools.Fail("erreur rebuild")
+			}
+			if cellule.CurrentAccesLog.ReceiveDestroy {
+				if ok, res, _ := a.Destroy(cellule.ID, cellule.CurrentAccesLog.PID); !ok {
+					jsonPretty, _ := tools.PrettyString(res)
+					fmt.Println(jsonPretty)
+					tools.Fail("erreur attack")
 				}
 			}
-		}
-		if receive_destroy == false {
-			break
-		}
-		if len(a.Psi.LockProgramme) == 1 {
-			if _, ok := a.Psi.LockProgramme[a.ID]; ok {
-				break
-			}
+			a.PrintInfo(false)
 		}
 	}
 	return

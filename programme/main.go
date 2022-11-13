@@ -66,11 +66,11 @@ func _Save(name string) (pc structure.ProgrammeContainer, err error) {
 	reqBodyBytes := new(bytes.Buffer)
 	json.NewEncoder(reqBodyBytes).Encode(currentPC)
 	res, statusCode, err := api.RequestApi(
-		"POST",
-		fmt.Sprintf("%s/%s", api.API_URL, api.ROUTE_SAVE_PROGRAMME),
-		reqBodyBytes.Bytes(),
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_SAVE_PROGRAMME, currentPC.ID, currentPC.SecretID),
+		nil,
 	)
-	if statusCode == http.StatusOK {
+	if statusCode == http.StatusCreated {
 		err = json.Unmarshal(res, &pc)
 		tools.CreateJsonFile(fmt.Sprintf("%s.json", name), pc)
 		tools.Success("backup OK")
@@ -91,7 +91,7 @@ func _UpgradeProgramme(name string) (pc structure.ProgrammeContainer, err error)
 		fmt.Sprintf("%s/%s", api.API_URL, api.ROUTE_UPGRADE_PROGRAMME),
 		reqBodyBytes.Bytes(),
 	)
-	if statusCode == http.StatusOK {
+	if statusCode == http.StatusCreated {
 		err = json.Unmarshal(res, &pc)
 		tools.CreateJsonFile(fmt.Sprintf("%s.json", name), pc)
 	} else {
@@ -408,10 +408,9 @@ func Attack(name string) {
 			status = current.Psi.Programme.Status
 		}
 		_, programmes := current.GetProgramme()
-		current.CheckAttack()
 		for _, pid := range programmes {
 			for _, cellule := range current.Psi.Programme.Cellules {
-				if cellule.Status {
+				if cellule.Status && cellule.Energy > 0 {
 					statusTarget := true
 					if _, okLP := current.Psi.LockProgramme[pid]; okLP {
 						statusTarget = current.Psi.LockProgramme[pid].Cellules[cellule.ID].Status
@@ -420,12 +419,12 @@ func Attack(name string) {
 						current.Attack(cellule.ID, pid)
 					}
 				}
-				current.PrintInfo(false)
 			}
 			if current.Psi.LockProgramme[pid].Status == false {
 				break
 			}
 		}
+		current.CheckAttack()
 	}
 }
 func CheckAttack(name string) {
