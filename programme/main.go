@@ -451,7 +451,7 @@ func MovePosition(name string, position string) {
 	secteurID, _ := strconv.Atoi(splitPosition[0])
 	zoneID, _ := strconv.Atoi(splitPosition[1])
 	current.QuickMove(secteurID, zoneID)
-	//current.PrintInfo(true)
+	current.PrintInfo(true)
 }
 
 func SearchFlag(name string) {

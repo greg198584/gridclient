@@ -346,6 +346,15 @@ func (a *Algo) Defense(celluleID int, targetID string) {
 func (a *Algo) CheckAttack() {
 	maxValeur := a.Psi.Programme.Level * MAX_VALEUR
 	for _, cellule := range a.Psi.Programme.Cellules {
+		if cellule.CurrentAccesLog.ReceiveDestroy {
+			title := aurora.BgYellow("xxx Receveive destroy from")
+			tools.Title(fmt.Sprintf(
+				"\t%s >>> [%s] cellule [%d]",
+				title,
+				aurora.Cyan(cellule.CurrentAccesLog.PID),
+				cellule.ID,
+			))
+		}
 		if cellule.Valeur < maxValeur && cellule.Energy > 0 {
 			if ok, resBuild, _ := a.Rebuild(cellule.ID, a.ID); !ok {
 				jsonPretty, _ := tools.PrettyString(resBuild)
