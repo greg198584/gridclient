@@ -179,7 +179,7 @@ func PrintGridPosition(programme structure.Programme, sizeTotal int) {
 	))
 }
 func PrintInfosGrille(infos structure.GridInfos) {
-	var header = []string{"ID", "Taille", "ZoneTransfert", "Iteration", "Cycle", "NbrProgramme", "status", "Version", "FlagCapture"}
+	var header = []string{"ID", "Taille", "ZoneTransfert", "Iteration", "Cycle", "NbrProgramme", "status", "Version", "FlagCapture", "Indice"}
 	var InfosTab [][]string
 
 	flagCapture := aurora.Red("FALSE")
@@ -196,7 +196,9 @@ func PrintInfosGrille(infos structure.GridInfos) {
 		fmt.Sprintf("%t", infos.Status),
 		infos.Version,
 		flagCapture.String(),
+		aurora.Magenta(infos.IndiceFlag.IndiceValue).String(),
 	})
+	Title(fmt.Sprintf("indice instruction: %s", aurora.White(infos.IndiceFlag.Instruction)))
 	PrintColorTable(header, InfosTab, "<---[ Infos grille ]--->")
 	return
 }

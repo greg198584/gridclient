@@ -19,6 +19,11 @@ type GridInfos struct {
 	Status        bool             `json:"status"`
 	Version       string           `json:"version"`
 	FlagCapture   bool             `json:"flag_capture"`
+	IndiceFlag    IndiceFlag       `json:"indice_flag"`
+}
+type IndiceFlag struct {
+	IndiceValue string `json:"indice_value"`
+	Instruction string `json:"instruction"`
 }
 type ProgrammeStatusInfos struct {
 	Programme     Programme            `json:"programme"`
