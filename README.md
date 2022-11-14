@@ -151,7 +151,7 @@ Run 'main COMMAND --help' for more information on a command.
 
 ```bash
 curl --request GET \
-  --url http://localhost/v1/programme/new/BBB \
+  --url http://195.154.84.18:20080/v1/programme/new/BBB \
   --header 'content-type: application/json'
 ```
 
@@ -358,7 +358,7 @@ curl --request GET \
 
 ```bash
 curl --request POST \
-  --url http://localhost/v1/programme/load \
+  --url http://195.154.84.18:20080/v1/programme/load \
   --header 'content-type: application/json' \
   --data '{
 	"id": "7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc",
@@ -564,7 +564,7 @@ curl --request POST \
 
 ```bash
 curl --request GET \
-  --url http://localhost/v1/programme/move/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
+  --url http://195.154.84.18:20080/v1/programme/move/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
   --header 'content-type: application/json'
 ```
 
@@ -572,13 +572,13 @@ curl --request GET \
 
 ```bash
 curl --request GET \
-  --url http://localhost/v1/programme/jump/down/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
+  --url http://195.154.84.18:20080/v1/programme/jump/down/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
   --header 'content-type: application/json'
 ```
 
 - JumpUp (monter de secteur de taille max vers 0)
 ```bash
 curl --request GET \
-  --url http://localhost/v1/programme/jump/up/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
+  --url http://195.154.84.18:20080/v1/programme/jump/up/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
   --header 'content-type: application/json'
 ```
