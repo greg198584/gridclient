@@ -23,10 +23,10 @@ Les joueurs peuvent s'attaquer mutuellement.
 La quantité de dégâts qui peut être infligée est déterminée par le level multiplié par 100.
 
 De plus, les joueurs disposent d'une force de défense qui les protège des dégâts.
-La force de défense est également déterminée par le level du joueur multiplié par 100.
+La force de défense est également déterminée par le level du joueur multiplié par 10.
 
-- force attaque = degat level * 100
-- force defense = degat level * 100
+- force attaque = degat level * 10
+- force defense = degat level * 10
 - Zone transfert = Zone de depose de drapeau + zone de sauvegarde.
 - Trouver le drapeau cacher.
 - Le drapeau augmente le level + permet destruction zone de transfert du cycle
