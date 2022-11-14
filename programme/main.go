@@ -528,6 +528,7 @@ func SearchProgramme(name string, all bool) {
 	if all {
 		current.QuickMove(0, 0)
 	}
+	err = current.GetStatusGrid()
 	currentZoneID := current.Psi.Programme.Position.ZoneID
 	status := true
 	for status {
