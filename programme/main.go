@@ -528,10 +528,11 @@ func SearchProgramme(name string, all bool) {
 	if all {
 		current.QuickMove(0, 0)
 	}
+	currentZoneID := current.Psi.Programme.Position.ZoneID
 	status := true
 	for status {
 		//current.PrintInfo(true)
-		for i := 0; i <= current.InfosGrid.Taille; i++ {
+		for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
 			time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 			if ok, _ := current.Move(i); !ok {
 				if current.StatusCode == http.StatusBadRequest {
