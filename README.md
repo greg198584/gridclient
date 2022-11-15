@@ -139,6 +139,7 @@ Commands:
   search_flag        current + scan + explore (all zone secteur current) + capture >>> FLAG
   search_energy      scan + explore + capture >>> ENERGY
   search_programme   recherche programme
+  search_trap        recherche cellule trap (cellule dangereuse)
   monitoring         position + status programme monitoring
   log                info log cellule
   destroy_zone       destroy cellule zone current (avec flag)

@@ -226,7 +226,7 @@ func main() {
 			programme.SearchProgramme(*pname, *all)
 		}
 	})
-	app.Command("search_trap", "recherche programme", func(cmd *mowcli.Cmd) {
+	app.Command("search_trap", "recherche cellule trap (cellule dangereuse)", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
 		)
