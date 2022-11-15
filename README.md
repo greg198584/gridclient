@@ -141,7 +141,8 @@ Commands:
   search_programme   recherche programme
   monitoring         position + status programme monitoring
   log                info log cellule
-  destroy_zone       destroy cellule zone current
+  destroy_zone       destroy cellule zone current (avec flag)
+  zone_actif         affiche zone actif + programme sur zone (avec flag)
 
 Run 'main COMMAND --help' for more information on a command.
 ```
