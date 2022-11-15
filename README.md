@@ -27,12 +27,12 @@ La quantité de dégâts qui peut être infligée est déterminée par le level 
 De plus, les joueurs disposent d'une force de défense qui les protège des dégâts.
 La force de défense est également déterminée par le level du joueur multiplié par 10.
 
-- force attaque = degat level * 10
-- force defense = degat level * 10
-- Zone transfert = Zone de depose de drapeau + zone de sauvegarde.
-- Trouver le drapeau cacher.
+- Force attaque = dégât level * 10
+- Force défense = dégât level * 10
+- Zone transfert = Zone de dépose de drapeau + zone de sauvegarde
+- Trouver le drapeau cacher
 - Le drapeau augmente le level + permet destruction zone de transfert du cycle
-- Les cellule peuvent etre pieger et une requete capture cause des degats dans ce cas la.
+- Les cellules peuvent être piéger et une requête capture cause des dégâts dans ce cas la
 
 ### Installation
 
