@@ -406,26 +406,37 @@ func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (flagFound bool) {
 }
 func (a *Algo) SearchEnergy(cellules []structure.CelluleInfos) (index int) {
 	for _, cellule := range cellules {
-		if cellule.Status {
-			if exploreOK, exploreRes, _ := a.Explore(cellule.ID); !exploreOK {
-				jsonPretty, _ := tools.PrettyString(exploreRes)
-				fmt.Println(jsonPretty)
-				tools.Fail("erreur explore")
-			} else {
-				var datas map[int]structure.CelluleData
-				err := json.Unmarshal(exploreRes, &datas)
-				if err != nil {
-					tools.Fail(err.Error())
+		if cellule.Trapped {
+			title := aurora.Red("--- CELLULE DANGER")
+			tools.Title(fmt.Sprintf(
+				"\t%s >>> [%d][%d] cellule [%d]",
+				title,
+				a.Psi.Programme.Position.SecteurID,
+				a.Psi.Programme.Position.ZoneID,
+				cellule.ID,
+			))
+		} else {
+			if cellule.Status {
+				if exploreOK, exploreRes, _ := a.Explore(cellule.ID); !exploreOK {
+					jsonPretty, _ := tools.PrettyString(exploreRes)
+					fmt.Println(jsonPretty)
+					tools.Fail("erreur explore")
 				} else {
-					for _, data := range datas {
-						if data.Energy > 0 {
-							a.CaptureCellEnergy(cellule.ID, data.ID)
+					var datas map[int]structure.CelluleData
+					err := json.Unmarshal(exploreRes, &datas)
+					if err != nil {
+						tools.Fail(err.Error())
+					} else {
+						for _, data := range datas {
+							if data.Energy > 0 {
+								a.CaptureCellEnergy(cellule.ID, data.ID)
+							}
 						}
 					}
 				}
+			} else {
+				//tools.Warning(fmt.Sprintf("cellule [%d] etat [%t] - aucune data ou etat false", cellule.ID, cellule.Status))
 			}
-		} else {
-			//tools.Warning(fmt.Sprintf("cellule [%d] etat [%t] - aucune data ou etat false", cellule.ID, cellule.Status))
 		}
 	}
 	return
