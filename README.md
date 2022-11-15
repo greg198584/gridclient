@@ -32,6 +32,7 @@ La force de défense est également déterminée par le level du joueur multipli
 - Zone transfert = Zone de depose de drapeau + zone de sauvegarde.
 - Trouver le drapeau cacher.
 - Le drapeau augmente le level + permet destruction zone de transfert du cycle
+- Les cellule peuvent etre pieger et une requete capture cause des degats dans ce cas la.
 
 ### Installation
 
