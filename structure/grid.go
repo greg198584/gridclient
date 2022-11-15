@@ -53,6 +53,7 @@ type CelluleInfos struct {
 	Destroy   bool        `json:"destroy"`
 	Rebuild   bool        `json:"rebuild"`
 	Capture   bool        `json:"capture"`
+	Trapped   bool        `json:"trapped"`
 }
 type Programme struct {
 	ID        string           `json:"id"`
@@ -78,6 +79,7 @@ type Cellule struct {
 	CurrentAccesLog CelluleLog          `json:"current_acces_log"`
 	AccesLog        []CelluleLog        `json:"acces_log"`
 	Capture         bool                `json:"capture"`
+	Trapped         bool                `json:"trapped"`
 }
 type CelluleLog struct {
 	PID            string    `json:"pid"`

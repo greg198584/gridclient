@@ -203,7 +203,7 @@ func PrintInfosGrille(infos structure.GridInfos) {
 	return
 }
 func PrintZoneInfos(infos structure.ZoneInfos) {
-	var header = []string{"CELL ID", "VALEUR", "STATUS", "DATA", "DATA_TYPE"}
+	var header = []string{"CELL ID", "VALEUR", "STATUS", "DATA", "DATA_TYPE", "DETECT TRAP"}
 	var cellData [][]string
 	for i := 0; i < len(infos.Cellules); i++ {
 		dataTypeBytes := new(bytes.Buffer)
@@ -216,12 +216,17 @@ func PrintZoneInfos(infos structure.ZoneInfos) {
 		if infos.Cellules[i].Valeur > 0 {
 			valeurCell = aurora.Green(strconv.Itoa(infos.Cellules[i].Valeur))
 		}
+		safeCell := aurora.Green("SAFE")
+		if infos.Cellules[i].Trapped {
+			safeCell = aurora.Red("DANGER")
+		}
 		cellData = append(cellData, []string{
 			fmt.Sprintf("%d", infos.Cellules[i].ID),
 			valeurCell.String(),
 			statusCell.String(),
 			fmt.Sprintf("%d", infos.Cellules[i].DataCount),
 			fmt.Sprintf("%s", dataTypeBytes.String()),
+			safeCell.String(),
 		})
 	}
 	statusZone := aurora.Red("FALSE")
