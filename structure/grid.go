@@ -38,6 +38,8 @@ type ZoneInfos struct {
 type ProgrammeInfos struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
+	Level       int    `json:"level"`
+	SecteurID   int    `json:"secteur_id"`
 	NbrCellules int    `json:"nbr_cellules"`
 	ValeurTotal int    `json:"valeur_total"`
 	EnergyTotal int    `json:"energy_total"`

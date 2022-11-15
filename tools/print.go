@@ -202,6 +202,31 @@ func PrintInfosGrille(infos structure.GridInfos) {
 	PrintColorTable(header, InfosTab, "<---[ Infos grille ]--->")
 	return
 }
+func PrintInfosProgrammeGrille(infos structure.GridInfos) {
+	if infos.NbrProgrammes > 0 {
+		var header = []string{"ID", "Name", "Level", "SecteurID", "Valeurs", "Energies", "Status"}
+		var dataList [][]string
+		for _, programme := range infos.Programmes {
+			status := ""
+			if programme.Status {
+				status = aurora.Green("OK").String()
+			} else {
+				status = aurora.Red("NOK").String()
+			}
+			dataList = append(dataList, []string{
+				aurora.Blue(programme.ID).String(),
+				programme.Name,
+				strconv.FormatInt(int64(programme.Level), 10),
+				strconv.FormatInt(int64(programme.SecteurID), 10),
+				strconv.FormatInt(int64(programme.ValeurTotal), 10),
+				strconv.FormatInt(int64(programme.EnergyTotal), 10),
+				status,
+			})
+		}
+		PrintColorTable(header, dataList, "<---[ Infos programme grille ]--->")
+	}
+	return
+}
 func PrintZoneInfos(infos structure.ZoneInfos) {
 	var header = []string{"CELL ID", "VALEUR", "STATUS", "DATA", "DATA_TYPE", "DETECT TRAP"}
 	var cellData [][]string

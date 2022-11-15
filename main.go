@@ -160,16 +160,20 @@ func main() {
 		}
 	})
 	app.Command("status", "status grille", func(cmd *mowcli.Cmd) {
+		var (
+			pid = cmd.BoolOpt("p pid", false, "afficher infos programme sur la grille")
+		)
 		cmd.Action = func() {
-			programme.GetStatusGrid()
+			programme.GetStatusGrid(*pid)
 		}
 	})
 	app.Command("infos", "infos programme", func(cmd *mowcli.Cmd) {
 		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
+			pname         = cmd.StringOpt("n name", "", "nom du programme")
+			printPosition = cmd.BoolOpt("p position", false, "afficher position")
 		)
 		cmd.Action = func() {
-			programme.GetInfoProgramme(*pname)
+			programme.GetInfoProgramme(*pname, *printPosition)
 		}
 	})
 	app.Command("attack", "mode attaque - tous programme dans la zone", func(cmd *mowcli.Cmd) {

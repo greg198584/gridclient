@@ -136,7 +136,7 @@ func Save(name string) {
 		tools.Fail(fmt.Sprintf(" backup [%s] FAIL [%s]", name, err.Error()))
 	} else {
 		tools.Success(fmt.Sprintf(" backup [%s] OK", name))
-		GetInfoProgramme(name)
+		GetInfoProgramme(name, false)
 	}
 }
 func Info(pc *structure.ProgrammeContainer) {
@@ -160,7 +160,7 @@ func Upgrade(name string) {
 		tools.Fail(fmt.Sprintf(" upgrade [%s] FAIL [%s]", name, err.Error()))
 	} else {
 		tools.Success(fmt.Sprintf("upgrade [%s] OK", name))
-		GetInfoProgramme(name)
+		GetInfoProgramme(name, false)
 	}
 }
 func Delete(name string) {
@@ -281,7 +281,7 @@ func Rebuild(name string, celluleID int, targetID string) {
 	current.PrintInfo(false)
 	return
 }
-func GetStatusGrid() {
+func GetStatusGrid(pid bool) {
 	tools.Title(fmt.Sprintf("Status grid"))
 	res, statusCode, err := api.RequestApi(
 		"GET",
@@ -297,18 +297,21 @@ func GetStatusGrid() {
 			tools.Fail(err.Error())
 		} else {
 			tools.PrintInfosGrille(infos)
+			if pid {
+				tools.PrintInfosProgrammeGrille(infos)
+			}
 		}
 	}
 	return
 }
-func GetInfoProgramme(name string) {
+func GetInfoProgramme(name string, printPosition bool) {
 	tools.Title(fmt.Sprintf("infos programme"))
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
 	current.GetInfosProgramme()
-	current.PrintInfo(true)
+	current.PrintInfo(printPosition)
 }
 
 func CaptureTargetData(name string, celluleID int, targetID string) {
