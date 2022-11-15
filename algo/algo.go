@@ -545,3 +545,15 @@ func (a *Algo) QuickMove(secteurID int, zoneID int) {
 	}
 	a.Move(zoneID)
 }
+func (a *Algo) GetZoneActif() (zoneActif []structure.ZoneInfos, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_ZONE_ACTIF, a.Pc.ID, a.Pc.SecretID),
+		nil,
+	)
+	if err != nil || statusCode != http.StatusOK {
+		return
+	}
+	err = json.Unmarshal(res, &zoneActif)
+	return
+}

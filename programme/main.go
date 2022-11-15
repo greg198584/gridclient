@@ -304,6 +304,16 @@ func GetStatusGrid(pid bool) {
 	}
 	return
 }
+func GetZoneActif(name string) {
+	tools.Title(fmt.Sprintf("Scan Zone actif"))
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	zoneInfos, _ := current.GetZoneActif()
+	tools.PrintZoneActif(zoneInfos)
+	return
+}
 func GetInfoProgramme(name string, printPosition bool) {
 	tools.Title(fmt.Sprintf("infos programme"))
 	current, err := algo.NewAlgo(name)

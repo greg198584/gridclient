@@ -244,12 +244,20 @@ func main() {
 			programme.GetCelluleLog(*pname, *celluleID)
 		}
 	})
-	app.Command("destroy_zone", "destroy cellule zone current", func(cmd *mowcli.Cmd) {
+	app.Command("destroy_zone", "destroy cellule zone current (avec flag)", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
 		)
 		cmd.Action = func() {
 			programme.DestroyZone(*pname)
+		}
+	})
+	app.Command("zone_actif", "affiche zone actif + programme sur zone (avec flag)", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.GetZoneActif(*pname)
 		}
 	})
 	app.Action = func() {

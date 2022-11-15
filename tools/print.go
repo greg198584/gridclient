@@ -311,3 +311,31 @@ func PrintCelluleLogs(celluleLogs []structure.CelluleLog) {
 	PrintColorTable(header, cellData, fmt.Sprintf("<---[ Log cellule ]--->"))
 	return
 }
+func PrintZoneActif(Zones []structure.ZoneInfos) {
+	var header = []string{"Secteur", "Zone", "ID", "Name", "Level", "Valeurs", "Energies", "Status"}
+	var dataList [][]string
+	for _, zone := range Zones {
+		for _, programme := range zone.Programmes {
+			status := ""
+			if programme.Status {
+				status = aurora.Green("OK").String()
+			} else {
+				status = aurora.Red("NOK").String()
+			}
+			dataList = append(dataList, []string{
+				strconv.FormatInt(int64(programme.SecteurID), 10),
+				strconv.FormatInt(int64(zone.ID), 10),
+				aurora.Blue(programme.ID).String(),
+				programme.Name,
+				strconv.FormatInt(int64(programme.Level), 10),
+				strconv.FormatInt(int64(programme.ValeurTotal), 10),
+				strconv.FormatInt(int64(programme.EnergyTotal), 10),
+				status,
+			})
+		}
+	}
+	if len(dataList) > 0 {
+		PrintColorTable(header, dataList, "<---[ zone actif et programme sur grille ]--->")
+	}
+	return
+}
