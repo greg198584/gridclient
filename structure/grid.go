@@ -34,6 +34,7 @@ type ZoneInfos struct {
 	Actif      bool             `json:"actif"`
 	Cellules   []CelluleInfos   `json:"cellule"`
 	Programmes []ProgrammeInfos `json:"programmes"`
+	Status     bool             `json:"status"`
 }
 type ProgrammeInfos struct {
 	ID          string `json:"id"`

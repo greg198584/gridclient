@@ -226,6 +226,14 @@ func main() {
 			programme.SearchProgramme(*pname, *all)
 		}
 	})
+	app.Command("search_trap", "recherche programme", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.SearchCelluleTrap(*pname)
+		}
+	})
 	app.Command("monitoring", "position + status programme monitoring", func(cmd *mowcli.Cmd) {
 		var (
 			pname         = cmd.StringOpt("n name", "", "nom du programme")

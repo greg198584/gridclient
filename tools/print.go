@@ -255,7 +255,7 @@ func PrintZoneInfos(infos structure.ZoneInfos) {
 		})
 	}
 	statusZone := aurora.Red("FALSE")
-	if infos.Actif {
+	if infos.Status {
 		statusZone = aurora.Green("TRUE")
 	}
 	PrintColorTable(header, cellData, fmt.Sprintf(

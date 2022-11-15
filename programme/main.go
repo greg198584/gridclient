@@ -398,11 +398,9 @@ func DestroyZone(name string) {
 		}
 		ok, zoneInfos := current.GetZoneinfos()
 		tools.PrintZoneInfos(zoneInfos)
-		if ok && zoneInfos.Actif {
+		if ok && zoneInfos.Status {
 			for _, cellule := range zoneInfos.Cellules {
-				if cellule.Status {
-					current.AttackZone(cellule.ID)
-				}
+				current.AttackZone(cellule.ID)
 			}
 		}
 	}
@@ -528,6 +526,49 @@ func SearchEnergy(name string) {
 				return
 			} else {
 				current.SearchEnergy(zoneInfos.Cellules)
+			}
+			//current.PrintInfo(false)
+		}
+	}
+}
+func SearchCelluleTrap(name string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	err = current.GetStatusGrid()
+	currentZoneID := current.Psi.Programme.Position.ZoneID
+	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
+		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
+		if ok, _ := current.Move(i); !ok {
+			if current.StatusCode == http.StatusUnauthorized {
+				break
+			}
+		}
+		if scanOK, scanRes, _ := current.Scan(); !scanOK {
+			jsonPretty, _ := tools.PrettyString(scanRes)
+			fmt.Println(jsonPretty)
+			tools.Fail("erreur scan")
+			return
+		} else {
+			var zoneInfos structure.ZoneInfos
+			err := json.Unmarshal(scanRes, &zoneInfos)
+			if err != nil {
+				tools.Fail(err.Error())
+				return
+			} else {
+				for _, cellule := range zoneInfos.Cellules {
+					if cellule.Trapped {
+						title := aurora.Red("--- CELLULE DANGER")
+						tools.Title(fmt.Sprintf(
+							"\t%s >>> [%d][%d] cellule [%d]",
+							title,
+							current.Psi.Programme.Position.SecteurID,
+							current.Psi.Programme.Position.ZoneID,
+							cellule.ID,
+						))
+					}
+				}
 			}
 			//current.PrintInfo(false)
 		}
