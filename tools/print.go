@@ -204,7 +204,7 @@ func PrintInfosGrille(infos structure.GridInfos) {
 }
 func PrintInfosProgrammeGrille(infos structure.GridInfos) {
 	if infos.NbrProgrammes > 0 {
-		var header = []string{"ID", "Name", "Level", "SecteurID", "Valeurs", "Energies", "Status"}
+		var header = []string{"ID", "Name", "Level", "Secteur", "Valeurs", "Energies", "Status"}
 		var dataList [][]string
 		for _, programme := range infos.Programmes {
 			status := ""

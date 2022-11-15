@@ -178,18 +178,21 @@ func main() {
 	})
 	app.Command("attack", "mode attaque - tous programme dans la zone", func(cmd *mowcli.Cmd) {
 		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
+			pname     = cmd.StringOpt("n name", "", "nom du programme")
+			printInfo = cmd.BoolOpt("p print", false, "affiche infos programme")
 		)
 		cmd.Action = func() {
-			programme.Attack(*pname)
+			var pidList []string
+			programme.Attack(*pname, pidList, *printInfo)
 		}
 	})
 	app.Command("defense", "mode defense + attaque simultanement programme hostile", func(cmd *mowcli.Cmd) {
 		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
+			pname     = cmd.StringOpt("n name", "", "nom du programme")
+			printInfo = cmd.BoolOpt("p print", false, "affiche infos programme")
 		)
 		cmd.Action = func() {
-			programme.CheckAttack(*pname)
+			programme.CheckAttack(*pname, *printInfo)
 		}
 	})
 	app.Command("quick_move", "deplacement secteur + zone voulu", func(cmd *mowcli.Cmd) {
@@ -238,9 +241,10 @@ func main() {
 		var (
 			pname         = cmd.StringOpt("n name", "", "nom du programme")
 			printPosition = cmd.BoolOpt("p position", false, "afficher position")
+			defense       = cmd.BoolOpt("d", false, "ajouter mode defense en cas d'attaque")
 		)
 		cmd.Action = func() {
-			programme.Monitoring(*pname, *printPosition)
+			programme.Monitoring(*pname, *printPosition, *defense)
 		}
 	})
 	app.Command("log", "info log cellule", func(cmd *mowcli.Cmd) {

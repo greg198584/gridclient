@@ -406,7 +406,17 @@ func DestroyZone(name string) {
 	}
 
 }
-func Attack(name string) {
+func AttackTarget(current *algo.Algo, pid string) {
+	for _, cellule := range current.Psi.Programme.Cellules {
+		if cellule.Status && cellule.Energy > 0 {
+			statusTarget := true
+			if statusTarget {
+				current.Attack(cellule.ID, pid)
+			}
+		}
+	}
+}
+func Attack(name string, PidList []string, printInfo bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
@@ -414,31 +424,31 @@ func Attack(name string) {
 	status := true
 	for status {
 		current.GetInfosProgramme()
-		current.PrintInfo(false)
+		if printInfo {
+			current.PrintInfo(false)
+		}
 		if current.Psi.Programme.ID != "" {
 			status = current.Psi.Programme.Status
 		}
 		_, programmes := current.GetProgramme()
 		for _, pid := range programmes {
-			for _, cellule := range current.Psi.Programme.Cellules {
-				if cellule.Status && cellule.Energy > 0 {
-					statusTarget := true
-					if _, okLP := current.Psi.LockProgramme[pid]; okLP {
-						statusTarget = current.Psi.LockProgramme[pid].Cellules[cellule.ID].Status
-					}
-					if statusTarget {
-						current.Attack(cellule.ID, pid)
+			if len(PidList) > 0 {
+				for _, pidTarget := range PidList {
+					if pid == pidTarget {
+						AttackTarget(current, pid)
 					}
 				}
+			} else {
+				AttackTarget(current, pid)
 			}
 			if current.Psi.LockProgramme[pid].Status == false {
 				break
 			}
 		}
-		current.CheckAttack()
+		current.CheckAttack(printInfo)
 	}
 }
-func CheckAttack(name string) {
+func CheckAttack(name string, printInfo bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
@@ -450,7 +460,7 @@ func CheckAttack(name string) {
 		if current.Psi.Programme.ID != "" {
 			status = current.Psi.Programme.Status
 		}
-		current.CheckAttack()
+		current.CheckAttack(printInfo)
 	}
 }
 func MovePosition(name string, position string) {
@@ -626,7 +636,7 @@ func SearchProgramme(name string, all bool) {
 		}
 	}
 }
-func Monitoring(name string, printGrid bool) {
+func Monitoring(name string, printGrid bool, defense bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
@@ -635,6 +645,9 @@ func Monitoring(name string, printGrid bool) {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		current.GetInfosProgramme()
 		current.PrintInfo(printGrid)
+		if defense {
+			current.CheckAttack(true)
+		}
 	}
 }
 func GetCelluleLog(name string, celluleID string) {

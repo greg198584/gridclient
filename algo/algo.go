@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	TIME_MILLISECONDE = 1000
+	TIME_MILLISECONDE = 500
 	ENERGY_MAX_ATTACK = 10
 	MAX_CELLULES      = 9
 	MAX_VALEUR        = 100
@@ -343,7 +343,7 @@ func (a *Algo) Defense(celluleID int, targetID string) {
 		}
 	}
 }
-func (a *Algo) CheckAttack() {
+func (a *Algo) CheckAttack(printInfo bool) {
 	maxValeur := a.Psi.Programme.Level * MAX_VALEUR
 	for _, cellule := range a.Psi.Programme.Cellules {
 		if cellule.CurrentAccesLog.ReceiveDestroy {
@@ -368,7 +368,9 @@ func (a *Algo) CheckAttack() {
 					tools.Fail("erreur attack")
 				}
 			}
-			a.PrintInfo(false)
+			if printInfo {
+				a.PrintInfo(false)
+			}
 		}
 	}
 	return
