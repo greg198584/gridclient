@@ -14,7 +14,7 @@ func RequestApi(method string, url string, data []byte) (result []byte, statusCo
 	req.Header.Set("Content-Type", "application/json")
 
 	cli := &http.Client{
-		Timeout: time.Duration(1) * time.Minute,
+		Timeout: time.Duration(4) * time.Second,
 	}
 	resp, err := cli.Do(req)
 	defer cli.CloseIdleConnections()

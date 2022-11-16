@@ -402,6 +402,8 @@ func DestroyZone(name string) {
 			for _, cellule := range zoneInfos.Cellules {
 				current.AttackZone(cellule.ID)
 			}
+		} else {
+			status = false
 		}
 	}
 
@@ -423,6 +425,7 @@ func Attack(name string, PidList []string, printInfo bool) {
 	}
 	status := true
 	for status {
+		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		current.GetInfosProgramme()
 		if printInfo {
 			current.PrintInfo(false)
@@ -455,6 +458,7 @@ func CheckAttack(name string, printInfo bool) {
 	}
 	status := true
 	for status {
+		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		current.GetInfosProgramme()
 		current.PrintInfo(false)
 		if current.Psi.Programme.ID != "" {
