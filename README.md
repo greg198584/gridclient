@@ -151,6 +151,10 @@ GET /v1/programme/push/flag/:id/:secretid
 
 [v1_programme_upgrade](_exemple_retour_json/v1_programme_upgrade.json).
 
+[v1_programme_zone_actif](_exemple_retour_json/v1_programme_zone_actif.json).
+
+[v1_programme_destroy_zone](_exemple_retour_json/v1_programme_destroy_zone.json).
+
 
 ```bash
 GET /v1/programme/destroy/zone/:id/:secretid/:celluleid

@@ -1,0 +1,315 @@
+[
+  {
+    "id": 44,
+    "actif": true,
+    "cellule": [
+      {
+        "id": 2,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      },
+      {
+        "id": 3,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      },
+      {
+        "id": 5,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      },
+      {
+        "id": 6,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      },
+      {
+        "id": 7,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      },
+      {
+        "id": 0,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      },
+      {
+        "id": 1,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      },
+      {
+        "id": 4,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      },
+      {
+        "id": 8,
+        "valeur": 0,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 0,
+        "status": false,
+        "destroy": false,
+        "rebuild": false,
+        "capture": false
+      }
+    ],
+    "programmes": [
+      {
+        "id": "14abaf0184e0fa3763ddc701fe871aeeb7537339",
+        "name": "AAA",
+        "level": 6,
+        "secteur_id": 16,
+        "nbr_cellules": 9,
+        "valeur_total": 5400,
+        "energy_total": 10600,
+        "status": true
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "actif": true,
+    "cellule": [
+      {
+        "id": 0,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 35,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      },
+      {
+        "id": 3,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 21,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      },
+      {
+        "id": 5,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 83,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      },
+      {
+        "id": 6,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 52,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      },
+      {
+        "id": 7,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 89,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      },
+      {
+        "id": 8,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 10,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      },
+      {
+        "id": 1,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 74,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      },
+      {
+        "id": 2,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 88,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      },
+      {
+        "id": 4,
+        "valeur": 1000,
+        "energy": 0,
+        "data_type": {
+          "id": 0,
+          "content": "",
+          "energy": 0,
+          "is_flag": false
+        },
+        "data_count": 89,
+        "status": true,
+        "destroy": true,
+        "rebuild": true,
+        "capture": false
+      }
+    ],
+    "programmes": null
+  }
+]
