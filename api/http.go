@@ -23,7 +23,7 @@ func RequestApi(method string, url string, data []byte) (result []byte, statusCo
 	}
 	result, err = ioutil.ReadAll(resp.Body)
 	tools.Log(fmt.Sprintf("< request api status [%d] [%s %s] >", resp.StatusCode, method, url), "", false)
-	jsonPretty, _ := tools.PrettyString(result)
-	fmt.Println(jsonPretty)
+	//jsonPretty, _ := tools.PrettyString(result)
+	//fmt.Println(jsonPretty)
 	return result, resp.StatusCode, err
 }
