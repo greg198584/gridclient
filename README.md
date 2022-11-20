@@ -114,9 +114,15 @@ GET /v1/programme/push/flag/:id/:secretid
 
 ### Route API - Route accessible apres transfert du drapeau
 
+```bash
+GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
+GET /v1/grid/zone/actif/:id/:secretid
+```
+
 -La route `/v1/programme/destroy/zone/` est un moyen sûr de déclencher une réinitialisation du réseau et d'empêcher tout programme d'économiser de l'énergie à la fin d'un cycle.
 
 -La route `/v1/grid/zone/actif`  permet de savoir quelles zones sont actives et quels programmes sont disponibles dans ces zones.  
+
 
 ### Exemple retour API par route
 
@@ -165,12 +171,6 @@ GET /v1/programme/push/flag/:id/:secretid
 [v1_programme_zone_actif](_exemple_retour_json/v1_programme_zone_actif.json).
 
 [v1_programme_destroy_zone](_exemple_retour_json/v1_programme_destroy_zone.json).
-
-
-```bash
-GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
-GET /v1/grid/zone/actif/:id/:secretid
-```
 
 ### Usage 
 
