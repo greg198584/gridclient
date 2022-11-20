@@ -40,7 +40,18 @@ La force de défense est également déterminée par le level du joueur multipli
 - Le drapeau augmente le level + permet destruction zone de transfert du cycle
 - Les cellules peuvent être piéger et une requête capture cause des dégâts dans ce cas la
 
-### Installation
+### Concept
+
+#### Le projet principal est l'API qui est libre accès et sans authentification. 
+
+- Vous pouvez utiliser le langage de votre choix et composer votre client comme vous le souhaitez. 
+- Le client qui est inclus dans ce projet est un tutoriel pour utiliser l'API. 
+- Vous avez tous les modes de jeu disponibles et un exemple de retour JSON par les routes. 
+- Vous choisissez comment et quand vous voulez utiliser une route. 
+- L'API vous fournit toutes les informations dont vous avez besoin pour jouer. 
+- Et vous avez également dans les liens ci-dessus un tutoriel vidéo complet.
+
+### Client GO Installation
 
 installer go https://go.dev/doc/install
 
@@ -57,7 +68,7 @@ go install github.com/greg198584/gridclient@latest
 
 - Aucune base de donnée est utiliser par l'API. Il suffit de garder le JSON représenter par la structure ProgrammeContainer
 
-- https://github.com/greg198584/gridclient/blob/main/structure/grid.go
+[v1_programme_new](_exemple_retour_json/v1_programme_new.json).
 
 ```go
 type ProgrammeContainer struct {
