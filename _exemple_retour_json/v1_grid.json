@@ -1,0 +1,19 @@
+{
+  "id": "1056b4b7-85d3-4772-b226-c095f8f41213",
+  "taille": 100,
+  "zone_transfert": {
+    "secteur_id": 70,
+    "zone_id": 62
+  },
+  "iteration": 10000,
+  "cycle": 0,
+  "nbr_programmes": 0,
+  "programmes": null,
+  "status": true,
+  "version": "1.9.10",
+  "flag_capture": false,
+  "indice_flag": {
+    "indice_value": "6b",
+    "instruction": "[ ? + secteur = indice ] [ ? = value in JSON /v1/grid ] [ indice = hexa ]"
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "id": 82,
+  "actif": true,
+  "cellule": [
+    {
+      "id": 4,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 21,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": false
+    },
+    {
+      "id": 5,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 64,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": false
+    },
+    {
+      "id": 7,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 91,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": false
+    },
+    {
+      "id": 3,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 61,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": false
+    },
+    {
+      "id": 1,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 70,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": false
+    },
+    {
+      "id": 2,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 85,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": false
+    },
+    {
+      "id": 6,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 87,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": false
+    },
+    {
+      "id": 8,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 56,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": false
+    },
+    {
+      "id": 0,
+      "valeur": 500,
+      "energy": 0,
+      "data_type": {
+        "id": 0,
+        "content": "",
+        "energy": 0,
+        "is_flag": false
+      },
+      "data_count": 67,
+      "status": true,
+      "destroy": true,
+      "rebuild": true,
+      "capture": true,
+      "trapped": true
+    }
+  ],
+  "programmes": [
+    {
+      "id": "f6d9f45af9f79a07bd1e696ec9afe25bddc8680d",
+      "name": "AAA",
+      "level": 1,
+      "secteur_id": 37,
+      "nbr_cellules": 9,
+      "valeur_total": 900,
+      "energy_total": 900,
+      "status": true
+    }
+  ],
+  "status": true
+}

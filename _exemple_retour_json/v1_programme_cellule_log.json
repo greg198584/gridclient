@@ -1,0 +1,20 @@
+[
+  {
+    "pid": "f6d9f45af9f79a07bd1e696ec9afe25bddc8680d",
+    "target_id": "",
+    "receive_destroy": false,
+    "active_destroy": false,
+    "active_rebuild": false,
+    "active_capture": true,
+    "c_time": "2022-11-20T21:37:11.574851+01:00"
+  },
+  {
+    "pid": "f6d9f45af9f79a07bd1e696ec9afe25bddc8680d",
+    "target_id": "",
+    "receive_destroy": false,
+    "active_destroy": false,
+    "active_rebuild": false,
+    "active_capture": true,
+    "c_time": "2022-11-20T21:37:19.030484+01:00"
+  }
+]

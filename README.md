@@ -2,6 +2,12 @@
 
 ## Grille Client CLI
 
+[![API Reference](
+https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667
+)](http://195.154.84.18:20080/v1/grid)
+[![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/w2KcDSmu)
+
+
 ### Description
 
 https://codeurlibre.systeme.io/commencez--programmer-en-jouant--ce-nouveau-jeu
@@ -100,6 +106,51 @@ GET /v1/programme/push/flag/:id/:secretid
 -La route `/v1/programme/destroy/zone/` est un moyen sûr de déclencher une réinitialisation du réseau et d'empêcher tout programme d'économiser de l'énergie à la fin d'un cycle.
 
 -La route `/v1/grid/zone/actif`  permet de savoir quelles zones sont actives et quels programmes sont disponibles dans ces zones.  
+
+### Exemple retour API par route
+
+[v1_grid](_exemple_retour_json/v1_grid.json).
+
+[v1_programme_capture_cellule_data](_exemple_retour_json/v1_programme_capture_cellule_data.json).
+
+[v1_programme_capture_cellule_energy](_exemple_retour_json/v1_programme_capture_cellule_energy.json).
+
+[v1_programme_capture_target_data](_exemple_retour_json/v1_programme_capture_target_data.json).
+
+[v1_programme_capture_target_energy](_exemple_retour_json/v1_programme_capture_target_energy.json).
+
+[v1_programme_cellule_log](_exemple_retour_json/v1_programme_cellule_log.json).
+
+[v1_programme_destroy](_exemple_retour_json/v1_programme_destroy.json).
+
+[v1_programme_equilibrium](_exemple_retour_json/v1_programme_equilibrium.json).
+
+[v1_programme_explore](_exemple_retour_json/v1_programme_explore.json).
+
+[v1_programme_infos](_exemple_retour_json/v1_programme_infos.json).
+
+[v1_programme_jump_down](_exemple_retour_json/v1_programme_jump_down.json).
+
+[v1_programme_jump_up](_exemple_retour_json/v1_programme_jump_up.json).
+
+[v1_programme_load](_exemple_retour_json/v1_programme_load.json).
+
+[v1_programme_move](_exemple_retour_json/v1_programme_move.json).
+
+[v1_programme_new](_exemple_retour_json/v1_programme_new.json).
+
+[v1_programme_push_flag](_exemple_retour_json/v1_programme_push_flag.json).
+
+[v1_programme_rebuild](_exemple_retour_json/v1_programme_rebuild.json).
+
+[v1_programme_save](_exemple_retour_json/v1_programme_save.json).
+
+[v1_programme_scan](_exemple_retour_json/v1_programme_scan.json).
+
+[v1_programme_unset](_exemple_retour_json/v1_programme_unset.json).
+
+[v1_programme_upgrade](_exemple_retour_json/v1_programme_upgrade.json).
+
 
 ```bash
 GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
