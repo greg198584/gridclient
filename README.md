@@ -42,7 +42,7 @@ La force de défense est également déterminée par le level du joueur multipli
 
 ### Concept
 
-#### Le projet principal est l'API qui est libre accès et sans authentification. 
+#### Le projet principal est l'API qui est en libre accès et sans authentification. 
 
 - Vous pouvez utiliser le langage de votre choix et composer votre client comme vous le souhaitez. 
 - Le client qui est inclus dans ce projet est un tutoriel pour utiliser l'API. 
