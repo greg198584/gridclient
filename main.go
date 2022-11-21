@@ -258,10 +258,13 @@ func main() {
 	})
 	app.Command("destroy_zone", "destroy cellule zone current (avec flag)", func(cmd *mowcli.Cmd) {
 		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
+			pname      = cmd.StringOpt("n name", "", "nom du programme")
+			celluleID  = cmd.StringOpt("c cellule", "", "ID cellule")
+			allCellule = cmd.BoolOpt("a all", false, "toutes les cellules")
 		)
 		cmd.Action = func() {
-			programme.DestroyZone(*pname)
+			celluleIDint, _ := strconv.Atoi(*celluleID)
+			programme.DestroyZone(*pname, celluleIDint, *allCellule)
 		}
 	})
 	app.Command("zone_actif", "affiche zone actif + programme sur zone (avec flag)", func(cmd *mowcli.Cmd) {

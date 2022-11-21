@@ -28,13 +28,20 @@ type IndiceFlag struct {
 type ProgrammeStatusInfos struct {
 	Programme     Programme            `json:"programme"`
 	LockProgramme map[string]Programme `json:"lock_programme"`
+	Locked        bool                 `json:"locked"`
 }
 type ZoneInfos struct {
-	ID         int              `json:"id"`
-	Actif      bool             `json:"actif"`
-	Cellules   []CelluleInfos   `json:"cellule"`
-	Programmes []ProgrammeInfos `json:"programmes"`
-	Status     bool             `json:"status"`
+	ID                  int                 `json:"id"`
+	Actif               bool                `json:"actif"`
+	Cellules            []CelluleInfos      `json:"cellule"`
+	Programmes          []ProgrammeInfos    `json:"programmes"`
+	Status              bool                `json:"status"`
+	Lock                bool                `json:"lock"`
+	InstructionPassword InstructionPassword `json:"instruction_password"`
+}
+type InstructionPassword struct {
+	Len    int    `json:"len"`
+	Format string `json:"format"`
 }
 type ProgrammeInfos struct {
 	ID          string `json:"id"`

@@ -383,7 +383,7 @@ func PushFlag(name string) {
 	current.GetInfosProgramme()
 	current.PrintInfo(false)
 }
-func DestroyZone(name string) {
+func DestroyZone(name string, celluleID int, all bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
@@ -399,9 +399,31 @@ func DestroyZone(name string) {
 		ok, zoneInfos := current.GetZoneinfos()
 		tools.PrintZoneInfos(zoneInfos)
 		if ok && zoneInfos.Status {
-			for _, cellule := range zoneInfos.Cellules {
-				current.AttackZone(cellule.ID)
+			if all {
+				for zoneInfos.Status {
+					for _, cellule := range zoneInfos.Cellules {
+						if cellule.Status {
+							current.AttackZone(cellule.ID)
+						}
+						_, zoneInfos = current.GetZoneinfos()
+					}
+				}
+				if zoneInfos.Status == false {
+					status = false
+					break
+				}
+			} else {
+				for {
+					if zoneInfos.Cellules[celluleID].Status {
+						current.AttackZone(celluleID)
+					} else {
+						status = false
+						break
+					}
+					_, zoneInfos = current.GetZoneinfos()
+				}
 			}
+			tools.PrintZoneInfos(zoneInfos)
 		} else {
 			status = false
 		}
@@ -525,6 +547,9 @@ func SearchEnergy(name string) {
 		if ok, _ := current.Move(i); !ok {
 			if current.StatusCode == http.StatusUnauthorized {
 				break
+			} else if current.Psi.Locked {
+				tools.PrintProgramme(current.Psi)
+				return
 			}
 		}
 		if scanOK, scanRes, _ := current.Scan(); !scanOK {
@@ -557,6 +582,9 @@ func SearchCelluleTrap(name string) {
 		if ok, _ := current.Move(i); !ok {
 			if current.StatusCode == http.StatusUnauthorized {
 				break
+			} else if current.Psi.Locked {
+				tools.PrintProgramme(current.Psi)
+				return
 			}
 		}
 		if scanOK, scanRes, _ := current.Scan(); !scanOK {

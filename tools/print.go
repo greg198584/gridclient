@@ -72,10 +72,17 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 					aurora.Red(lockProgramme.Name).String(),
 				})
 			}
+			locked := ""
+			if psi.Locked {
+				locked = aurora.Red("LOCKED").String()
+			} else {
+				locked = aurora.Green("UNLOCKED").String()
+			}
 			fmt.Printf(
-				"<--- Programme Info status [%s][%s] %s [%s][%s] --->\n",
+				"<--- Programme Info status [%s][%s][%s] %s [%s][%s] --->\n",
 				aurora.Cyan(psi.Programme.Name),
 				aurora.Green(psi.Programme.ID),
+				locked,
 				aurora.White("VS"),
 				aurora.Red(lockProgramme.Name),
 				aurora.Green(lockProgramme.ID),
@@ -114,7 +121,13 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				status,
 			})
 		}
-		fmt.Printf("<---[ Programme Info status [%s] [%s] ]--->\n", aurora.Cyan(psi.Programme.Name), aurora.Green(psi.Programme.ID))
+		locked := ""
+		if psi.Locked {
+			locked = aurora.Red("LOCKED").String()
+		} else {
+			locked = aurora.Green("UNLOCKED").String()
+		}
+		fmt.Printf("<---[ Programme Info status [%s] [%s] [%s] ]--->\n", aurora.Cyan(psi.Programme.Name), aurora.Green(psi.Programme.ID), locked)
 		PrintColorTable(header, dataList)
 		dataList = nil
 	}
@@ -186,6 +199,10 @@ func PrintInfosGrille(infos structure.GridInfos) {
 	if infos.FlagCapture {
 		flagCapture = aurora.Green("TRUE")
 	}
+	statusGrid := aurora.Red("FALSE")
+	if infos.Status {
+		statusGrid = aurora.Green("TRUE")
+	}
 	InfosTab = append(InfosTab, []string{
 		infos.Id,
 		strconv.FormatInt(int64(infos.Taille), 10),
@@ -193,7 +210,7 @@ func PrintInfosGrille(infos structure.GridInfos) {
 		strconv.FormatInt(int64(infos.Iteration), 10),
 		strconv.FormatInt(int64(infos.Cycle), 10),
 		strconv.FormatInt(int64(infos.NbrProgrammes), 10),
-		fmt.Sprintf("%t", infos.Status),
+		statusGrid.String(),
 		infos.Version,
 		flagCapture.String(),
 		aurora.Magenta(infos.IndiceFlag.IndiceValue).String(),
@@ -258,10 +275,16 @@ func PrintZoneInfos(infos structure.ZoneInfos) {
 	if infos.Status {
 		statusZone = aurora.Green("TRUE")
 	}
+	lockZone := aurora.Red("FALSE")
+	if infos.Lock {
+		lockZone = aurora.Green("TRUE")
+	}
 	PrintColorTable(header, cellData, fmt.Sprintf(
-		"<---[ Infos programme sur Zone [%d] - status [%s] ]--->",
+		"<---[ Infos programme sur Zone [%d] - status [%s] - lock [%s] - instruction [%s] ]--->",
 		infos.ID,
 		statusZone,
+		lockZone,
+		fmt.Sprintf("len=[%d] format=[%s]", infos.InstructionPassword.Len, infos.InstructionPassword.Format),
 	))
 	header = []string{"PID", "NAME", "VALEUR TOTAL", "ENERGY TOTAL"}
 	var progrData [][]string
