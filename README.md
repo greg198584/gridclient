@@ -51,6 +51,20 @@ La force de défense est également déterminée par le level du joueur multipli
 - L'API vous fournit toutes les informations dont vous avez besoin pour jouer. 
 - Et vous avez également dans les liens ci-dessus un tutoriel vidéo complet.
 
+#### Mis a jour API
+
+`v1.9.10` Cellules piège ( capture cause des degat ) | zone de transfert = zone de sauvegarde | zone de transfert pour celui qui capture le drapeau.
+
+`v1.0` - Déplacement | capture de drapeau | combat | scan | explore | capture | infos programmes | infos grille
+
+#### En cours de développement
+
+- MODE de jeu en equipe.
+- Destruction des cellules piégées pour capture sans risque.
+- Mode verrouillage de zone (emprisonnements du programme).
+- Pour déverrouiller une zone verrouillée, vous devrez collaborer avec un membre de l'équipe qui utilise une autre zone, une zone de déverrouillage, zone indiquer dans la zone verrouiler [ lock zone ] = [ unlock zone ]
+- La lock zone peut etre egalement déverrouiller par force brute de mot de passe (parametre founi mode random, mais simple)
+
 ### Client GO Installation
 
 installer go https://go.dev/doc/install
