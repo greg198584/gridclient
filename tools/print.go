@@ -275,15 +275,10 @@ func PrintZoneInfos(infos structure.ZoneInfos) {
 	if infos.Status {
 		statusZone = aurora.Green("TRUE")
 	}
-	lockZone := aurora.Red("FALSE")
-	if infos.Lock {
-		lockZone = aurora.Green("TRUE")
-	}
 	PrintColorTable(header, cellData, fmt.Sprintf(
-		"<---[ Infos programme sur Zone [%d] - status [%s] - lock [%s] - instruction [%s] ]--->",
+		"<---[ Infos programme sur Zone [%d] - status [%s] - instruction [%s] ]--->",
 		infos.ID,
 		statusZone,
-		lockZone,
 		fmt.Sprintf("len=[%d] format=[%s]", infos.InstructionPassword.Len, infos.InstructionPassword.Format),
 	))
 	header = []string{"PID", "NAME", "VALEUR TOTAL", "ENERGY TOTAL"}

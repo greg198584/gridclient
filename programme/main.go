@@ -511,7 +511,8 @@ func SearchFlag(name string) {
 	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized {
+			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
+				tools.PrintProgramme(current.Psi)
 				return
 			}
 		}
@@ -545,11 +546,9 @@ func SearchEnergy(name string) {
 	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized {
-				break
-			} else if current.Psi.Locked {
+			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
 				tools.PrintProgramme(current.Psi)
-				return
+				break
 			}
 		}
 		if scanOK, scanRes, _ := current.Scan(); !scanOK {
@@ -580,11 +579,9 @@ func SearchCelluleTrap(name string) {
 	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized {
-				break
-			} else if current.Psi.Locked {
+			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
 				tools.PrintProgramme(current.Psi)
-				return
+				break
 			}
 		}
 		if scanOK, scanRes, _ := current.Scan(); !scanOK {
@@ -634,6 +631,9 @@ func SearchProgramme(name string, all bool) {
 			if ok, _ := current.Move(i); !ok {
 				if current.StatusCode == http.StatusBadRequest {
 					break
+				} else if current.Psi.Locked {
+					tools.PrintProgramme(current.Psi)
+					return
 				}
 			}
 			if scanOK, scanRes, _ := current.Scan(); !scanOK {
@@ -645,10 +645,12 @@ func SearchProgramme(name string, all bool) {
 				json.Unmarshal(scanRes, &zoneInfos)
 				programmeFound := false
 				for _, programme := range zoneInfos.Programmes {
-					programmeFound = true
-					tools.Success("PROGRAMME FOUND")
-					fmt.Printf("\n\t>>> pprogramme trouver [%s] [%d] [%t]\n", aurora.Green(programme.Name), aurora.Cyan(programme.ID), programme.Status)
-					break
+					if programme.ID != current.ID {
+						programmeFound = true
+						tools.Success("PROGRAMME FOUND")
+						fmt.Printf("\n\t>>> pprogramme trouver [%s] [%d] [%t]\n", aurora.Green(programme.Name), aurora.Cyan(programme.ID), programme.Status)
+						break
+					}
 				}
 				if programmeFound {
 					return
@@ -705,4 +707,31 @@ func GetCelluleLog(name string, celluleID string) {
 		}
 	}
 	return
+}
+
+func CrackPassword(name string, Len int, Format string) {
+	tools.Title(fmt.Sprintf("Unlock zone"))
+	_, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	// Exemple de method qui prend en parametre la structure algo pour faire les appel + function SendUnlock en dessus)
+	// Trouver une method pour essayer chaque combinaison taille du mot de passe len + les caractere present dans mot de passe Format)
+	//password.BruteForce(Len, Format, current, SendUnlock)
+}
+func SendUnlock(current *algo.Algo, password string) bool {
+	_, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_UNLOCK_ZONE, current.Pc.ID, current.Pc.SecretID, password),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		if statusCode != http.StatusOK {
+			return false
+		}
+		return true
+	}
+	return false
 }

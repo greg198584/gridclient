@@ -25,6 +25,7 @@ const (
 	ROUTE_PUSH_FLAG             = "v1/programme/push/flag"
 	ROUTE_SAVE_PROGRAMME        = "v1/programme/save"
 	ROUTE_DESTROY_ZONE          = "v1/programme/destroy/zone"
+	ROUTE_UNLOCK_ZONE           = "/v1/grid/zone/unlock"
 	// USAGE AVEC FLAG CURRENT OU ARTEFACT
 	ROUTE_ZONE_ACTIF = "v1/grid/zone/actif"
 )

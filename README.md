@@ -53,17 +53,20 @@ La force de défense est également déterminée par le level du joueur multipli
 
 #### Mis a jour API
 
-`v1.9.10` Cellules piège ( capture cause des degat ) | zone de transfert = zone de sauvegarde | zone de transfert pour celui qui capture le drapeau.
+`v1.11.2`   1. Destruction des cellules piégées pour capture sans risque.
+            2. Mode verrouillage de zone (emprisonnements du programme).           
+            3. La lock zone peut etre egalement déverrouiller par force brute de mot de passe (parametre founi mode random, mais simple)
 
-`v1.0` - Déplacement | capture de drapeau | combat | scan | explore | capture | infos programmes | infos grille
+`v1.9.10`   Cellules piège ( capture cause des degat ) | zone de transfert = zone de sauvegarde | zone de transfert pour celui qui capture le drapeau.
+
+`v1.0.0`    Déplacement | capture de drapeau | combat | scan | explore | capture | infos programmes | infos grille
 
 #### En cours de développement
 
 - MODE de jeu en equipe.
-- Destruction des cellules piégées pour capture sans risque.
-- Mode verrouillage de zone (emprisonnements du programme).
-- Pour déverrouiller une zone verrouillée, vous devrez collaborer avec un membre de l'équipe qui utilise une autre zone, une zone de déverrouillage, zone indiquer dans la zone verrouiler [ lock zone ] = [ unlock zone ]
-- La lock zone peut etre egalement déverrouiller par force brute de mot de passe (parametre founi mode random, mais simple)
+  
+- Pour déverrouiller une zone verrouillée, vous devrez collaborer avec un membre de l'équipe qui utilise une autre zone.
+  une zone de déverrouillage, zone indiquer dans la zone verrouiler [ lock zone ] = [ unlock zone ]
 
 ### Client GO Installation
 
@@ -125,15 +128,27 @@ GET /v1/programme/capture/target/energy/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/equilibrium/:id/:secretid
 GET /v1/programme/push/flag/:id/:secretid
 ```
+#### Route en cas de lock
+
+- instruction `GET /v1/programme/scan/:id/:secretid` (InstructionPassword len=taille du mot de passe, format=caractere utiliser)
+
+- zone/unlock pour envoi du mot de passe pour unlock zone.
+
+```bash
+GET /v1/grid/zone/unlock/:id/:secretid/:password
+```
+
+```bash
+GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
+```
+
+-La route `/v1/programme/destroy/zone/` est un moyen sûr de déclencher une réinitialisation du réseau et d'empêcher tout programme d'économiser de l'énergie à la fin d'un cycle (si destruction zone de transfert).
 
 ### Route API - Route accessible apres transfert du drapeau
 
 ```bash
-GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
 GET /v1/grid/zone/actif/:id/:secretid
 ```
-
--La route `/v1/programme/destroy/zone/` est un moyen sûr de déclencher une réinitialisation du réseau et d'empêcher tout programme d'économiser de l'énergie à la fin d'un cycle.
 
 -La route `/v1/grid/zone/actif`  permet de savoir quelles zones sont actives et quels programmes sont disponibles dans ces zones.  
 

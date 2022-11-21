@@ -275,6 +275,16 @@ func main() {
 			programme.GetZoneActif(*pname)
 		}
 	})
+	app.Command("crack_password", "brute force - pour unlock zone", func(cmd *mowcli.Cmd) {
+		var (
+			pname  = cmd.StringOpt("n name", "", "nom du programme")
+			Len    = cmd.IntOpt("l len", 0, "len - taille du mot de passe")
+			Format = cmd.StringOpt("f format", "", "format - caractere utiliser")
+		)
+		cmd.Action = func() {
+			programme.CrackPassword(*pname, *Len, *Format)
+		}
+	})
 	app.Action = func() {
 		app.PrintHelp()
 	}

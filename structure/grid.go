@@ -36,7 +36,6 @@ type ZoneInfos struct {
 	Cellules            []CelluleInfos      `json:"cellule"`
 	Programmes          []ProgrammeInfos    `json:"programmes"`
 	Status              bool                `json:"status"`
-	Lock                bool                `json:"lock"`
 	InstructionPassword InstructionPassword `json:"instruction_password"`
 }
 type InstructionPassword struct {
