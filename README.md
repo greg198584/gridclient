@@ -54,6 +54,7 @@ La force de défense est également déterminée par le level du joueur multipli
 #### Mis a jour API
 
 `v1.11.2`   
+
 1. Destruction des cellules piégées pour capture sans risque.
 2. Mode verrouillage de zone (emprisonnements du programme).           
 3. La lock zone peut etre egalement déverrouiller par force brute de mot de passe (parametre founi mode random, mais simple)
@@ -133,6 +134,7 @@ GET /v1/programme/capture/target/energy/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/equilibrium/:id/:secretid
 GET /v1/programme/push/flag/:id/:secretid
 ```
+
 #### Route en cas de lock
 
 - instruction `GET /v1/programme/scan/:id/:secretid` (InstructionPassword len=taille du mot de passe, format=caractere utiliser)
@@ -143,13 +145,15 @@ GET /v1/programme/push/flag/:id/:secretid
 GET /v1/grid/zone/unlock/:id/:secretid/:password
 ```
 
+#### Route Destruction cellules de zone (zone de transfert destruction avec flag seulement)
+
 ```bash
 GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
 ```
 
 -La route `/v1/programme/destroy/zone/` est un moyen sûr de déclencher une réinitialisation du réseau et d'empêcher tout programme d'économiser de l'énergie à la fin d'un cycle (si destruction zone de transfert).
 
-### Route API - Route accessible apres transfert du drapeau
+#### Route API - Route accessible apres transfert du drapeau
 
 ```bash
 GET /v1/grid/zone/actif/:id/:secretid
