@@ -402,9 +402,7 @@ func DestroyZone(name string, celluleID int, all bool) {
 			if all {
 				for zoneInfos.Status {
 					for _, cellule := range zoneInfos.Cellules {
-						if cellule.Status {
-							current.AttackZone(cellule.ID)
-						}
+						current.AttackZone(cellule.ID)
 						_, zoneInfos = current.GetZoneinfos()
 					}
 				}
@@ -414,13 +412,12 @@ func DestroyZone(name string, celluleID int, all bool) {
 				}
 			} else {
 				for {
-					if zoneInfos.Cellules[celluleID].Status {
-						current.AttackZone(celluleID)
-					} else {
+					current.AttackZone(celluleID)
+					_, zoneInfos = current.GetZoneinfos()
+					if zoneInfos.Status == false {
 						status = false
 						break
 					}
-					_, zoneInfos = current.GetZoneinfos()
 				}
 			}
 			tools.PrintZoneInfos(zoneInfos)
