@@ -53,13 +53,18 @@ La force de défense est également déterminée par le level du joueur multipli
 
 #### Mis a jour API
 
-`v1.11.2`   1. Destruction des cellules piégées pour capture sans risque.
-            2. Mode verrouillage de zone (emprisonnements du programme).           
-            3. La lock zone peut etre egalement déverrouiller par force brute de mot de passe (parametre founi mode random, mais simple)
+`v1.11.2`   
+1. Destruction des cellules piégées pour capture sans risque.
+2. Mode verrouillage de zone (emprisonnements du programme).           
+3. La lock zone peut etre egalement déverrouiller par force brute de mot de passe (parametre founi mode random, mais simple)
 
-`v1.9.10`   Cellules piège ( capture cause des degat ) | zone de transfert = zone de sauvegarde | zone de transfert pour celui qui capture le drapeau.
+`v1.9.10`
 
-`v1.0.0`    Déplacement | capture de drapeau | combat | scan | explore | capture | infos programmes | infos grille
+Cellules piège ( capture cause des degat ) | zone de transfert = zone de sauvegarde | zone de transfert pour celui qui capture le drapeau.
+
+`v1.0.0`    
+
+Déplacement | capture de drapeau | combat | scan | explore | capture | infos programmes | infos grille
 
 #### En cours de développement
 
