@@ -9,11 +9,9 @@ import (
 	"github.com/greg198584/gridclient/api"
 	"github.com/greg198584/gridclient/structure"
 	"github.com/greg198584/gridclient/tools"
-	"github.com/logrusorgru/aurora"
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -170,45 +168,6 @@ func Delete(name string) {
 		//panic(err)
 	}
 	current.Unset()
-}
-func JumpUp(name string, valeur string) {
-	tools.Title(fmt.Sprintf("Programme [%s] JumpUP [%s]", name, valeur))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	valeurInt, err := strconv.Atoi(valeur)
-	if err != nil {
-		return
-	}
-	current.JumpUp(valeurInt)
-	current.PrintInfo(true)
-}
-func JumpDown(name string, valeur string) {
-	tools.Title(fmt.Sprintf("Programme [%s] JumpDown [%s]", name, valeur))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	valeurInt, err := strconv.Atoi(valeur)
-	if err != nil {
-		return
-	}
-	current.JumpDown(valeurInt)
-	current.PrintInfo(true)
-}
-func Move(name string, valeur string) {
-	tools.Title(fmt.Sprintf("Programme [%s] Move to Zone [%s]", name, valeur))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	valeurInt, err := strconv.Atoi(valeur)
-	if err != nil {
-		return
-	}
-	current.Move(valeurInt)
-	current.PrintInfo(true)
 }
 func Scan(name string) {
 	tools.Title(fmt.Sprintf("Programme [%s] scan", name))
@@ -486,186 +445,13 @@ func CheckAttack(name string, printInfo bool) {
 		current.CheckAttack(printInfo)
 	}
 }
-func MovePosition(name string, position string) {
+func MovePosition(name string, secteurID string, zoneID string) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	splitPosition := strings.Split(position, "-")
-	secteurID, _ := strconv.Atoi(splitPosition[0])
-	zoneID, _ := strconv.Atoi(splitPosition[1])
-	current.QuickMove(secteurID, zoneID)
+	current.Move(secteurID, zoneID)
 	current.PrintInfo(true)
-}
-
-func SearchFlag(name string) {
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	err = current.GetStatusGrid()
-	currentZoneID := current.Psi.Programme.Position.ZoneID
-	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
-				tools.PrintProgramme(current.Psi)
-				return
-			}
-		}
-		if scanOK, scanRes, _ := current.Scan(); !scanOK {
-			jsonPretty, _ := tools.PrettyString(scanRes)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur scan")
-			return
-		} else {
-			var zoneInfos structure.ZoneInfos
-			err := json.Unmarshal(scanRes, &zoneInfos)
-			if err != nil {
-				tools.Fail(err.Error())
-				return
-			} else {
-				if ok := current.SearchFlag(zoneInfos.Cellules); ok {
-					return
-				}
-			}
-		}
-		//current.PrintInfo(true)
-	}
-}
-func SearchEnergy(name string) {
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	err = current.GetStatusGrid()
-	currentZoneID := current.Psi.Programme.Position.ZoneID
-	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
-				tools.PrintProgramme(current.Psi)
-				break
-			}
-		}
-		if scanOK, scanRes, _ := current.Scan(); !scanOK {
-			jsonPretty, _ := tools.PrettyString(scanRes)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur scan")
-			return
-		} else {
-			var zoneInfos structure.ZoneInfos
-			err := json.Unmarshal(scanRes, &zoneInfos)
-			if err != nil {
-				tools.Fail(err.Error())
-				return
-			} else {
-				current.SearchEnergy(zoneInfos.Cellules)
-			}
-			//current.PrintInfo(false)
-		}
-	}
-}
-func SearchCelluleTrap(name string) {
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	err = current.GetStatusGrid()
-	currentZoneID := current.Psi.Programme.Position.ZoneID
-	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
-				tools.PrintProgramme(current.Psi)
-				break
-			}
-		}
-		if scanOK, scanRes, _ := current.Scan(); !scanOK {
-			jsonPretty, _ := tools.PrettyString(scanRes)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur scan")
-			return
-		} else {
-			var zoneInfos structure.ZoneInfos
-			err := json.Unmarshal(scanRes, &zoneInfos)
-			if err != nil {
-				tools.Fail(err.Error())
-				return
-			} else {
-				for _, cellule := range zoneInfos.Cellules {
-					if cellule.Trapped {
-						title := aurora.Red("--- CELLULE DANGER")
-						tools.Title(fmt.Sprintf(
-							"\t%s >>> [%d][%d] cellule [%d]",
-							title,
-							current.Psi.Programme.Position.SecteurID,
-							current.Psi.Programme.Position.ZoneID,
-							cellule.ID,
-						))
-					}
-				}
-			}
-			//current.PrintInfo(false)
-		}
-	}
-}
-func SearchProgramme(name string, all bool) {
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	if all {
-		current.QuickMove(0, 0)
-	}
-	err = current.GetStatusGrid()
-	currentZoneID := current.Psi.Programme.Position.ZoneID
-	status := true
-	for status {
-		//current.PrintInfo(true)
-		for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
-			time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-			if ok, _ := current.Move(i); !ok {
-				if current.StatusCode == http.StatusBadRequest {
-					break
-				} else if current.Psi.Locked {
-					tools.PrintProgramme(current.Psi)
-					return
-				}
-			}
-			if scanOK, scanRes, _ := current.Scan(); !scanOK {
-				jsonPretty, _ := tools.PrettyString(scanRes)
-				fmt.Println(jsonPretty)
-				tools.Fail("erreur scan")
-			} else {
-				var zoneInfos structure.ZoneInfos
-				json.Unmarshal(scanRes, &zoneInfos)
-				programmeFound := false
-				for _, programme := range zoneInfos.Programmes {
-					if programme.ID != current.ID {
-						programmeFound = true
-						tools.Success("PROGRAMME FOUND")
-						fmt.Printf("\n\t>>> pprogramme trouver [%s] [%d] [%t]\n", aurora.Green(programme.Name), aurora.Cyan(programme.ID), programme.Status)
-						break
-					}
-				}
-				if programmeFound {
-					return
-				}
-				//current.PrintInfo(true)
-			}
-		}
-		if ok, _ := current.Move(0); !ok {
-			continue
-		}
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := current.JumpDown(1); !ok {
-			if current.StatusCode == http.StatusBadRequest {
-				status = false
-				break
-			}
-		}
-	}
 }
 func Monitoring(name string, printGrid bool, defense bool) {
 	current, err := algo.NewAlgo(name)

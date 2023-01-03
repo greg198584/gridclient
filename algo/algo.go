@@ -139,41 +139,11 @@ func (a *Algo) Delete() (ok bool, err error) {
 	}
 	return true, err
 }
-func (a *Algo) JumpUp(valeur int) (ok bool, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] JumpUP [%d]", a.Name, valeur))
+func (a *Algo) Move(secteurID string, zoneID string) (ok bool, err error) {
+	tools.Title(fmt.Sprintf("Programme [%s] Move to S%s-Z%s", a.Name, secteurID, zoneID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%d", api.API_URL, api.ROUTE_JUMPUP_PROGRAMME, a.Pc.ID, a.Pc.SecretID, valeur),
-		nil,
-	)
-	a.StatusCode = statusCode
-	if err != nil || statusCode != http.StatusOK {
-		return false, err
-	}
-	a.Psi = structure.ProgrammeStatusInfos{}
-	err = json.Unmarshal(res, &a.Psi)
-	return true, err
-}
-func (a *Algo) JumpDown(valeur int) (ok bool, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] JumpDown [%d]", a.Name, valeur))
-	res, statusCode, err := api.RequestApi(
-		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%d", api.API_URL, api.ROUTE_JUMPDOWN_PROGRAMME, a.Pc.ID, a.Pc.SecretID, valeur),
-		nil,
-	)
-	a.StatusCode = statusCode
-	if err != nil || statusCode != http.StatusOK {
-		return false, err
-	}
-	a.Psi = structure.ProgrammeStatusInfos{}
-	err = json.Unmarshal(res, &a.Psi)
-	return true, err
-}
-func (a *Algo) Move(valeur int) (ok bool, err error) {
-	tools.Title(fmt.Sprintf("Programme [%s] Move to Zone [%d]", a.Name, valeur))
-	res, statusCode, err := api.RequestApi(
-		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%d", api.API_URL, api.ROUTE_MOVE_PROGRAMME, a.Pc.ID, a.Pc.SecretID, valeur),
+		fmt.Sprintf("%s/%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_MOVE_PROGRAMME, a.Pc.ID, a.Pc.SecretID, secteurID, zoneID),
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
@@ -545,18 +515,6 @@ func (a *Algo) PushFlag() (ok bool, err error) {
 		ok = true
 	}
 	return
-}
-func (a *Algo) QuickMove(secteurID int, zoneID int) {
-	currentSecteurID := a.Psi.Programme.Position.SecteurID
-	nbrJump := 0
-	if secteurID > currentSecteurID {
-		nbrJump = secteurID - currentSecteurID
-		a.JumpDown(nbrJump)
-	} else {
-		nbrJump = currentSecteurID - secteurID
-		a.JumpUp(nbrJump)
-	}
-	a.Move(zoneID)
 }
 func (a *Algo) GetZoneActif() (zoneActif []structure.ZoneInfos, err error) {
 	res, statusCode, err := api.RequestApi(
