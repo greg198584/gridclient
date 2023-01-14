@@ -28,16 +28,12 @@ Le but du jeu est de trouver le drapeau caché et de détruire la zone de transf
 
 Les joueurs peuvent s'attaquer mutuellement.
 
-La quantité de dégâts qui peut être infligée est déterminée par le level multiplié par 10.
 
-De plus, les joueurs disposent d'une force de défense qui les protège des dégâts.
-La force de défense est également déterminée par le level du joueur multiplié par 10.
-
-- Force attaque = dégât level * 10
-- Force défense = dégât level * 10
-- Zone transfert = Zone de dépose de drapeau + zone de sauvegarde
+- Force défense = energy quantity
+- Force attaque = energy quantity
+- Zone transfert = Zone de dépose de drapeau
 - Trouver le drapeau cacher
-- Le drapeau augmente le level + permet destruction zone de transfert du cycle
+- Le drapeau augmente le level + permet destruction zone de transfert et du cycle en cours
 - Les cellules peuvent être piéger et une requête capture cause des dégâts dans ce cas la
 
 ### Concept
@@ -52,6 +48,19 @@ La force de défense est également déterminée par le level du joueur multipli
 - Et vous avez également dans les liens ci-dessus un tutoriel vidéo complet.
 
 #### Mis a jour API
+
+`v2.0.0` pour usage avec jeu en dev sur unity3D
+
+taille zone = 150 000 000 km
+deplacement vitesse par default = 300 000 km/s * 4
+
+1. Simplification (mode verouillage de zone supprimer)
+2. Sauvegarde supprimer (le flag permet de sauvegarder est passer au level suivant)
+3. Attaque possible sur cellule target en mode exploration (surtout pour mode avec unity)
+4. Mode deplacement et cout. ( distance vitesse de deplacement )
+5. ajout infos distance de zone dans grid status.
+6. suppression infos programme ( seulement sur scan zone )
+7. Ajout estimation distance temp trajet et cout energy et iteration.
 
 `v1.11.2`   
 

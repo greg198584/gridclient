@@ -19,14 +19,14 @@ func main() {
 			programme.New(*pname)
 		}
 	})
-	app.Command("save", "sauvegarde programme", func(cmd *mowcli.Cmd) {
-		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
-		)
-		cmd.Action = func() {
-			programme.Save(*pname)
-		}
-	})
+	//app.Command("save", "sauvegarde programme", func(cmd *mowcli.Cmd) {
+	//	var (
+	//		pname = cmd.StringOpt("n name", "", "nom du programme")
+	//	)
+	//	cmd.Action = func() {
+	//		programme.Save(*pname)
+	//	}
+	//})
 	app.Command("load", "charger programme existant sur la grille", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
@@ -43,7 +43,7 @@ func main() {
 			programme.Upgrade(*pname)
 		}
 	})
-	app.Command("delete", "deconnecter un programme de la grille", func(cmd *mowcli.Cmd) {
+	app.Command("disconnect", "deconnecter un programme de la grille", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
 		)
@@ -53,24 +53,30 @@ func main() {
 	})
 	app.Command("move", "deplacer un programme sur la grille", func(cmd *mowcli.Cmd) {
 		var (
-			pname    = cmd.StringOpt("n name", "", "nom du programme")
-			typemove = cmd.StringOpt("t type", "", "type move (jumpup, jumpdown, move)")
-			valeur   = cmd.StringOpt("v valeur", "", "valeur entre 0 et taille max (9)")
+			pname     = cmd.StringOpt("n name", "", "nom du programme")
+			secteurID = cmd.StringOpt("s secteur", "", "ID du secteur")
+			zoneID    = cmd.StringOpt("z zone", "", "ID zone")
 		)
 		cmd.Action = func() {
-			switch *typemove {
-			case "jumpup":
-				programme.JumpUp(*pname, *valeur)
-				break
-			case "jumpdown":
-				programme.JumpDown(*pname, *valeur)
-				break
-			case "move":
-				programme.Move(*pname, *valeur)
-				break
-			default:
-				break
-			}
+			programme.MovePosition(*pname, *secteurID, *zoneID)
+		}
+	})
+	app.Command("estimate_move", "estimation temp deplacement sur zone", func(cmd *mowcli.Cmd) {
+		var (
+			pname     = cmd.StringOpt("n name", "", "nom du programme")
+			secteurID = cmd.StringOpt("s secteur", "", "ID du secteur")
+			zoneID    = cmd.StringOpt("z zone", "", "ID zone")
+		)
+		cmd.Action = func() {
+			programme.EstimateMove(*pname, *secteurID, *zoneID)
+		}
+	})
+	app.Command("stop_move", "stopper navigation en cours ( retour zone de depart )", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.StopMove(*pname)
 		}
 	})
 	app.Command("scan", "scan infos de la zone pour", func(cmd *mowcli.Cmd) {
@@ -95,10 +101,12 @@ func main() {
 			pname     = cmd.StringOpt("n name", "", "nom du programme")
 			celluleID = cmd.StringOpt("c cellule", "", "ID cellule")
 			targetID  = cmd.StringOpt("t target", "", "ID programme cible")
+			energy    = cmd.StringOpt("e energy", "", "quantiter energy a utiliser")
 		)
 		cmd.Action = func() {
 			CelluleID, _ := strconv.Atoi(*celluleID)
-			programme.Destroy(*pname, CelluleID, *targetID)
+			Energy, _ := strconv.Atoi(*energy)
+			programme.Destroy(*pname, CelluleID, *targetID, Energy)
 		}
 	})
 	app.Command("rebuild", "reconstruire cellule programme", func(cmd *mowcli.Cmd) {
@@ -106,10 +114,12 @@ func main() {
 			pname     = cmd.StringOpt("n name", "", "nom du programme")
 			celluleID = cmd.StringOpt("c cellule", "", "ID cellule")
 			targetID  = cmd.StringOpt("t target", "", "ID programme cible")
+			energy    = cmd.StringOpt("e energy", "", "quantiter energy a utiliser")
 		)
 		cmd.Action = func() {
 			CelluleID, _ := strconv.Atoi(*celluleID)
-			programme.Rebuild(*pname, CelluleID, *targetID)
+			Energy, _ := strconv.Atoi(*energy)
+			programme.Rebuild(*pname, CelluleID, *targetID, Energy)
 		}
 	})
 	app.Command("capture", "capture data-energy cellule programme et zone", func(cmd *mowcli.Cmd) {
@@ -118,7 +128,7 @@ func main() {
 			celluleID = cmd.StringOpt("c cellule", "", "ID cellule")
 			target    = cmd.StringOpt("t target", "", "cible [cell-pid]")
 			mode      = cmd.StringOpt("m mode", "", "mode [data-energy]")
-			id        = cmd.StringOpt("i id", "", "index cellule ou pid")
+			id        = cmd.StringOpt("i id", "", "index cellule ou pid - ou index multiple [id_debut-id_fin] ex (12 10-20)")
 		)
 		cmd.Action = func() {
 			CelluleID, _ := strconv.Atoi(*celluleID)
@@ -127,16 +137,16 @@ func main() {
 				if *target == "pid" {
 					programme.CaptureTargetData(*pname, CelluleID, *id)
 				} else {
-					index, _ := strconv.Atoi(*id)
-					programme.CaptureCellData(*pname, CelluleID, index)
+					//index, _ := strconv.Atoi(*id)
+					programme.CaptureCellData(*pname, CelluleID, *id)
 				}
 				break
 			case "energy":
 				if *target == "pid" {
 					programme.CaptureTargetEnergy(*pname, CelluleID, *id)
 				} else {
-					index, _ := strconv.Atoi(*id)
-					programme.CaptureCellEnergy(*pname, CelluleID, index)
+					//index, _ := strconv.Atoi(*id)
+					programme.CaptureCellEnergy(*pname, CelluleID, *id)
 				}
 				break
 			default:
@@ -160,11 +170,8 @@ func main() {
 		}
 	})
 	app.Command("status", "status grille", func(cmd *mowcli.Cmd) {
-		var (
-			pid = cmd.BoolOpt("p pid", false, "afficher infos programme sur la grille")
-		)
 		cmd.Action = func() {
-			programme.GetStatusGrid(*pid)
+			programme.GetStatusGrid()
 		}
 	})
 	app.Command("infos", "infos programme", func(cmd *mowcli.Cmd) {
@@ -176,75 +183,21 @@ func main() {
 			programme.GetInfoProgramme(*pname, *printPosition)
 		}
 	})
-	app.Command("attack", "mode attaque - tous programme dans la zone", func(cmd *mowcli.Cmd) {
-		var (
-			pname     = cmd.StringOpt("n name", "", "nom du programme")
-			printInfo = cmd.BoolOpt("p print", false, "affiche infos programme")
-		)
-		cmd.Action = func() {
-			var pidList []string
-			programme.Attack(*pname, pidList, *printInfo)
-		}
-	})
-	app.Command("defense", "mode defense + attaque simultanement programme hostile", func(cmd *mowcli.Cmd) {
-		var (
-			pname     = cmd.StringOpt("n name", "", "nom du programme")
-			printInfo = cmd.BoolOpt("p print", false, "affiche infos programme")
-		)
-		cmd.Action = func() {
-			programme.CheckAttack(*pname, *printInfo)
-		}
-	})
-	app.Command("quick_move", "deplacement secteur + zone voulu", func(cmd *mowcli.Cmd) {
-		var (
-			pname    = cmd.StringOpt("n name", "", "nom du programme")
-			position = cmd.StringOpt("p position", "", "secteur-zone exemple: [7-2]")
-		)
-		cmd.Action = func() {
-			programme.MovePosition(*pname, *position)
-		}
-	})
-	app.Command("search_flag", "current + scan + explore (all zone secteur current) + capture >>> FLAG", func(cmd *mowcli.Cmd) {
+	app.Command("navigation", "activer mode navigation", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
 		)
 		cmd.Action = func() {
-			programme.SearchFlag(*pname)
-		}
-	})
-	app.Command("search_energy", "scan + explore + capture >>> ENERGY", func(cmd *mowcli.Cmd) {
-		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
-		)
-		cmd.Action = func() {
-			programme.SearchEnergy(*pname)
-		}
-	})
-	app.Command("search_programme", "recherche programme", func(cmd *mowcli.Cmd) {
-		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
-			all   = cmd.BoolOpt("a all", false, "toutes la grille")
-		)
-		cmd.Action = func() {
-			programme.SearchProgramme(*pname, *all)
-		}
-	})
-	app.Command("search_trap", "recherche cellule trap (cellule dangereuse)", func(cmd *mowcli.Cmd) {
-		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
-		)
-		cmd.Action = func() {
-			programme.SearchCelluleTrap(*pname)
+			programme.Navigation(*pname)
 		}
 	})
 	app.Command("monitoring", "position + status programme monitoring", func(cmd *mowcli.Cmd) {
 		var (
 			pname         = cmd.StringOpt("n name", "", "nom du programme")
 			printPosition = cmd.BoolOpt("p position", false, "afficher position")
-			defense       = cmd.BoolOpt("d", false, "ajouter mode defense en cas d'attaque")
 		)
 		cmd.Action = func() {
-			programme.Monitoring(*pname, *printPosition, *defense)
+			programme.Monitoring(*pname, *printPosition)
 		}
 	})
 	app.Command("log", "info log cellule", func(cmd *mowcli.Cmd) {
@@ -256,33 +209,17 @@ func main() {
 			programme.GetCelluleLog(*pname, *celluleID)
 		}
 	})
-	app.Command("destroy_zone", "destroy cellule zone current (avec flag)", func(cmd *mowcli.Cmd) {
+	app.Command("destroy_zone", "destroy cellule zone current", func(cmd *mowcli.Cmd) {
 		var (
 			pname      = cmd.StringOpt("n name", "", "nom du programme")
 			celluleID  = cmd.StringOpt("c cellule", "", "ID cellule")
+			energy     = cmd.StringOpt("e energy", "", "quantite energy utiliser par cellule")
 			allCellule = cmd.BoolOpt("a all", false, "toutes les cellules")
 		)
 		cmd.Action = func() {
 			celluleIDint, _ := strconv.Atoi(*celluleID)
-			programme.DestroyZone(*pname, celluleIDint, *allCellule)
-		}
-	})
-	app.Command("zone_actif", "affiche zone actif + programme sur zone (avec flag)", func(cmd *mowcli.Cmd) {
-		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
-		)
-		cmd.Action = func() {
-			programme.GetZoneActif(*pname)
-		}
-	})
-	app.Command("crack_password", "brute force - pour unlock zone", func(cmd *mowcli.Cmd) {
-		var (
-			pname  = cmd.StringOpt("n name", "", "nom du programme")
-			Len    = cmd.IntOpt("l len", 0, "len - taille du mot de passe")
-			Format = cmd.StringOpt("f format", "", "format - caractere utiliser")
-		)
-		cmd.Action = func() {
-			programme.CrackPassword(*pname, *Len, *Format)
+			energyint, _ := strconv.Atoi(*energy)
+			programme.DestroyZone(*pname, celluleIDint, energyint, *allCellule)
 		}
 	})
 	app.Action = func() {

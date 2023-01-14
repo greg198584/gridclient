@@ -9,7 +9,6 @@ import (
 	"github.com/greg198584/gridclient/api"
 	"github.com/greg198584/gridclient/structure"
 	"github.com/greg198584/gridclient/tools"
-	"github.com/logrusorgru/aurora"
 	"net/http"
 	"os"
 	"strconv"
@@ -129,16 +128,17 @@ func New(name string) {
 		tools.Warning(fmt.Sprintf("programme file exist"))
 	}
 }
-func Save(name string) {
-	tools.Title(fmt.Sprintf("save programme [%s]", name))
-	_, err := _Save(name)
-	if err != nil {
-		tools.Fail(fmt.Sprintf(" backup [%s] FAIL [%s]", name, err.Error()))
-	} else {
-		tools.Success(fmt.Sprintf(" backup [%s] OK", name))
-		GetInfoProgramme(name, false)
-	}
-}
+
+//func Save(name string) {
+//	tools.Title(fmt.Sprintf("save programme [%s]", name))
+//	_, err := _Save(name)
+//	if err != nil {
+//		tools.Fail(fmt.Sprintf(" backup [%s] FAIL [%s]", name, err.Error()))
+//	} else {
+//		tools.Success(fmt.Sprintf(" backup [%s] OK", name))
+//		GetInfoProgramme(name, false)
+//	}
+//}
 func Info(pc *structure.ProgrammeContainer) {
 	reqBodyBytes := new(bytes.Buffer)
 	json.NewEncoder(reqBodyBytes).Encode(pc.Programme)
@@ -170,45 +170,6 @@ func Delete(name string) {
 		//panic(err)
 	}
 	current.Unset()
-}
-func JumpUp(name string, valeur string) {
-	tools.Title(fmt.Sprintf("Programme [%s] JumpUP [%s]", name, valeur))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	valeurInt, err := strconv.Atoi(valeur)
-	if err != nil {
-		return
-	}
-	current.JumpUp(valeurInt)
-	current.PrintInfo(true)
-}
-func JumpDown(name string, valeur string) {
-	tools.Title(fmt.Sprintf("Programme [%s] JumpDown [%s]", name, valeur))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	valeurInt, err := strconv.Atoi(valeur)
-	if err != nil {
-		return
-	}
-	current.JumpDown(valeurInt)
-	current.PrintInfo(true)
-}
-func Move(name string, valeur string) {
-	tools.Title(fmt.Sprintf("Programme [%s] Move to Zone [%s]", name, valeur))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	valeurInt, err := strconv.Atoi(valeur)
-	if err != nil {
-		return
-	}
-	current.Move(valeurInt)
-	current.PrintInfo(true)
 }
 func Scan(name string) {
 	tools.Title(fmt.Sprintf("Programme [%s] scan", name))
@@ -249,7 +210,7 @@ func Explore(name string, celluleID string) {
 		}
 	}
 }
-func Destroy(name string, celluleID int, targetID string) {
+func Destroy(name string, celluleID int, targetID string, energy int) {
 	tools.Title(fmt.Sprintf(
 		"Programme [%s] destroy -> [%s] cellule [%s] energy [%s]",
 		name,
@@ -261,11 +222,11 @@ func Destroy(name string, celluleID int, targetID string) {
 	if err != nil {
 		//panic(err)
 	}
-	current.Attack(celluleID, targetID)
+	current.Destroy(celluleID, targetID, energy)
 	current.PrintInfo(false)
 	return
 }
-func Rebuild(name string, celluleID int, targetID string) {
+func Rebuild(name string, celluleID int, targetID string, energy int) {
 	tools.Title(fmt.Sprintf(
 		"Programme [%s] rebuild -> [%s] cellule [%s] energy [%s]",
 		name,
@@ -277,11 +238,11 @@ func Rebuild(name string, celluleID int, targetID string) {
 	if err != nil {
 		//panic(err)
 	}
-	current.Defense(celluleID, targetID)
+	current.Rebuild(celluleID, targetID, energy)
 	current.PrintInfo(false)
 	return
 }
-func GetStatusGrid(pid bool) {
+func GetStatusGrid() {
 	tools.Title(fmt.Sprintf("Status grid"))
 	res, statusCode, err := api.RequestApi(
 		"GET",
@@ -296,22 +257,10 @@ func GetStatusGrid(pid bool) {
 		if err != nil {
 			tools.Fail(err.Error())
 		} else {
+			tools.PrintZoneActif(infos.Zones)
 			tools.PrintInfosGrille(infos)
-			if pid {
-				tools.PrintInfosProgrammeGrille(infos)
-			}
 		}
 	}
-	return
-}
-func GetZoneActif(name string) {
-	tools.Title(fmt.Sprintf("Scan Zone actif"))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	zoneInfos, _ := current.GetZoneActif()
-	tools.PrintZoneActif(zoneInfos)
 	return
 }
 func GetInfoProgramme(name string, printPosition bool) {
@@ -323,7 +272,15 @@ func GetInfoProgramme(name string, printPosition bool) {
 	current.GetInfosProgramme()
 	current.PrintInfo(printPosition)
 }
-
+func Navigation(name string) {
+	tools.Title(fmt.Sprintf("activer mode navigation programme"))
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	current.Navigation()
+	current.PrintInfo(false)
+}
 func CaptureTargetData(name string, celluleID int, targetID string) {
 	tools.Title(fmt.Sprintf("[%s] Capture data target [%s] - cellule [%s]", name, targetID, celluleID))
 	current, err := algo.NewAlgo(name)
@@ -334,13 +291,21 @@ func CaptureTargetData(name string, celluleID int, targetID string) {
 	current.PrintInfo(false)
 	return
 }
-func CaptureCellData(name string, celluleID int, index int) {
+func CaptureCellData(name string, celluleID int, index string) {
 	tools.Title(fmt.Sprintf("[%s] Capture data cellule [%d] - index [%d]", name, celluleID, index))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
+	index_split := strings.Split(index, "-")
+	current, _ := algo.NewAlgo(name)
+	if len(index_split) > 1 {
+		id, _ := strconv.Atoi(index_split[0])
+		count, _ := strconv.Atoi(index_split[1])
+		for id < count+1 {
+			current.CaptureCellData(celluleID, id)
+			id++
+		}
+	} else {
+		id, _ := strconv.Atoi(index)
+		current.CaptureCellData(celluleID, id)
 	}
-	current.CaptureCellData(celluleID, index)
 	current.PrintInfo(false)
 	return
 }
@@ -354,13 +319,22 @@ func CaptureTargetEnergy(name string, celluleID int, targetID string) {
 	current.PrintInfo(false)
 	return
 }
-func CaptureCellEnergy(name string, celluleID int, index int) {
+func CaptureCellEnergy(name string, celluleID int, index string) {
 	tools.Title(fmt.Sprintf("[%s] Capture energy cellule [%s] - index [%d]", name, celluleID, index))
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
+	index_split := strings.Split(index, "-")
+	fmt.Printf("index_split = [%v]\n", index_split)
+	current, _ := algo.NewAlgo(name)
+	if len(index_split) > 1 {
+		id, _ := strconv.Atoi(index_split[0])
+		count, _ := strconv.Atoi(index_split[1])
+		for id < count+1 {
+			current.CaptureCellEnergy(celluleID, id)
+			id++
+		}
+	} else {
+		id, _ := strconv.Atoi(index)
+		current.CaptureCellData(celluleID, id)
 	}
-	current.CaptureCellEnergy(celluleID, index)
 	current.PrintInfo(false)
 	return
 }
@@ -383,61 +357,38 @@ func PushFlag(name string) {
 	current.GetInfosProgramme()
 	current.PrintInfo(false)
 }
-func DestroyZone(name string, celluleID int, all bool) {
+func DestroyZone(name string, celluleID int, energy int, all bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	status := true
-	for status {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		current.GetInfosProgramme()
-		current.PrintInfo(false)
-		if current.Psi.Programme.ID != "" {
-			status = current.Psi.Programme.Status
-		}
-		ok, zoneInfos := current.GetZoneinfos()
-		tools.PrintZoneInfos(zoneInfos)
-		if ok && zoneInfos.Status {
-			if all {
-				for zoneInfos.Status {
-					for _, cellule := range zoneInfos.Cellules {
-						current.AttackZone(cellule.ID)
-						_, zoneInfos = current.GetZoneinfos()
-					}
-				}
-				if zoneInfos.Status == false {
-					status = false
-					break
-				}
-			} else {
-				for {
-					current.AttackZone(celluleID)
-					_, zoneInfos = current.GetZoneinfos()
-					if zoneInfos.Status == false {
-						status = false
-						break
-					}
-				}
+	ok, zoneInfos := current.GetZoneinfos()
+	if ok && zoneInfos.Status {
+		if all {
+			for _, cellule := range zoneInfos.Cellules {
+				current.DestroyZone(cellule.ID, energy)
 			}
-			tools.PrintZoneInfos(zoneInfos)
 		} else {
-			status = false
+			current.DestroyZone(celluleID, energy)
 		}
+		tools.PrintZoneInfos(zoneInfos)
 	}
+	_, zoneInfos = current.GetZoneinfos()
+	tools.PrintZoneInfos(zoneInfos)
+}
 
-}
-func AttackTarget(current *algo.Algo, pid string) {
-	for _, cellule := range current.Psi.Programme.Cellules {
-		if cellule.Status && cellule.Energy > 0 {
-			statusTarget := true
-			if statusTarget {
-				current.Attack(cellule.ID, pid)
-			}
-		}
-	}
-}
-func Attack(name string, PidList []string, printInfo bool) {
+//func AttackTarget(current *algo.Algo, pid string) {
+//	for _, cellule := range current.Psi.Programme.Cellules {
+//		if cellule.Status && cellule.Energy > 0 {
+//			statusTarget := true
+//			if statusTarget {
+//				current.Attack(cellule.ID, pid)
+//			}
+//		}
+//	}
+//}
+
+/*func Attack(name string, PidList []string, printInfo bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
@@ -486,188 +437,15 @@ func CheckAttack(name string, printInfo bool) {
 		current.CheckAttack(printInfo)
 	}
 }
-func MovePosition(name string, position string) {
+func MovePosition(name string, secteurID string, zoneID string) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	splitPosition := strings.Split(position, "-")
-	secteurID, _ := strconv.Atoi(splitPosition[0])
-	zoneID, _ := strconv.Atoi(splitPosition[1])
-	current.QuickMove(secteurID, zoneID)
+	current.Move(secteurID, zoneID)
 	current.PrintInfo(true)
-}
-
-func SearchFlag(name string) {
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	err = current.GetStatusGrid()
-	currentZoneID := current.Psi.Programme.Position.ZoneID
-	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
-				tools.PrintProgramme(current.Psi)
-				return
-			}
-		}
-		if scanOK, scanRes, _ := current.Scan(); !scanOK {
-			jsonPretty, _ := tools.PrettyString(scanRes)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur scan")
-			return
-		} else {
-			var zoneInfos structure.ZoneInfos
-			err := json.Unmarshal(scanRes, &zoneInfos)
-			if err != nil {
-				tools.Fail(err.Error())
-				return
-			} else {
-				if ok := current.SearchFlag(zoneInfos.Cellules); ok {
-					return
-				}
-			}
-		}
-		//current.PrintInfo(true)
-	}
-}
-func SearchEnergy(name string) {
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	err = current.GetStatusGrid()
-	currentZoneID := current.Psi.Programme.Position.ZoneID
-	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
-				tools.PrintProgramme(current.Psi)
-				break
-			}
-		}
-		if scanOK, scanRes, _ := current.Scan(); !scanOK {
-			jsonPretty, _ := tools.PrettyString(scanRes)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur scan")
-			return
-		} else {
-			var zoneInfos structure.ZoneInfos
-			err := json.Unmarshal(scanRes, &zoneInfos)
-			if err != nil {
-				tools.Fail(err.Error())
-				return
-			} else {
-				current.SearchEnergy(zoneInfos.Cellules)
-			}
-			//current.PrintInfo(false)
-		}
-	}
-}
-func SearchCelluleTrap(name string) {
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	err = current.GetStatusGrid()
-	currentZoneID := current.Psi.Programme.Position.ZoneID
-	for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := current.Move(i); !ok {
-			if current.StatusCode == http.StatusUnauthorized || current.Psi.Locked {
-				tools.PrintProgramme(current.Psi)
-				break
-			}
-		}
-		if scanOK, scanRes, _ := current.Scan(); !scanOK {
-			jsonPretty, _ := tools.PrettyString(scanRes)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur scan")
-			return
-		} else {
-			var zoneInfos structure.ZoneInfos
-			err := json.Unmarshal(scanRes, &zoneInfos)
-			if err != nil {
-				tools.Fail(err.Error())
-				return
-			} else {
-				for _, cellule := range zoneInfos.Cellules {
-					if cellule.Trapped {
-						title := aurora.Red("--- CELLULE DANGER")
-						tools.Title(fmt.Sprintf(
-							"\t%s >>> [%d][%d] cellule [%d]",
-							title,
-							current.Psi.Programme.Position.SecteurID,
-							current.Psi.Programme.Position.ZoneID,
-							cellule.ID,
-						))
-					}
-				}
-			}
-			//current.PrintInfo(false)
-		}
-	}
-}
-func SearchProgramme(name string, all bool) {
-	current, err := algo.NewAlgo(name)
-	if err != nil {
-		//panic(err)
-	}
-	if all {
-		current.QuickMove(0, 0)
-	}
-	err = current.GetStatusGrid()
-	currentZoneID := current.Psi.Programme.Position.ZoneID
-	status := true
-	for status {
-		//current.PrintInfo(true)
-		for i := currentZoneID; i <= current.InfosGrid.Taille; i++ {
-			time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-			if ok, _ := current.Move(i); !ok {
-				if current.StatusCode == http.StatusBadRequest {
-					break
-				} else if current.Psi.Locked {
-					tools.PrintProgramme(current.Psi)
-					return
-				}
-			}
-			if scanOK, scanRes, _ := current.Scan(); !scanOK {
-				jsonPretty, _ := tools.PrettyString(scanRes)
-				fmt.Println(jsonPretty)
-				tools.Fail("erreur scan")
-			} else {
-				var zoneInfos structure.ZoneInfos
-				json.Unmarshal(scanRes, &zoneInfos)
-				programmeFound := false
-				for _, programme := range zoneInfos.Programmes {
-					if programme.ID != current.ID {
-						programmeFound = true
-						tools.Success("PROGRAMME FOUND")
-						fmt.Printf("\n\t>>> pprogramme trouver [%s] [%d] [%t]\n", aurora.Green(programme.Name), aurora.Cyan(programme.ID), programme.Status)
-						break
-					}
-				}
-				if programmeFound {
-					return
-				}
-				//current.PrintInfo(true)
-			}
-		}
-		if ok, _ := current.Move(0); !ok {
-			continue
-		}
-		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
-		if ok, _ := current.JumpDown(1); !ok {
-			if current.StatusCode == http.StatusBadRequest {
-				status = false
-				break
-			}
-		}
-	}
-}
-func Monitoring(name string, printGrid bool, defense bool) {
+}*/
+func Monitoring(name string, printGrid bool) {
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
@@ -676,9 +454,6 @@ func Monitoring(name string, printGrid bool, defense bool) {
 		time.Sleep(algo.TIME_MILLISECONDE * time.Millisecond)
 		current.GetInfosProgramme()
 		current.PrintInfo(printGrid)
-		if defense {
-			current.CheckAttack(true)
-		}
 	}
 }
 func GetCelluleLog(name string, celluleID string) {
@@ -705,30 +480,38 @@ func GetCelluleLog(name string, celluleID string) {
 	}
 	return
 }
-
-func CrackPassword(name string, Len int, Format string) {
-	tools.Title(fmt.Sprintf("Unlock zone"))
-	_, err := algo.NewAlgo(name)
+func MovePosition(name string, secteurID string, zoneID string) {
+	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	// Exemple de method qui prend en parametre la structure algo pour faire les appel + function SendUnlock en dessus)
-	// Trouver une method pour essayer chaque combinaison taille du mot de passe len + les caractere present dans mot de passe Format)
-	//password.BruteForce(Len, Format, current, SendUnlock)
+	current.Move(secteurID, zoneID)
+	current.PrintInfo(true)
 }
-func SendUnlock(current *algo.Algo, password string) bool {
-	_, statusCode, err := api.RequestApi(
-		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_UNLOCK_ZONE, current.Pc.ID, current.Pc.SecretID, password),
-		nil,
-	)
+func EstimateMove(name string, secteurID string, zoneID string) {
+	current, err := algo.NewAlgo(name)
 	if err != nil {
-		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
-	} else {
-		if statusCode != http.StatusOK {
-			return false
-		}
-		return true
+		//panic(err)
 	}
-	return false
+	data, _ := current.EstimateMove(secteurID, zoneID)
+	var header = []string{"Secteur_ID", "Zone_ID", "Distance", "Estimation", "Cout_Energy", "Cout_Iteration"}
+	var dataTab [][]string
+
+	dataTab = append(dataTab, []string{
+		fmt.Sprintf("%d", data.SecteurID),
+		fmt.Sprintf("%d", data.ZoneID),
+		fmt.Sprintf("%d", data.Distance),
+		fmt.Sprintf("%s", data.TempEstimate),
+		fmt.Sprintf("%d", data.CoutEnergy),
+		fmt.Sprintf("%d", data.CoutIteration),
+	})
+	tools.PrintColorTable(header, dataTab, "<---[ Estimation temp de deplacement ]--->")
+}
+func StopMove(name string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	current.StopMove()
+	current.PrintInfo(true)
 }
