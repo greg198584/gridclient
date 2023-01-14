@@ -43,7 +43,7 @@ func main() {
 			programme.Upgrade(*pname)
 		}
 	})
-	app.Command("delete", "deconnecter un programme de la grille", func(cmd *mowcli.Cmd) {
+	app.Command("disconnect", "deconnecter un programme de la grille", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")
 		)

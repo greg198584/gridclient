@@ -184,7 +184,7 @@ func (a *Algo) StopMove() (ok bool, err error) {
 	tools.Title(fmt.Sprintf("Programme [%s] stop move", a.Name))
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_STOP_MOVE_PROGRAMME, a.Pc.ID, a.Pc.SecretID),
+		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_STOP_MOVE_PROGRAMME, a.Pc.ID, a.Pc.SecretID),
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
