@@ -16,27 +16,28 @@ type GridInfos struct {
 	Cycle         int              `json:"cycle"`
 	NbrProgrammes int              `json:"nbr_programmes"`
 	Programmes    []ProgrammeInfos `json:"programmes"`
+	Zones         []ZonesGrid      `json:"zones"`
 	Status        bool             `json:"status"`
 	Version       string           `json:"version"`
 	FlagCapture   bool             `json:"flag_capture"`
-	IndiceFlag    IndiceFlag       `json:"indice_flag"`
 }
-type IndiceFlag struct {
-	IndiceValue string `json:"indice_value"`
-	Instruction string `json:"instruction"`
+type ZonesGrid struct {
+	SecteurID int   `json:"secteur_id"`
+	ZoneID    int   `json:"zone_id"`
+	Status    bool  `json:"status"`
+	Actif     bool  `json:"actif"`
+	Distance  int64 `json:"distance"`
 }
 type ProgrammeStatusInfos struct {
 	Programme     Programme            `json:"programme"`
 	LockProgramme map[string]Programme `json:"lock_programme"`
-	Locked        bool                 `json:"locked"`
 }
 type ZoneInfos struct {
-	ID                  int                 `json:"id"`
-	Actif               bool                `json:"actif"`
-	Cellules            []CelluleInfos      `json:"cellule"`
-	Programmes          []ProgrammeInfos    `json:"programmes"`
-	Status              bool                `json:"status"`
-	InstructionPassword InstructionPassword `json:"instruction_password"`
+	ID         int              `json:"id"`
+	Actif      bool             `json:"actif"`
+	Cellules   []CelluleInfos   `json:"cellule"`
+	Programmes []ProgrammeInfos `json:"programmes"`
+	Status     bool             `json:"status"`
 }
 type InstructionPassword struct {
 	Len    int    `json:"len"`
@@ -51,6 +52,7 @@ type ProgrammeInfos struct {
 	ValeurTotal int    `json:"valeur_total"`
 	EnergyTotal int    `json:"energy_total"`
 	Status      bool   `json:"status"`
+	Exploration bool   `json:"exploration"`
 }
 type CelluleInfos struct {
 	ID        int         `json:"id"`
@@ -65,13 +67,14 @@ type CelluleInfos struct {
 	Trapped   bool        `json:"trapped"`
 }
 type Programme struct {
-	ID        string           `json:"id"`
-	Name      string           `json:"name"`
-	Position  Position         `json:"position"`
-	Cellules  map[int]*Cellule `json:"cellules"`
-	Level     int              `json:"level"`
-	GridFlags []string         `json:"grid_flags"`
-	Status    bool             `json:"status"`
+	ID          string           `json:"id"`
+	Name        string           `json:"name"`
+	Position    Position         `json:"position"`
+	Cellules    map[int]*Cellule `json:"cellules"`
+	Level       int              `json:"level"`
+	GridFlags   []string         `json:"grid_flags"`
+	Status      bool             `json:"status"`
+	Exploration bool             `json:"exploration"`
 }
 type Position struct {
 	SecteurID int `json:"secteur_id"`
@@ -89,6 +92,7 @@ type Cellule struct {
 	AccesLog        []CelluleLog        `json:"acces_log"`
 	Capture         bool                `json:"capture"`
 	Trapped         bool                `json:"trapped"`
+	Exploration     bool                `json:"exploration"`
 }
 type CelluleLog struct {
 	PID            string    `json:"pid"`
@@ -100,8 +104,9 @@ type CelluleLog struct {
 	CTime          time.Time `json:"c_time"`
 }
 type CelluleData struct {
-	ID      int    `json:"id"`
-	Content string `json:"content"`
-	Energy  int    `json:"energy"`
-	IsFlag  bool   `json:"is_flag"`
+	ID         int    `json:"id"`
+	Content    string `json:"content"`
+	Energy     int    `json:"energy"`
+	IsFlag     bool   `json:"is_flag"`
+	Competence bool   `json:"competence"`
 }

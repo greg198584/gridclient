@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	TIME_MILLISECONDE = 1000
+	TIME_MILLISECONDE = 5000
 	ENERGY_MAX_ATTACK = 10
 	MAX_CELLULES      = 9
 	MAX_VALEUR        = 100
@@ -126,6 +126,20 @@ func (a *Algo) GetInfosProgramme() (ok bool, err error) {
 	err = json.Unmarshal(res, &a.Psi)
 	return true, err
 }
+func (a *Algo) Navigation() (ok bool, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_NAVIGATION_PROGRAMME, a.Pc.ID, a.Pc.SecretID),
+		nil,
+	)
+	a.StatusCode = statusCode
+	if err != nil || statusCode != http.StatusOK {
+		return false, err
+	}
+	a.Psi = structure.ProgrammeStatusInfos{}
+	err = json.Unmarshal(res, &a.Psi)
+	return true, err
+}
 func (a *Algo) Delete() (ok bool, err error) {
 	tools.Title(fmt.Sprintf("suppression programme [%s]", a.Name))
 	_, statusCode, err := api.RequestApi(
@@ -176,12 +190,12 @@ func (a *Algo) Explore(celluleID int) (ok bool, res []byte, err error) {
 	}
 	return true, res, err
 }
-func (a *Algo) DestroyZone(celluleID int) (ok bool, res []byte, err error) {
+func (a *Algo) DestroyZone(celluleID int, energy int) (ok bool, res []byte, err error) {
 	title := aurora.Red("--- Destroy zone")
 	tools.Title(fmt.Sprintf("\t%s >>> cellule [%d]", title, celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%d", api.API_URL, api.ROUTE_DESTROY_ZONE, a.Pc.ID, a.Pc.SecretID, celluleID),
+		fmt.Sprintf("%s/%s/%s/%s/%d/%d", api.API_URL, api.ROUTE_DESTROY_ZONE, a.Pc.ID, a.Pc.SecretID, celluleID, energy),
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
@@ -191,12 +205,12 @@ func (a *Algo) DestroyZone(celluleID int) (ok bool, res []byte, err error) {
 	err = json.Unmarshal(res, &a.Psi)
 	return true, res, err
 }
-func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, res []byte, err error) {
+func (a *Algo) Destroy(celluleID int, targetID string, energy int) (ok bool, res []byte, err error) {
 	title := aurora.Red("--- Destroy programme")
 	tools.Title(fmt.Sprintf("\t%s >>> [%s] cellule [%d]", title, aurora.Cyan(targetID), celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_DESTROY_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID, targetID),
+		fmt.Sprintf("%s/%s/%s/%s/%d/%s/%d", api.API_URL, api.ROUTE_DESTROY_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID, targetID, energy),
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
@@ -206,12 +220,12 @@ func (a *Algo) Destroy(celluleID int, targetID string) (ok bool, res []byte, err
 	err = json.Unmarshal(res, &a.Psi)
 	return true, res, err
 }
-func (a *Algo) Rebuild(celluleID int, targetID string) (ok bool, res []byte, err error) {
+func (a *Algo) Rebuild(celluleID int, targetID string, energy int) (ok bool, res []byte, err error) {
 	title := aurora.Blue("+++ Rebuild programme")
 	tools.Title(fmt.Sprintf("\t%s >>> [%s] cellule [%d]", title, aurora.Cyan(targetID), celluleID))
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s/%d/%s", api.API_URL, api.ROUTE_REBUILD_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID, targetID),
+		fmt.Sprintf("%s/%s/%s/%s/%d/%s/%d", api.API_URL, api.ROUTE_REBUILD_PROGRAMME, a.Pc.ID, a.Pc.SecretID, celluleID, targetID, energy),
 		nil,
 	)
 	if err != nil || statusCode != http.StatusOK {
@@ -282,69 +296,59 @@ func (a *Algo) GetZoneinfos() (ok bool, zoneInfos structure.ZoneInfos) {
 	}
 	return true, zoneInfos
 }
-func (a *Algo) AttackZone(celluleID int) bool {
-	for j := 0; j < ENERGY_MAX_ATTACK; j++ {
-		if ok, res, _ := a.DestroyZone(celluleID); !ok {
-			jsonPretty, _ := tools.PrettyString(res)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur attack")
-			return false
-		}
-	}
-	return true
-}
-func (a *Algo) Attack(celluleID int, targetID string) {
-	for j := 0; j < ENERGY_MAX_ATTACK; j++ {
-		if ok, res, _ := a.Destroy(celluleID, targetID); !ok {
-			jsonPretty, _ := tools.PrettyString(res)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur attack")
-			return
-		}
-	}
-}
-func (a *Algo) Defense(celluleID int, targetID string) {
-	for j := 0; j < ENERGY_MAX_ATTACK; j++ {
-		if ok, resBuild, _ := a.Rebuild(celluleID, targetID); !ok {
-			jsonPretty, _ := tools.PrettyString(resBuild)
-			fmt.Println(jsonPretty)
-			tools.Fail("erreur rebuild")
-			break
-		}
-	}
-}
-func (a *Algo) CheckAttack(printInfo bool) {
-	maxValeur := a.Psi.Programme.Level * MAX_VALEUR
-	for _, cellule := range a.Psi.Programme.Cellules {
-		if cellule.CurrentAccesLog.ReceiveDestroy {
-			title := aurora.BgYellow("xxx Receveive destroy from")
-			tools.Title(fmt.Sprintf(
-				"\t%s >>> [%s] cellule [%d]",
-				title,
-				aurora.Cyan(cellule.CurrentAccesLog.PID),
-				cellule.ID,
-			))
-		}
-		if cellule.Valeur < maxValeur && cellule.Energy > 0 {
-			if ok, resBuild, _ := a.Rebuild(cellule.ID, a.ID); !ok {
-				jsonPretty, _ := tools.PrettyString(resBuild)
-				fmt.Println(jsonPretty)
-				tools.Fail("erreur rebuild")
-			}
-			if cellule.CurrentAccesLog.ReceiveDestroy {
-				if ok, res, _ := a.Destroy(cellule.ID, cellule.CurrentAccesLog.PID); !ok {
-					jsonPretty, _ := tools.PrettyString(res)
-					fmt.Println(jsonPretty)
-					tools.Fail("erreur attack")
-				}
-			}
-			if printInfo {
-				a.PrintInfo(false)
-			}
-		}
-	}
-	return
-}
+
+//func (a *Algo) Attack(celluleID int, targetID string) {
+//	for j := 0; j < ENERGY_MAX_ATTACK; j++ {
+//		if ok, res, _ := a.Destroy(celluleID, targetID); !ok {
+//			jsonPretty, _ := tools.PrettyString(res)
+//			fmt.Println(jsonPretty)
+//			tools.Fail("erreur attack")
+//			return
+//		}
+//	}
+//}
+//func (a *Algo) Defense(celluleID int, targetID string) {
+//	for j := 0; j < ENERGY_MAX_ATTACK; j++ {
+//		if ok, resBuild, _ := a.Rebuild(celluleID, targetID); !ok {
+//			jsonPretty, _ := tools.PrettyString(resBuild)
+//			fmt.Println(jsonPretty)
+//			tools.Fail("erreur rebuild")
+//			break
+//		}
+//	}
+//}
+//func (a *Algo) CheckAttack(printInfo bool) {
+//	maxValeur := a.Psi.Programme.Level * MAX_VALEUR
+//	for _, cellule := range a.Psi.Programme.Cellules {
+//		if cellule.CurrentAccesLog.ReceiveDestroy {
+//			title := aurora.BgYellow("xxx Receveive destroy from")
+//			tools.Title(fmt.Sprintf(
+//				"\t%s >>> [%s] cellule [%d]",
+//				title,
+//				aurora.Cyan(cellule.CurrentAccesLog.PID),
+//				cellule.ID,
+//			))
+//		}
+//		if cellule.Valeur < maxValeur && cellule.Energy > 0 {
+//			if ok, resBuild, _ := a.Rebuild(cellule.ID, a.ID); !ok {
+//				jsonPretty, _ := tools.PrettyString(resBuild)
+//				fmt.Println(jsonPretty)
+//				tools.Fail("erreur rebuild")
+//			}
+//			if cellule.CurrentAccesLog.ReceiveDestroy {
+//				if ok, res, _ := a.Destroy(cellule.ID, cellule.CurrentAccesLog.PID); !ok {
+//					jsonPretty, _ := tools.PrettyString(res)
+//					fmt.Println(jsonPretty)
+//					tools.Fail("erreur attack")
+//				}
+//			}
+//			if printInfo {
+//				a.PrintInfo(false)
+//			}
+//		}
+//	}
+//	return
+//}
 func (a *Algo) SearchFlag(cellules []structure.CelluleInfos) (flagFound bool) {
 	for _, cellule := range cellules {
 		if cellule.Status {
@@ -514,17 +518,5 @@ func (a *Algo) PushFlag() (ok bool, err error) {
 		tools.Success("backup OK")
 		ok = true
 	}
-	return
-}
-func (a *Algo) GetZoneActif() (zoneActif []structure.ZoneInfos, err error) {
-	res, statusCode, err := api.RequestApi(
-		"GET",
-		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_ZONE_ACTIF, a.Pc.ID, a.Pc.SecretID),
-		nil,
-	)
-	if err != nil || statusCode != http.StatusOK {
-		return
-	}
-	err = json.Unmarshal(res, &zoneActif)
 	return
 }

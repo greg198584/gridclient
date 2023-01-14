@@ -1,8 +1,6 @@
 package tools
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"github.com/greg198584/gridclient/structure"
 	"github.com/logrusorgru/aurora"
@@ -14,13 +12,13 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 	var dataList [][]string
 	Info(fmt.Sprintf("SECTEUR-ZONE [%d][%d]", psi.Programme.Position.SecteurID, psi.Programme.Position.ZoneID))
 	if len(psi.LockProgramme) != 0 {
-		header = []string{"name", "cell", "energy", "valeur", "indicator", "status", "---", "status", "indicator", "valeur", "energy", "cell", "name"}
+		header = []string{"name", "cell", "energy", "valeur", "indicator", "status", "exploration", "---", "exploration", "status", "indicator", "valeur", "energy", "cell", "name"}
 		for _, lockProgramme := range psi.LockProgramme {
 			for i := 0; i < len(psi.Programme.Cellules); i++ {
 				valeur := psi.Programme.Cellules[i].Valeur
 				prefixValeur := psi.Programme.Level
 				valeurString := ""
-				count := valeur / (prefixValeur * 10)
+				count := valeur / prefixValeur
 				for j := 0; j < count; j++ {
 					if valeur > 5 {
 						valeurString += aurora.Green(fmt.Sprintf("-%d-", prefixValeur)).String()
@@ -36,11 +34,17 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				} else {
 					status = aurora.Red("NOK").String()
 				}
+				exploration := ""
+				if psi.Programme.Cellules[i].Exploration {
+					exploration = aurora.Green("OK").String()
+				} else {
+					exploration = aurora.Red("NOK").String()
+				}
 
 				lpValeur := lockProgramme.Cellules[i].Valeur
 				lpPrefixValeur := lockProgramme.Level
 				lpValeurString := ""
-				lpCount := lpValeur / (lpPrefixValeur * 10)
+				lpCount := lpValeur / lpPrefixValeur
 				for j := 0; j < lpCount; j++ {
 					if lpValeur > 5 {
 						lpValeurString += aurora.Green(fmt.Sprintf("-%d-", lpPrefixValeur)).String()
@@ -56,6 +60,12 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				} else {
 					lpStatus = aurora.Red("NOK").String()
 				}
+				lpExploration := ""
+				if lockProgramme.Cellules[i].Exploration {
+					lpExploration = aurora.Green("OK").String()
+				} else {
+					lpExploration = aurora.Red("NOK").String()
+				}
 				dataList = append(dataList, []string{
 					aurora.Cyan(psi.Programme.Name).String(),
 					strconv.FormatInt(int64(psi.Programme.Cellules[i].ID), 10),
@@ -63,7 +73,9 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 					strconv.FormatInt(int64(psi.Programme.Cellules[i].Valeur), 10),
 					valeurString,
 					status,
+					exploration,
 					"***",
+					lpExploration,
 					lpStatus,
 					lpValeurString,
 					strconv.FormatInt(int64(lockProgramme.Cellules[i].Valeur), 10),
@@ -72,17 +84,10 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 					aurora.Red(lockProgramme.Name).String(),
 				})
 			}
-			locked := ""
-			if psi.Locked {
-				locked = aurora.Red("LOCKED").String()
-			} else {
-				locked = aurora.Green("UNLOCKED").String()
-			}
 			fmt.Printf(
-				"<--- Programme Info status [%s][%s][%s] %s [%s][%s] --->\n",
+				"<--- Programme Info status [%s][%s] %s [%s][%s] --->\n",
 				aurora.Cyan(psi.Programme.Name),
 				aurora.Green(psi.Programme.ID),
-				locked,
 				aurora.White("VS"),
 				aurora.Red(lockProgramme.Name),
 				aurora.Green(lockProgramme.ID),
@@ -91,12 +96,12 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 			dataList = nil
 		}
 	} else {
-		header = []string{"name", "cell", "energy", "valeur", "indicator", "status"}
+		header = []string{"name", "cell", "energy", "valeur", "indicator", "status", "exploration"}
 		for i := 0; i < len(psi.Programme.Cellules); i++ {
 			valeur := psi.Programme.Cellules[i].Valeur
 			prefixValeur := psi.Programme.Level
 			valeurString := ""
-			count := valeur / (prefixValeur * 10)
+			count := valeur / prefixValeur
 			for j := 0; j < count; j++ {
 				if valeur > 5 {
 					valeurString += aurora.Green(fmt.Sprintf("-%d-", prefixValeur)).String()
@@ -112,6 +117,12 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 			} else {
 				status = aurora.Red("NOK").String()
 			}
+			exploration := ""
+			if psi.Programme.Cellules[i].Exploration {
+				exploration = aurora.Green("OK").String()
+			} else {
+				exploration = aurora.Red("NOK").String()
+			}
 			dataList = append(dataList, []string{
 				aurora.Cyan(psi.Programme.Name).String(),
 				strconv.FormatInt(int64(psi.Programme.Cellules[i].ID), 10),
@@ -119,15 +130,10 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				strconv.FormatInt(int64(psi.Programme.Cellules[i].Valeur), 10),
 				valeurString,
 				status,
+				exploration,
 			})
 		}
-		locked := ""
-		if psi.Locked {
-			locked = aurora.Red("LOCKED").String()
-		} else {
-			locked = aurora.Green("UNLOCKED").String()
-		}
-		fmt.Printf("<---[ Programme Info status [%s] [%s] [%s] ]--->\n", aurora.Cyan(psi.Programme.Name), aurora.Green(psi.Programme.ID), locked)
+		fmt.Printf("<---[ Programme Info status [%s] [%s] ]--->\n", aurora.Cyan(psi.Programme.Name), aurora.Green(psi.Programme.ID))
 		PrintColorTable(header, dataList)
 		dataList = nil
 	}
@@ -189,7 +195,7 @@ func PrintGridPosition(programme structure.Programme, size int) {
 	))
 }
 func PrintInfosGrille(infos structure.GridInfos) {
-	var header = []string{"ID", "Taille", "ZoneTransfert", "Iteration", "Cycle", "NbrProgramme", "status", "Version", "FlagCapture", "Indice"}
+	var header = []string{"ID", "Taille", "ZoneTransfert", "Iteration", "Cycle", "NbrProgramme", "status", "Version", "FlagCapture"}
 	var InfosTab [][]string
 
 	flagCapture := aurora.Red("FALSE")
@@ -210,9 +216,7 @@ func PrintInfosGrille(infos structure.GridInfos) {
 		statusGrid.String(),
 		infos.Version,
 		flagCapture.String(),
-		aurora.Magenta(infos.IndiceFlag.IndiceValue).String(),
 	})
-	Title(fmt.Sprintf("indice instruction: %s", aurora.White(infos.IndiceFlag.Instruction)))
 	PrintColorTable(header, InfosTab, "<---[ Infos grille ]--->")
 	return
 }
@@ -242,11 +246,9 @@ func PrintInfosProgrammeGrille(infos structure.GridInfos) {
 	return
 }
 func PrintZoneInfos(infos structure.ZoneInfos) {
-	var header = []string{"CELL ID", "VALEUR", "STATUS", "DATA", "DATA_TYPE", "DETECT TRAP"}
+	var header = []string{"CELL ID", "VALEUR", "STATUS", "DATA", "DETECT TRAP"}
 	var cellData [][]string
 	for i := 0; i < len(infos.Cellules); i++ {
-		dataTypeBytes := new(bytes.Buffer)
-		json.NewEncoder(dataTypeBytes).Encode(infos.Cellules[i].DataType)
 		statusCell := aurora.Red("FALSE")
 		if infos.Cellules[i].Status {
 			statusCell = aurora.Green("TRUE")
@@ -264,7 +266,6 @@ func PrintZoneInfos(infos structure.ZoneInfos) {
 			valeurCell.String(),
 			statusCell.String(),
 			fmt.Sprintf("%d", infos.Cellules[i].DataCount),
-			fmt.Sprintf("%s", dataTypeBytes.String()),
 			safeCell.String(),
 		})
 	}
@@ -272,27 +273,36 @@ func PrintZoneInfos(infos structure.ZoneInfos) {
 	if infos.Status {
 		statusZone = aurora.Green("TRUE")
 	}
-	PrintColorTable(header, cellData, fmt.Sprintf(
-		"<---[ Infos programme sur Zone [%d] - status [%s] - instruction [%s] ]--->",
-		infos.ID,
-		statusZone,
-		fmt.Sprintf("len=[%d] format=[%s]", infos.InstructionPassword.Len, infos.InstructionPassword.Format),
-	))
-	header = []string{"PID", "NAME", "VALEUR TOTAL", "ENERGY TOTAL"}
+	PrintColorTable(header, cellData, fmt.Sprintf("<---[ Infos programme sur Zone [%d] - status [%s]]--->", infos.ID, statusZone))
+	header = []string{"P-ID", "Name", "Valeur total", "Energy total", "Status", "Exploration"}
 	var progrData [][]string
 	for i := 0; i < len(infos.Programmes); i++ {
+		status := ""
+		if infos.Programmes[i].Status {
+			status = aurora.Green("OK").String()
+		} else {
+			status = aurora.Red("NOK").String()
+		}
+		exploration := ""
+		if infos.Programmes[i].Exploration {
+			exploration = aurora.Green("OK").String()
+		} else {
+			exploration = aurora.Red("NOK").String()
+		}
 		progrData = append(progrData, []string{
 			infos.Programmes[i].ID,
 			infos.Programmes[i].Name,
 			fmt.Sprintf("%d", infos.Programmes[i].ValeurTotal),
 			fmt.Sprintf("%d", infos.Programmes[i].EnergyTotal),
+			status,
+			exploration,
 		})
 	}
 	PrintColorTable(header, progrData, fmt.Sprintf("<---[ Infos Zone [%d] ]--->", infos.ID))
 	return
 }
 func PrintExplore(celluleID string, data map[int]structure.CelluleData) {
-	var header = []string{"ID", "ENERGY", "IS_FLAG"}
+	var header = []string{"ID", "ENERGY", "COMPETENCE", "IS_FLAG"}
 	var cellData [][]string
 
 	for i := 0; i < len(data); i++ {
@@ -300,9 +310,14 @@ func PrintExplore(celluleID string, data map[int]structure.CelluleData) {
 		if data[i].IsFlag {
 			isFlag = aurora.Green("true")
 		}
+		competence := aurora.Red("false")
+		if data[i].Competence {
+			competence = aurora.Green("true")
+		}
 		cellData = append(cellData, []string{
 			fmt.Sprintf("%d", data[i].ID),
 			fmt.Sprintf("%d", data[i].Energy),
+			fmt.Sprintf("%s", competence),
 			fmt.Sprintf("%s", isFlag),
 		})
 	}
@@ -326,31 +341,32 @@ func PrintCelluleLogs(celluleLogs []structure.CelluleLog) {
 	PrintColorTable(header, cellData, fmt.Sprintf("<---[ Log cellule ]--->"))
 	return
 }
-func PrintZoneActif(Zones []structure.ZoneInfos) {
-	var header = []string{"Secteur", "Zone", "ID", "Name", "Level", "Valeurs", "Energies", "Status"}
+func PrintZoneActif(Zones []structure.ZonesGrid) {
+	var header = []string{"Secteur", "Zone", "Status", "Actif", "Distance"}
 	var dataList [][]string
 	for _, zone := range Zones {
-		for _, programme := range zone.Programmes {
-			status := ""
-			if programme.Status {
-				status = aurora.Green("OK").String()
-			} else {
-				status = aurora.Red("NOK").String()
-			}
-			dataList = append(dataList, []string{
-				strconv.FormatInt(int64(programme.SecteurID), 10),
-				strconv.FormatInt(int64(zone.ID), 10),
-				aurora.Blue(programme.ID).String(),
-				programme.Name,
-				strconv.FormatInt(int64(programme.Level), 10),
-				strconv.FormatInt(int64(programme.ValeurTotal), 10),
-				strconv.FormatInt(int64(programme.EnergyTotal), 10),
-				status,
-			})
+		status := ""
+		if zone.Status {
+			status = aurora.Green("OK").String()
+		} else {
+			status = aurora.Red("NOK").String()
 		}
+		actif := ""
+		if zone.Actif {
+			actif = aurora.Green("OK").String()
+		} else {
+			actif = aurora.Red("NOK").String()
+		}
+		dataList = append(dataList, []string{
+			fmt.Sprintf("%d", zone.SecteurID),
+			fmt.Sprintf("%d", zone.ZoneID),
+			status,
+			actif,
+			fmt.Sprintf("%d", zone.Distance),
+		})
 	}
 	if len(dataList) > 0 {
-		PrintColorTable(header, dataList, "<---[ zone actif et programme sur grille ]--->")
+		PrintColorTable(header, dataList, "<---[ zone actif et status ( actif = programme sur zone | status true = objets sur zone ]--->")
 	}
 	return
 }
