@@ -29,8 +29,10 @@ type ZonesGrid struct {
 	Distance  int64 `json:"distance"`
 }
 type ProgrammeStatusInfos struct {
-	Programme     Programme            `json:"programme"`
-	LockProgramme map[string]Programme `json:"lock_programme"`
+	Programme             Programme            `json:"programme"`
+	LockProgramme         map[string]Programme `json:"lock_programme"`
+	Navigation            bool                 `json:"navigation"`
+	NavigationTimeArrived time.Time            `json:"navigation_time_arrived"`
 }
 type ZoneInfos struct {
 	ID         int              `json:"id"`
@@ -67,14 +69,15 @@ type CelluleInfos struct {
 	Trapped   bool        `json:"trapped"`
 }
 type Programme struct {
-	ID          string           `json:"id"`
-	Name        string           `json:"name"`
-	Position    Position         `json:"position"`
-	Cellules    map[int]*Cellule `json:"cellules"`
-	Level       int              `json:"level"`
-	GridFlags   []string         `json:"grid_flags"`
-	Status      bool             `json:"status"`
-	Exploration bool             `json:"exploration"`
+	ID           string           `json:"id"`
+	Name         string           `json:"name"`
+	Position     Position         `json:"position"`
+	NextPosition Position         `json:"last_position"`
+	Cellules     map[int]*Cellule `json:"cellules"`
+	Level        int              `json:"level"`
+	GridFlags    []string         `json:"grid_flags"`
+	Status       bool             `json:"status"`
+	Exploration  bool             `json:"exploration"`
 }
 type Position struct {
 	SecteurID int `json:"secteur_id"`
@@ -109,4 +112,10 @@ type CelluleData struct {
 	Energy     int    `json:"energy"`
 	IsFlag     bool   `json:"is_flag"`
 	Competence bool   `json:"competence"`
+}
+type MoveEstimateData struct {
+	SecteurID    int    `json:"secteur_id"`
+	ZoneID       int    `json:"zone_id"`
+	Distance     int64  `json:"distance"`
+	TempEstimate string `json:"temp_estimate"`
 }

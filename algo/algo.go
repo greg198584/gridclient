@@ -167,6 +167,33 @@ func (a *Algo) Move(secteurID string, zoneID string) (ok bool, err error) {
 	err = json.Unmarshal(res, &a.Psi)
 	return true, err
 }
+func (a *Algo) EstimateMove(secteurID string, zoneID string) (data structure.MoveEstimateData, err error) {
+	tools.Title(fmt.Sprintf("Programme [%s] Estimate Move to S%s-Z%s", a.Name, secteurID, zoneID))
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_ESTIMATE_MOVE_PROGRAMME, a.Pc.ID, a.Pc.SecretID, secteurID, zoneID),
+		nil,
+	)
+	if err != nil || statusCode != http.StatusOK {
+		return data, err
+	}
+	err = json.Unmarshal(res, &data)
+	return data, err
+}
+func (a *Algo) StopMove() (ok bool, err error) {
+	tools.Title(fmt.Sprintf("Programme [%s] stop move", a.Name))
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_STOP_MOVE_PROGRAMME, a.Pc.ID, a.Pc.SecretID),
+		nil,
+	)
+	if err != nil || statusCode != http.StatusOK {
+		return false, err
+	}
+	a.Psi = structure.ProgrammeStatusInfos{}
+	err = json.Unmarshal(res, &a.Psi)
+	return true, err
+}
 func (a *Algo) Scan() (ok bool, res []byte, err error) {
 	res, statusCode, err := api.RequestApi(
 		"GET",

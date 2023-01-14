@@ -5,6 +5,7 @@ import (
 	"github.com/greg198584/gridclient/structure"
 	"github.com/logrusorgru/aurora"
 	"strconv"
+	"time"
 )
 
 func PrintProgramme(psi structure.ProgrammeStatusInfos) {
@@ -133,7 +134,43 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				exploration,
 			})
 		}
-		fmt.Printf("<---[ Programme Info status [%s] [%s] ]--->\n", aurora.Cyan(psi.Programme.Name), aurora.Green(psi.Programme.ID))
+		fmt.Printf("<---[ Programme info ID [%s] ]--->\n", aurora.Green(psi.Programme.ID))
+		PiStatus := ""
+		if psi.Programme.Status {
+			PiStatus = aurora.Green("OK").String()
+		} else {
+			PiStatus = aurora.Red("NOK").String()
+		}
+		PiNagivation := ""
+		if psi.Navigation {
+			PiNagivation = aurora.Green("OK").String()
+		} else {
+			PiNagivation = aurora.Red("NOK").String()
+		}
+		PiExploration := ""
+		if psi.Programme.Exploration {
+			PiExploration = aurora.Green("OK").String()
+		} else {
+			PiExploration = aurora.Red("NOK").String()
+		}
+		// Infos programme
+		var PiHeader = []string{"Name", "Status", "Exploration", "Navigation", "Destination", "Temp arriver"}
+		var PiData [][]string
+
+		var timeDiff time.Duration
+		if psi.Navigation {
+			timeNow := time.Now()
+			timeDiff = timeNow.Sub(psi.NavigationTimeArrived)
+		}
+		PiData = append(PiData, []string{
+			aurora.Cyan(psi.Programme.Name).String(),
+			PiStatus,
+			PiExploration,
+			PiNagivation,
+			fmt.Sprintf("[ S %d- Z %d ]", psi.Programme.NextPosition.SecteurID, psi.Programme.NextPosition.ZoneID),
+			aurora.Yellow(timeDiff.String()).String(),
+		})
+		PrintColorTable(PiHeader, PiData)
 		PrintColorTable(header, dataList)
 		dataList = nil
 	}
@@ -177,7 +214,7 @@ func PrintGridPosition(programme structure.Programme, size int) {
 	var header []string
 	var data [][]string
 	for i := 0; i < size; i++ {
-		header = append(header, "- ZONE - ")
+		header = append(header, fmt.Sprintf("- ZONE %d -", i))
 	}
 	var tmpData []string
 	for j := 0; j < size; j++ {
@@ -218,31 +255,6 @@ func PrintInfosGrille(infos structure.GridInfos) {
 		flagCapture.String(),
 	})
 	PrintColorTable(header, InfosTab, "<---[ Infos grille ]--->")
-	return
-}
-func PrintInfosProgrammeGrille(infos structure.GridInfos) {
-	if infos.NbrProgrammes > 0 {
-		var header = []string{"ID", "Name", "Level", "Secteur", "Valeurs", "Energies", "Status"}
-		var dataList [][]string
-		for _, programme := range infos.Programmes {
-			status := ""
-			if programme.Status {
-				status = aurora.Green("OK").String()
-			} else {
-				status = aurora.Red("NOK").String()
-			}
-			dataList = append(dataList, []string{
-				aurora.Blue(programme.ID).String(),
-				programme.Name,
-				strconv.FormatInt(int64(programme.Level), 10),
-				strconv.FormatInt(int64(programme.SecteurID), 10),
-				strconv.FormatInt(int64(programme.ValeurTotal), 10),
-				strconv.FormatInt(int64(programme.EnergyTotal), 10),
-				status,
-			})
-		}
-		PrintColorTable(header, dataList, "<---[ Infos programme grille ]--->")
-	}
 	return
 }
 func PrintZoneInfos(infos structure.ZoneInfos) {

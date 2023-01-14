@@ -61,6 +61,24 @@ func main() {
 			programme.MovePosition(*pname, *secteurID, *zoneID)
 		}
 	})
+	app.Command("estimate_move", "estimation temp deplacement sur zone", func(cmd *mowcli.Cmd) {
+		var (
+			pname     = cmd.StringOpt("n name", "", "nom du programme")
+			secteurID = cmd.StringOpt("s secteur", "", "ID du secteur")
+			zoneID    = cmd.StringOpt("z zone", "", "ID zone")
+		)
+		cmd.Action = func() {
+			programme.EstimateMove(*pname, *secteurID, *zoneID)
+		}
+	})
+	app.Command("stop_move", "stopper navigation en cours ( retour zone de depart )", func(cmd *mowcli.Cmd) {
+		var (
+			pname = cmd.StringOpt("n name", "", "nom du programme")
+		)
+		cmd.Action = func() {
+			programme.StopMove(*pname)
+		}
+	})
 	app.Command("scan", "scan infos de la zone pour", func(cmd *mowcli.Cmd) {
 		var (
 			pname = cmd.StringOpt("n name", "", "nom du programme")

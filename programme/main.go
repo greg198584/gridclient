@@ -257,8 +257,8 @@ func GetStatusGrid() {
 		if err != nil {
 			tools.Fail(err.Error())
 		} else {
-			tools.PrintInfosGrille(infos)
 			tools.PrintZoneActif(infos.Zones)
+			tools.PrintInfosGrille(infos)
 		}
 	}
 	return
@@ -486,5 +486,30 @@ func MovePosition(name string, secteurID string, zoneID string) {
 		//panic(err)
 	}
 	current.Move(secteurID, zoneID)
+	current.PrintInfo(true)
+}
+func EstimateMove(name string, secteurID string, zoneID string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	data, _ := current.EstimateMove(secteurID, zoneID)
+	var header = []string{"SecteurID", "ZoneID", "Distance", "Estimation"}
+	var dataTab [][]string
+
+	dataTab = append(dataTab, []string{
+		fmt.Sprintf("%d", data.SecteurID),
+		fmt.Sprintf("%d", data.ZoneID),
+		fmt.Sprintf("%d", data.Distance),
+		fmt.Sprintf("%s", data.TempEstimate),
+	})
+	tools.PrintColorTable(header, dataTab, "<---[ Estimation temp de deplacement ]--->")
+}
+func StopMove(name string) {
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	current.StopMove()
 	current.PrintInfo(true)
 }
