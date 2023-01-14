@@ -114,8 +114,10 @@ type CelluleData struct {
 	Competence bool   `json:"competence"`
 }
 type MoveEstimateData struct {
-	SecteurID    int    `json:"secteur_id"`
-	ZoneID       int    `json:"zone_id"`
-	Distance     int64  `json:"distance"`
-	TempEstimate string `json:"temp_estimate"`
+	SecteurID     int    `json:"secteur_id"`
+	ZoneID        int    `json:"zone_id"`
+	Distance      int64  `json:"distance"`
+	TempEstimate  string `json:"temp_estimate"`
+	CoutEnergy    int    `json:"cout_energy"`
+	CoutIteration int    `json:"cout_iteration"`
 }

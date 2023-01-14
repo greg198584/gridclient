@@ -494,7 +494,7 @@ func EstimateMove(name string, secteurID string, zoneID string) {
 		//panic(err)
 	}
 	data, _ := current.EstimateMove(secteurID, zoneID)
-	var header = []string{"SecteurID", "ZoneID", "Distance", "Estimation"}
+	var header = []string{"Secteur_ID", "Zone_ID", "Distance", "Estimation", "Cout_Energy", "Cout_Iteration"}
 	var dataTab [][]string
 
 	dataTab = append(dataTab, []string{
@@ -502,6 +502,8 @@ func EstimateMove(name string, secteurID string, zoneID string) {
 		fmt.Sprintf("%d", data.ZoneID),
 		fmt.Sprintf("%d", data.Distance),
 		fmt.Sprintf("%s", data.TempEstimate),
+		fmt.Sprintf("%d", data.CoutEnergy),
+		fmt.Sprintf("%d", data.CoutIteration),
 	})
 	tools.PrintColorTable(header, dataTab, "<---[ Estimation temp de deplacement ]--->")
 }

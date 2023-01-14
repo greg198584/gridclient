@@ -17,7 +17,7 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 		for _, lockProgramme := range psi.LockProgramme {
 			for i := 0; i < len(psi.Programme.Cellules); i++ {
 				valeur := psi.Programme.Cellules[i].Valeur
-				prefixValeur := psi.Programme.Level
+				prefixValeur := psi.Programme.Level * 10
 				valeurString := ""
 				count := valeur / prefixValeur
 				for j := 0; j < count; j++ {
@@ -43,7 +43,7 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				}
 
 				lpValeur := lockProgramme.Cellules[i].Valeur
-				lpPrefixValeur := lockProgramme.Level
+				lpPrefixValeur := lockProgramme.Level * 10
 				lpValeurString := ""
 				lpCount := lpValeur / lpPrefixValeur
 				for j := 0; j < lpCount; j++ {
@@ -85,14 +85,48 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 					aurora.Red(lockProgramme.Name).String(),
 				})
 			}
-			fmt.Printf(
-				"<--- Programme Info status [%s][%s] %s [%s][%s] --->\n",
-				aurora.Cyan(psi.Programme.Name),
-				aurora.Green(psi.Programme.ID),
-				aurora.White("VS"),
-				aurora.Red(lockProgramme.Name),
-				aurora.Green(lockProgramme.ID),
-			)
+			//fmt.Printf(
+			//	"<--- Programme Info status [%s][%s] %s [%s][%s] --->\n",
+			//	aurora.Cyan(psi.Programme.Name),
+			//	aurora.Green(psi.Programme.ID),
+			//	aurora.White("VS"),
+			//	aurora.Red(lockProgramme.Name),
+			//	aurora.Green(lockProgramme.ID),
+			//)
+			PiStatus := ""
+			if psi.Programme.Status {
+				PiStatus = aurora.Green("OK").String()
+			} else {
+				PiStatus = aurora.Red("NOK").String()
+			}
+			LPStatus := ""
+			if lockProgramme.Status {
+				LPStatus = aurora.Green("OK").String()
+			} else {
+				LPStatus = aurora.Red("NOK").String()
+			}
+			// Infos programme
+			var PiHeader = []string{
+				"Name",
+				"ID",
+				"Status",
+				"VS",
+				"Status",
+				"ID",
+				"Name",
+			}
+			var PiData [][]string
+
+			PiData = append(PiData, []string{
+				aurora.Cyan(psi.Programme.Name).String(),
+				aurora.Green(psi.Programme.ID).String(),
+				PiStatus,
+				"X",
+				LPStatus,
+				aurora.Red(lockProgramme.ID).String(),
+				aurora.Red(lockProgramme.Name).String(),
+			})
+			PrintColorTable(PiHeader, PiData, "<---[ Programme infos ]--->")
 			PrintColorTable(header, dataList)
 			dataList = nil
 		}
@@ -100,7 +134,7 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 		header = []string{"name", "cell", "energy", "valeur", "indicator", "status", "exploration"}
 		for i := 0; i < len(psi.Programme.Cellules); i++ {
 			valeur := psi.Programme.Cellules[i].Valeur
-			prefixValeur := psi.Programme.Level
+			prefixValeur := psi.Programme.Level * 10
 			valeurString := ""
 			count := valeur / prefixValeur
 			for j := 0; j < count; j++ {
