@@ -333,7 +333,7 @@ func CaptureCellEnergy(name string, celluleID int, index string) {
 		}
 	} else {
 		id, _ := strconv.Atoi(index)
-		current.CaptureCellData(celluleID, id)
+		current.CaptureCellEnergy(celluleID, id)
 	}
 	current.PrintInfo(false)
 	return
