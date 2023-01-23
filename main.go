@@ -185,10 +185,11 @@ func main() {
 	})
 	app.Command("navigation", "activer mode navigation", func(cmd *mowcli.Cmd) {
 		var (
-			pname = cmd.StringOpt("n name", "", "nom du programme")
+			pname         = cmd.StringOpt("n name", "", "nom du programme")
+			printPosition = cmd.BoolOpt("s stop", false, "stop navigation")
 		)
 		cmd.Action = func() {
-			programme.Navigation(*pname)
+			programme.Navigation(*pname, *printPosition)
 		}
 	})
 	app.Command("monitoring", "position + status programme monitoring", func(cmd *mowcli.Cmd) {

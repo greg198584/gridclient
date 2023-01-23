@@ -22,11 +22,11 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				count := valeur / prefixValeur
 				for j := 0; j < count; j++ {
 					if valeur > 5 {
-						valeurString += aurora.Green(fmt.Sprintf("-%d-", prefixValeur)).String()
+						valeurString += aurora.Green(fmt.Sprintf("_%d_", prefixValeur)).String()
 					} else if valeur > 3 && valeur < 7 {
-						valeurString += aurora.Yellow(fmt.Sprintf("-%d-", prefixValeur)).String()
+						valeurString += aurora.Yellow(fmt.Sprintf("_%d_", prefixValeur)).String()
 					} else {
-						valeurString += aurora.Red(fmt.Sprintf("-%d-", prefixValeur)).String()
+						valeurString += aurora.Red(fmt.Sprintf("_%d_", prefixValeur)).String()
 					}
 				}
 				status := ""
@@ -48,11 +48,11 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				lpCount := lpValeur / lpPrefixValeur
 				for j := 0; j < lpCount; j++ {
 					if lpValeur > 5 {
-						lpValeurString += aurora.Green(fmt.Sprintf("-%d-", lpPrefixValeur)).String()
+						lpValeurString += aurora.Green(fmt.Sprintf("_%d_", lpPrefixValeur)).String()
 					} else if lpValeur > 3 && lpValeur < 7 {
-						lpValeurString += aurora.Yellow(fmt.Sprintf("-%d-", lpPrefixValeur)).String()
+						lpValeurString += aurora.Yellow(fmt.Sprintf("_%d_", lpPrefixValeur)).String()
 					} else {
-						lpValeurString += aurora.Red(fmt.Sprintf("-%d-", lpPrefixValeur)).String()
+						lpValeurString += aurora.Red(fmt.Sprintf("_%d_", lpPrefixValeur)).String()
 					}
 				}
 				lpStatus := ""
@@ -139,11 +139,11 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 			count := valeur / prefixValeur
 			for j := 0; j < count; j++ {
 				if valeur > 5 {
-					valeurString += aurora.Green(fmt.Sprintf("-%d-", prefixValeur)).String()
+					valeurString += aurora.Green(fmt.Sprintf("_%d_", prefixValeur)).String()
 				} else if valeur > 3 && valeur < 7 {
-					valeurString += aurora.Yellow(fmt.Sprintf("-%d-", prefixValeur)).String()
+					valeurString += aurora.Yellow(fmt.Sprintf("_%d_", prefixValeur)).String()
 				} else {
-					valeurString += aurora.Red(fmt.Sprintf("-%d-", prefixValeur)).String()
+					valeurString += aurora.Red(fmt.Sprintf("_%d_", prefixValeur)).String()
 				}
 			}
 			status := ""
