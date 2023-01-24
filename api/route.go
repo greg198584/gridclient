@@ -23,7 +23,6 @@ const (
 	ROUTE_PUSH_FLAG                  = "v1/programme/push/flag"
 	ROUTE_SAVE_PROGRAMME             = "v1/programme/save"
 	ROUTE_DESTROY_ZONE               = "v1/programme/destroy/zone"
-	ROUTE_NAVIGATION_PROGRAMME_START = "v1/programme/navigation"
 	ROUTE_NAVIGATION_PROGRAMME_STOP  = "v1/programme/navigation/stop"
 	ROUTE_EXPLORATION_PROGRAMME_STOP = "v1/programme/exploration/stop"
 	ROUTE_STOP_MOVE_PROGRAMME        = "v1/programme/stop/move"

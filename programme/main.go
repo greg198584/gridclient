@@ -272,13 +272,22 @@ func GetInfoProgramme(name string, printPosition bool) {
 	current.GetInfosProgramme()
 	current.PrintInfo(printPosition)
 }
-func Navigation(name string, stop bool) {
-	tools.Title(fmt.Sprintf("activer mode navigation programme"))
+func Navigation(name string) {
+	tools.Title(fmt.Sprintf("stop mode navigation programme"))
 	current, err := algo.NewAlgo(name)
 	if err != nil {
 		//panic(err)
 	}
-	current.Navigation(stop)
+	current.NavigationStop()
+	current.PrintInfo(false)
+}
+func ExplorationStop(name string) {
+	tools.Title(fmt.Sprintf("stop exploration"))
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	current.ExplorationStop()
 	current.PrintInfo(false)
 }
 func CaptureTargetData(name string, celluleID int, targetID string) {

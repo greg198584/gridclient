@@ -126,14 +126,24 @@ func (a *Algo) GetInfosProgramme() (ok bool, err error) {
 	err = json.Unmarshal(res, &a.Psi)
 	return true, err
 }
-func (a *Algo) Navigation(stop bool) (ok bool, err error) {
-	route := api.ROUTE_NAVIGATION_PROGRAMME_START
-	if stop {
-		route = api.ROUTE_NAVIGATION_PROGRAMME_STOP
-	}
+func (a *Algo) NavigationStop() (ok bool, err error) {
 	res, statusCode, err := api.RequestApi(
 		"GET",
-		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, route, a.Pc.ID, a.Pc.SecretID),
+		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_NAVIGATION_PROGRAMME_STOP, a.Pc.ID, a.Pc.SecretID),
+		nil,
+	)
+	a.StatusCode = statusCode
+	if err != nil || statusCode != http.StatusOK {
+		return false, err
+	}
+	a.Psi = structure.ProgrammeStatusInfos{}
+	err = json.Unmarshal(res, &a.Psi)
+	return true, err
+}
+func (a *Algo) ExplorationStop() (ok bool, err error) {
+	res, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s", api.API_URL, api.ROUTE_EXPLORATION_PROGRAMME_STOP, a.Pc.ID, a.Pc.SecretID),
 		nil,
 	)
 	a.StatusCode = statusCode
