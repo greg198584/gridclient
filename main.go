@@ -170,8 +170,11 @@ func main() {
 		}
 	})
 	app.Command("status", "status grille", func(cmd *mowcli.Cmd) {
+		var (
+			zoneActif = cmd.BoolOpt("a actif", false, "afficher que les zone status true")
+		)
 		cmd.Action = func() {
-			programme.GetStatusGrid()
+			programme.GetStatusGrid(*zoneActif)
 		}
 	})
 	app.Command("infos", "infos programme", func(cmd *mowcli.Cmd) {

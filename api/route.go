@@ -1,7 +1,7 @@
 package api
 
 const (
-	//API_URL                          = "http://localhost"
+	//API_URL = "http://localhost"
 	API_URL                          = "http://195.154.84.18:20080"
 	ROUTE_NEW_PROGRAMME              = "v1/programme/new"
 	ROUTE_LOAD_PROGRAMME             = "v1/programme/load"

@@ -242,7 +242,7 @@ func Rebuild(name string, celluleID int, targetID string, energy int) {
 	current.PrintInfo(false)
 	return
 }
-func GetStatusGrid() {
+func GetStatusGrid(zoneActif bool) {
 	tools.Title(fmt.Sprintf("Status grid"))
 	res, statusCode, err := api.RequestApi(
 		"GET",
@@ -257,7 +257,17 @@ func GetStatusGrid() {
 		if err != nil {
 			tools.Fail(err.Error())
 		} else {
-			tools.PrintZoneActif(infos.Zones)
+			var zonesList []structure.ZonesGrid
+			if zoneActif {
+				for _, zone := range infos.Zones {
+					if zone.Status {
+						zonesList = append(zonesList, zone)
+					}
+				}
+			} else {
+				zonesList = infos.Zones
+			}
+			tools.PrintZoneActif(zonesList)
 			tools.PrintInfosGrille(infos)
 		}
 	}
