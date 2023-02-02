@@ -140,8 +140,6 @@ GET /v1/programme/new/:name
 POST /v1/programme/load
 POST /v1/programme/upgrade
 GET /v1/programme/unset/:id/:secretid
-GET /v1/programme/jump/up/:id/:secretid/:jumpnbr
-GET /v1/programme/jump/down/:id/:secretid/:jumpnbr
 GET /v1/programme/move/:id/:secretid/:zone_id
 GET /v1/programme/scan/:id/:secretid
 GET /v1/programme/cellule/log/:id/:secretid/:celluleid
@@ -154,6 +152,11 @@ GET /v1/programme/capture/target/data/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/capture/target/energy/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/equilibrium/:id/:secretid
 GET /v1/programme/push/flag/:id/:secretid
+GET v1/programme/destroy/zone/:id/:secretid/:celluleid/:energy
+GET v1/programme/navigation/stop/:id/:secretid
+GET v1/programme/exploration/stop/:id/:secretid
+GET v1/programme/stop/move/:id/:secretid/:secteur_id/:zone_id
+GET v1/programme/estimate/move/:id/:secretid/:secteur_id/:zone_id
 ```
 
 #### Route en cas de lock
