@@ -9,17 +9,16 @@ type ProgrammeContainer struct {
 	ValidKey  string    `json:"valid_key"`
 }
 type GridInfos struct {
-	Id            string           `json:"id"`
-	Taille        int              `json:"taille"`
-	ZoneTransfert Position         `json:"zone_transfert"`
-	Iteration     int              `json:"iteration"`
-	Cycle         int              `json:"cycle"`
-	NbrProgrammes int              `json:"nbr_programmes"`
-	Programmes    []ProgrammeInfos `json:"programmes"`
-	Zones         []ZonesGrid      `json:"zones"`
-	Status        bool             `json:"status"`
-	Version       string           `json:"version"`
-	FlagCapture   bool             `json:"flag_capture"`
+	Id            string      `json:"id"`
+	Taille        int         `json:"taille"`
+	ZoneTransfert Position    `json:"zone_transfert"`
+	Iteration     int         `json:"iteration"`
+	Cycle         int         `json:"cycle"`
+	NbrProgrammes int         `json:"nbr_programmes"`
+	Zones         []ZonesGrid `json:"zones"`
+	Status        bool        `json:"status"`
+	Version       string      `json:"version"`
+	FlagCapture   bool        `json:"flag_capture"`
 }
 type ZonesGrid struct {
 	SecteurID int   `json:"secteur_id"`
@@ -46,7 +45,6 @@ type InstructionPassword struct {
 	Format string `json:"format"`
 }
 type ProgrammeInfos struct {
-	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Level       int    `json:"level"`
 	SecteurID   int    `json:"secteur_id"`
@@ -92,7 +90,7 @@ type Cellule struct {
 	Destroy         bool                `json:"destroy"`
 	Rebuild         bool                `json:"rebuild"`
 	CurrentAccesLog CelluleLog          `json:"current_acces_log"`
-	AccesLog        []CelluleLog        `json:"acces_log"`
+	AccesLog        map[int]CelluleLog  `json:"acces_log"`
 	Capture         bool                `json:"capture"`
 	Trapped         bool                `json:"trapped"`
 	Exploration     bool                `json:"exploration"`

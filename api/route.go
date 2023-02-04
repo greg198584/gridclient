@@ -1,8 +1,8 @@
 package api
 
 const (
-	//API_URL = "http://localhost"
-	API_URL                          = "http://195.154.84.18:20080"
+	API_URL = "http://localhost"
+	//API_URL                          = "http://195.154.84.18:20080"
 	ROUTE_NEW_PROGRAMME              = "v1/programme/new"
 	ROUTE_LOAD_PROGRAMME             = "v1/programme/load"
 	ROUTE_UPGRADE_PROGRAMME          = "v1/programme/upgrade"
@@ -10,6 +10,7 @@ const (
 	ROUTE_MOVE_PROGRAMME             = "v1/programme/move"
 	ROUTE_SCAN_PROGRAMME             = "v1/programme/scan"
 	ROUTE_GET_CELLULE_LOG            = "v1/programme/cellule/log"
+	ROUTE_CLEAN_CELLULE_LOG          = "v1/programme/clean/cellule/log"
 	ROUTE_EXPLORE_PROGRAMME          = "v1/programme/explore"
 	ROUTE_DESTROY_PROGRAMME          = "v1/programme/destroy"
 	ROUTE_REBUILD_PROGRAMME          = "v1/programme/rebuild"

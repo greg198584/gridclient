@@ -140,8 +140,6 @@ GET /v1/programme/new/:name
 POST /v1/programme/load
 POST /v1/programme/upgrade
 GET /v1/programme/unset/:id/:secretid
-GET /v1/programme/jump/up/:id/:secretid/:jumpnbr
-GET /v1/programme/jump/down/:id/:secretid/:jumpnbr
 GET /v1/programme/move/:id/:secretid/:zone_id
 GET /v1/programme/scan/:id/:secretid
 GET /v1/programme/cellule/log/:id/:secretid/:celluleid
@@ -154,6 +152,11 @@ GET /v1/programme/capture/target/data/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/capture/target/energy/:id/:secretid/:celluleid/:targetid
 GET /v1/programme/equilibrium/:id/:secretid
 GET /v1/programme/push/flag/:id/:secretid
+GET v1/programme/destroy/zone/:id/:secretid/:celluleid/:energy
+GET v1/programme/navigation/stop/:id/:secretid
+GET v1/programme/exploration/stop/:id/:secretid
+GET v1/programme/stop/move/:id/:secretid/:secteur_id/:zone_id
+GET v1/programme/estimate/move/:id/:secretid/:secteur_id/:zone_id
 ```
 
 #### Route en cas de lock
@@ -686,29 +689,4 @@ curl --request POST \
 	},
 	"valid_key": "$2a$14$DB6BXPvYvLPZVvgr0UCeE.DmehETOOtayCh.dU1qaCYfVPqXWPbHa"
 }'
-```
-
-#### Deplacer un programme
-
-- Move (changer de zone)
-
-```bash
-curl --request GET \
-  --url http://195.154.84.18:20080/v1/programme/move/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
-  --header 'content-type: application/json'
-```
-
-- JumpDown (descendre de secteur de 0 vers taille max )
-
-```bash
-curl --request GET \
-  --url http://195.154.84.18:20080/v1/programme/jump/down/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
-  --header 'content-type: application/json'
-```
-
-- JumpUp (monter de secteur de taille max vers 0)
-```bash
-curl --request GET \
-  --url http://195.154.84.18:20080/v1/programme/jump/up/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
-  --header 'content-type: application/json'
 ```

@@ -489,13 +489,31 @@ func GetCelluleLog(name string, celluleID string) {
 	if err != nil {
 		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
 	} else {
-		var celluleLogs []structure.CelluleLog
+		var celluleLogs map[int]structure.CelluleLog
 		err = json.Unmarshal(res, &celluleLogs)
 		if err != nil {
 			tools.Fail(err.Error())
 		} else {
 			tools.PrintCelluleLogs(celluleLogs)
 		}
+	}
+	return
+}
+func CleanCelluleLog(name string, celluleID string) {
+	tools.Title(fmt.Sprintf("CLEAN LOG cellule [%s] - programme [%s]", celluleID, name))
+	current, err := algo.NewAlgo(name)
+	if err != nil {
+		//panic(err)
+	}
+	_, statusCode, err := api.RequestApi(
+		"GET",
+		fmt.Sprintf("%s/%s/%s/%s/%s", api.API_URL, api.ROUTE_CLEAN_CELLULE_LOG, current.Pc.ID, current.Pc.SecretID, celluleID),
+		nil,
+	)
+	if err != nil {
+		tools.Fail(fmt.Sprintf("status code [%d] - [%s]", statusCode, err.Error()))
+	} else {
+		tools.Success("clean cellule")
 	}
 	return
 }
