@@ -159,16 +159,6 @@ GET v1/programme/stop/move/:id/:secretid/:secteur_id/:zone_id
 GET v1/programme/estimate/move/:id/:secretid/:secteur_id/:zone_id
 ```
 
-#### Route en cas de lock
-
-- instruction `GET /v1/programme/scan/:id/:secretid` (InstructionPassword len=taille du mot de passe, format=caractere utiliser)
-
-- zone/unlock pour envoi du mot de passe pour unlock zone.
-
-```bash
-GET /v1/grid/zone/unlock/:id/:secretid/:password
-```
-
 #### Route Destruction cellules de zone (zone de transfert destruction avec flag seulement)
 
 ```bash
@@ -176,15 +166,6 @@ GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
 ```
 
 -La route `/v1/programme/destroy/zone/` est un moyen sûr de déclencher une réinitialisation du réseau et d'empêcher tout programme d'économiser de l'énergie à la fin d'un cycle (si destruction zone de transfert).
-
-#### Route API - Route accessible apres transfert du drapeau
-
-```bash
-GET /v1/grid/zone/actif/:id/:secretid
-```
-
--La route `/v1/grid/zone/actif`  permet de savoir quelles zones sont actives et quels programmes sont disponibles dans ces zones.  
-
 
 ### Exemple retour API par route
 
