@@ -320,7 +320,7 @@ func PrintZoneInfos(infos structure.ZoneInfos) {
 		statusZone = aurora.Green("TRUE")
 	}
 	PrintColorTable(header, cellData, fmt.Sprintf("<---[ Infos programme sur Zone [%d] - status [%s]]--->", infos.ID, statusZone))
-	header = []string{"P-ID", "Name", "Valeur total", "Energy total", "Status", "Exploration"}
+	header = []string{"Name", "Valeur total", "Energy total", "Status", "Exploration"}
 	var progrData [][]string
 	for i := 0; i < len(infos.Programmes); i++ {
 		status := ""
@@ -336,7 +336,6 @@ func PrintZoneInfos(infos structure.ZoneInfos) {
 			exploration = aurora.Red("NOK").String()
 		}
 		progrData = append(progrData, []string{
-			infos.Programmes[i].ID,
 			infos.Programmes[i].Name,
 			fmt.Sprintf("%d", infos.Programmes[i].ValeurTotal),
 			fmt.Sprintf("%d", infos.Programmes[i].EnergyTotal),
@@ -370,7 +369,7 @@ func PrintExplore(celluleID string, data map[int]structure.CelluleData) {
 	PrintColorTable(header, cellData, fmt.Sprintf("<---[ data cellule [%s] ]--->", celluleID))
 	return
 }
-func PrintCelluleLogs(celluleLogs []structure.CelluleLog) {
+func PrintCelluleLogs(celluleLogs map[int]structure.CelluleLog) {
 	var header = []string{"PID", "ACTIVE_CAPTURE", "C_TIME"}
 	var cellData [][]string
 	for _, log := range celluleLogs {

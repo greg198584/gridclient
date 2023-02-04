@@ -690,28 +690,3 @@ curl --request POST \
 	"valid_key": "$2a$14$DB6BXPvYvLPZVvgr0UCeE.DmehETOOtayCh.dU1qaCYfVPqXWPbHa"
 }'
 ```
-
-#### Deplacer un programme
-
-- Move (changer de zone)
-
-```bash
-curl --request GET \
-  --url http://195.154.84.18:20080/v1/programme/move/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
-  --header 'content-type: application/json'
-```
-
-- JumpDown (descendre de secteur de 0 vers taille max )
-
-```bash
-curl --request GET \
-  --url http://195.154.84.18:20080/v1/programme/jump/down/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
-  --header 'content-type: application/json'
-```
-
-- JumpUp (monter de secteur de taille max vers 0)
-```bash
-curl --request GET \
-  --url http://195.154.84.18:20080/v1/programme/jump/up/7378faf7afa4ccbc9c8ec25fdbb9ad62de4d21bc/7d4b71be1a053f7b32fed407885ecff2830b4b44/1 \
-  --header 'content-type: application/json'
-```

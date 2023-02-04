@@ -220,6 +220,15 @@ func main() {
 			programme.GetCelluleLog(*pname, *celluleID)
 		}
 	})
+	app.Command("clean_log", "clean log cellule", func(cmd *mowcli.Cmd) {
+		var (
+			pname     = cmd.StringOpt("n name", "", "nom du programme")
+			celluleID = cmd.StringOpt("c cellule", "", "ID cellule")
+		)
+		cmd.Action = func() {
+			programme.CleanCelluleLog(*pname, *celluleID)
+		}
+	})
 	app.Command("destroy_zone", "destroy cellule zone current", func(cmd *mowcli.Cmd) {
 		var (
 			pname      = cmd.StringOpt("n name", "", "nom du programme")

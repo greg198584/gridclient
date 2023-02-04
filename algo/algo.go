@@ -319,7 +319,7 @@ func (a *Algo) GetProgramme() (ok bool, programmes []string) {
 	if okZI, zoneInfos := a.GetZoneinfos(); okZI {
 		for _, programme := range zoneInfos.Programmes {
 			if programme.Status {
-				programmes = append(programmes, programme.ID)
+				programmes = append(programmes, programme.Name)
 			}
 		}
 		return true, programmes
