@@ -13,22 +13,24 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 	var dataList [][]string
 	Info(fmt.Sprintf("SECTEUR-ZONE [%d][%d]", psi.Programme.Position.SecteurID, psi.Programme.Position.ZoneID))
 	if len(psi.LockProgramme) != 0 {
-		header = []string{"name", "cell", "energy", "valeur", "indicator", "status", "exploration", "---", "exploration", "status", "indicator", "valeur", "energy", "cell", "name"}
+		header = []string{"name", "cell", "energy", "valeur", "indicator", "status", "capture", "exploration", "---", "exploration", "capture", "status", "indicator", "valeur", "energy", "cell", "name"}
 		for _, lockProgramme := range psi.LockProgramme {
 			for i := 0; i < len(psi.Programme.Cellules); i++ {
 				valeur := psi.Programme.Cellules[i].Valeur
-				prefixValeur := psi.Programme.Level * 10
+				prefixValeur := psi.Programme.Level
 				valeurString := ""
-				count := valeur / prefixValeur
+				count := valeur / (prefixValeur * 10)
 				for j := 0; j < count; j++ {
+					valeurString += "-"
 					if valeur > 5 {
-						valeurString += aurora.Green(fmt.Sprintf("_%d_", prefixValeur)).String()
+						valeurString += aurora.Green(fmt.Sprintf("%d", prefixValeur)).String()
 					} else if valeur > 3 && valeur < 7 {
-						valeurString += aurora.Yellow(fmt.Sprintf("_%d_", prefixValeur)).String()
+						valeurString += aurora.Yellow(fmt.Sprintf("%d", prefixValeur)).String()
 					} else {
-						valeurString += aurora.Red(fmt.Sprintf("_%d_", prefixValeur)).String()
+						valeurString += aurora.Red(fmt.Sprintf("%d", prefixValeur)).String()
 					}
 				}
+				valeurString += "-"
 				status := ""
 				if psi.Programme.Cellules[i].Status {
 					status = aurora.Green("OK").String()
@@ -41,20 +43,28 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				} else {
 					exploration = aurora.Red("NOK").String()
 				}
+				capture := ""
+				if psi.Programme.Cellules[i].Capture {
+					capture = aurora.Green("OK").String()
+				} else {
+					capture = aurora.Red("NOK").String()
+				}
 
 				lpValeur := lockProgramme.Cellules[i].Valeur
-				lpPrefixValeur := lockProgramme.Level * 10
+				lpPrefixValeur := lockProgramme.Level
 				lpValeurString := ""
-				lpCount := lpValeur / lpPrefixValeur
+				lpCount := lpValeur / (lpPrefixValeur * 10)
 				for j := 0; j < lpCount; j++ {
+					lpValeurString += "-"
 					if lpValeur > 5 {
-						lpValeurString += aurora.Green(fmt.Sprintf("_%d_", lpPrefixValeur)).String()
+						lpValeurString += aurora.Green(fmt.Sprintf("%d", lpPrefixValeur)).String()
 					} else if lpValeur > 3 && lpValeur < 7 {
-						lpValeurString += aurora.Yellow(fmt.Sprintf("_%d_", lpPrefixValeur)).String()
+						lpValeurString += aurora.Yellow(fmt.Sprintf("%d", lpPrefixValeur)).String()
 					} else {
-						lpValeurString += aurora.Red(fmt.Sprintf("_%d_", lpPrefixValeur)).String()
+						lpValeurString += aurora.Red(fmt.Sprintf("%d", lpPrefixValeur)).String()
 					}
 				}
+				lpValeurString += "-"
 				lpStatus := ""
 				if lockProgramme.Cellules[i].Status {
 					lpStatus = aurora.Green("OK").String()
@@ -67,6 +77,12 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				} else {
 					lpExploration = aurora.Red("NOK").String()
 				}
+				lpCapture := ""
+				if lockProgramme.Cellules[i].Capture {
+					lpCapture = aurora.Green("OK").String()
+				} else {
+					lpCapture = aurora.Red("NOK").String()
+				}
 				dataList = append(dataList, []string{
 					aurora.Cyan(psi.Programme.Name).String(),
 					strconv.FormatInt(int64(psi.Programme.Cellules[i].ID), 10),
@@ -74,9 +90,11 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 					strconv.FormatInt(int64(psi.Programme.Cellules[i].Valeur), 10),
 					valeurString,
 					status,
+					capture,
 					exploration,
 					"***",
 					lpExploration,
+					lpCapture,
 					lpStatus,
 					lpValeurString,
 					strconv.FormatInt(int64(lockProgramme.Cellules[i].Valeur), 10),
@@ -131,21 +149,23 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 			dataList = nil
 		}
 	} else {
-		header = []string{"name", "cell", "energy", "valeur", "indicator", "status", "exploration"}
+		header = []string{"name", "cell", "energy", "valeur", "indicator", "status", "capture", "exploration"}
 		for i := 0; i < len(psi.Programme.Cellules); i++ {
 			valeur := psi.Programme.Cellules[i].Valeur
-			prefixValeur := psi.Programme.Level * 10
+			prefixValeur := psi.Programme.Level
 			valeurString := ""
-			count := valeur / prefixValeur
+			count := valeur / (prefixValeur * 10)
 			for j := 0; j < count; j++ {
+				valeurString += "-"
 				if valeur > 5 {
-					valeurString += aurora.Green(fmt.Sprintf("_%d_", prefixValeur)).String()
+					valeurString += aurora.Green(fmt.Sprintf("%d", prefixValeur)).String()
 				} else if valeur > 3 && valeur < 7 {
-					valeurString += aurora.Yellow(fmt.Sprintf("_%d_", prefixValeur)).String()
+					valeurString += aurora.Yellow(fmt.Sprintf("%d", prefixValeur)).String()
 				} else {
-					valeurString += aurora.Red(fmt.Sprintf("_%d_", prefixValeur)).String()
+					valeurString += aurora.Red(fmt.Sprintf("%d", prefixValeur)).String()
 				}
 			}
+			valeurString += "-"
 			status := ""
 			if psi.Programme.Cellules[i].Status {
 				status = aurora.Green("OK").String()
@@ -158,6 +178,12 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 			} else {
 				exploration = aurora.Red("NOK").String()
 			}
+			capture := ""
+			if psi.Programme.Cellules[i].Capture {
+				capture = aurora.Green("OK").String()
+			} else {
+				capture = aurora.Red("NOK").String()
+			}
 			dataList = append(dataList, []string{
 				aurora.Cyan(psi.Programme.Name).String(),
 				strconv.FormatInt(int64(psi.Programme.Cellules[i].ID), 10),
@@ -165,6 +191,7 @@ func PrintProgramme(psi structure.ProgrammeStatusInfos) {
 				strconv.FormatInt(int64(psi.Programme.Cellules[i].Valeur), 10),
 				valeurString,
 				status,
+				capture,
 				exploration,
 			})
 		}
