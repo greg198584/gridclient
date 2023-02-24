@@ -690,3 +690,25 @@ curl --request POST \
 	"valid_key": "$2a$14$DB6BXPvYvLPZVvgr0UCeE.DmehETOOtayCh.dU1qaCYfVPqXWPbHa"
 }'
 ```
+
+### AG-1 monitoring
+
+#### Get Started
+
+```bash
+> $ cd ag1-monitoring
+> $ python3 -m venv .env 
+> $ source .env/bin/activate
+> $ pip install -r requirements.txt
+```
+
+```bash
+> $ python3 main.py --id your_id --secret-id your_secret_id --host 195.154.84.18:20080
+L'ID du programme est 69a2e0368897ff
+Le Secret ID est b73c621bf0b699384d9
+host: 195.154.84.18:20080
+```
+
+## Screen exemple
+
+![alt text](img/moni_demo.png)
