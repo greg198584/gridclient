@@ -22,18 +22,6 @@ Le jeu est gagné par le premier joueur qui atteint l'objectif final avec son pr
 
 En cours de route, vous découvrirez des concepts de programmation tels que les variables, les boucles, les conditionnels et les fonctions.
 
-### Principes et scenario de base du jeu
-
-Tout commence lorsqu'un objet extraterrestre est détecté en orbite autour de la Terre. Les scientifiques découvrent que la seule façon de communiquer avec cet objet est à travers un langage binaire. Les joueurs incarnent des programmes informatiques qui ont été créés pour explorer cet objet extraterrestre et découvrir les secrets qu'il renferme.
-
-Les joueurs débarquent dans un monde numérique composé de différentes zones à explorer. Chacune de ces zones est remplie de défis et d'énigmes à résoudre pour collecter de l'énergie et des points de compétence. Ces points de compétence permettent aux joueurs de débloquer de nouvelles actions dans la grille.
-
-La grille est un espace de jeu en ligne de commande et en 3D où les joueurs peuvent se battre les uns contre les autres en utilisant des API spécialement conçues pour le jeu. Les joueurs peuvent également s'allier pour combattre des ennemis communs.
-
-Un drapeau caché est également dissimulé dans la grille. Celui qui parvient à le trouver peut augmenter de niveau, mais il peut également détruire la zone où il a déposé le drapeau. Cela empêche les autres joueurs de déposer leur drapeau et de progresser dans le jeu.
-
-Les actions sur l'API consomment de l'énergie et des itérations. Lorsque les itérations arrivent à zéro, la grille actuelle est détruite et une nouvelle grille est chargée avec des zones différentes et le drapeau caché dans une nouvelle zone.
-
 ### Règles
 
 Le but du jeu est de trouver le drapeau caché et de détruire la zone de transfert, qui déconnectera tous les programmes du réseau et les empêchera d'économiser de l'énergie.
@@ -87,13 +75,6 @@ Cellules piège ( capture cause des degat ) | zone de transfert = zone de sauveg
 `v1.0.0`    
 
 Déplacement | capture de drapeau | combat | scan | explore | capture | infos programmes | infos grille
-
-#### En cours de développement
-
-- MODE de jeu en equipe.
-  
-- Pour déverrouiller une zone verrouillée, vous devrez collaborer avec un membre de l'équipe qui utilise une autre zone.
-  une zone de déverrouillage, zone indiquer dans la zone verrouiler [ lock zone ] = [ unlock zone ]
 
 ### Client GO Installation
 
@@ -159,16 +140,6 @@ GET v1/programme/stop/move/:id/:secretid/:secteur_id/:zone_id
 GET v1/programme/estimate/move/:id/:secretid/:secteur_id/:zone_id
 ```
 
-#### Route en cas de lock
-
-- instruction `GET /v1/programme/scan/:id/:secretid` (InstructionPassword len=taille du mot de passe, format=caractere utiliser)
-
-- zone/unlock pour envoi du mot de passe pour unlock zone.
-
-```bash
-GET /v1/grid/zone/unlock/:id/:secretid/:password
-```
-
 #### Route Destruction cellules de zone (zone de transfert destruction avec flag seulement)
 
 ```bash
@@ -176,15 +147,6 @@ GET /v1/programme/destroy/zone/:id/:secretid/:celluleid
 ```
 
 -La route `/v1/programme/destroy/zone/` est un moyen sûr de déclencher une réinitialisation du réseau et d'empêcher tout programme d'économiser de l'énergie à la fin d'un cycle (si destruction zone de transfert).
-
-#### Route API - Route accessible apres transfert du drapeau
-
-```bash
-GET /v1/grid/zone/actif/:id/:secretid
-```
-
--La route `/v1/grid/zone/actif`  permet de savoir quelles zones sont actives et quels programmes sont disponibles dans ces zones.  
-
 
 ### Exemple retour API par route
 
@@ -690,7 +652,6 @@ curl --request POST \
 	"valid_key": "$2a$14$DB6BXPvYvLPZVvgr0UCeE.DmehETOOtayCh.dU1qaCYfVPqXWPbHa"
 }'
 ```
-
 ### AG-1 monitoring
 
 #### Get Started
