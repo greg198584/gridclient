@@ -89,6 +89,8 @@ go install github.com/greg198584/gridclient@latest
 
 ### API
 
+- API PROJET https://gitlab.com/greg198584/ApiGrid
+
 - API BETA: http://195.154.84.18:20080/v1/grid
 
 - Aucune base de donnée est utiliser par l'API. Il suffit de garder le JSON représenter par la structure ProgrammeContainer
