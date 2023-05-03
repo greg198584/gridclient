@@ -1,18 +1,12 @@
 # Apprendre à coder en jouant
 
-## Grille Client CLI
+## Grille Client CLI 
 
-[![API Reference](
-https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667
-)](http://195.154.84.18:20080/v1/grid)
-[![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/w2KcDSmu)
-
-
-### Description
+### Description 
 
 https://codeurlibre.systeme.io/commencez--programmer-en-jouant--ce-nouveau-jeu
 
-L'API fournit une grille de jeu avec des secteurs et des zones, et vous devrez créer des algorithmes pour faire avancer vos programmes dans la bonne direction.
+L'API fournit une grille de jeu avec des secteurs et des zones, et vous devrez créer des algorithmes pour faire avancer vos PAG ( Programme Api Grid ) dans la bonne direction.
 
 Explorez les différentes régions, attaquez les autres programmes et capturez leurs ressources afin de progresser dans le jeu.
 
